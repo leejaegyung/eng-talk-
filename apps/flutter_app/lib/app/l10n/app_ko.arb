@@ -213,5 +213,27 @@
   "onboardingConnected": "연결됐어요",
   "onboardingSkip": "나중에 할게요",
   "onboardingSkipNote": "연결하기 전에는 화면만 둘러볼 수 있어요.",
-  "onboardingStart": "시작하기"
+  "onboardingStart": "시작하기",
+  "settingsTitle": "설정",
+  "settingsAiSection": "AI 연결",
+  "settingsChatGpt": "ChatGPT 구독",
+  "settingsNotConnected": "연결 안 됨 — 로그인하면 추가 요금 없이 대화할 수 있어요",
+  "settingsConnectedModel": "연결됨 · 모델 {model} (자동 선택)",
+  "@settingsConnectedModel": {
+    "placeholders": {
+      "model": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsChecking": "연결 확인 중…",
+  "settingsRetry": "다시 확인",
+  "settingsSignOut": "로그아웃",
+  "settingsApiKeyNote": "OpenAI API 키(사용량만큼 별도 과금)는 나중에 선택 항목으로 추가돼요.",
+  "settingsVoiceSection": "음성",
+  "settingsInfoSection": "정보",
+  "settingsPrivacy": "데이터 처리 안내",
+  "settingsLicenses": "오픈소스 라이선스",
+  "settingsClose": "닫기",
+  "homeSettings": "설정"
 }

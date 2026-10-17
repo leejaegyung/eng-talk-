@@ -81,5 +81,20 @@
   "onboardingConnected": "Connected",
   "onboardingSkip": "Later",
   "onboardingSkipNote": "Until you connect, you can only look around.",
-  "onboardingStart": "Get started"
+  "onboardingStart": "Get started",
+  "settingsTitle": "Settings",
+  "settingsAiSection": "AI connection",
+  "settingsChatGpt": "ChatGPT plan",
+  "settingsNotConnected": "Not connected — sign in to talk at no extra charge",
+  "settingsConnectedModel": "Connected · model {model} (picked automatically)",
+  "settingsChecking": "Checking connection…",
+  "settingsRetry": "Check again",
+  "settingsSignOut": "Sign out",
+  "settingsApiKeyNote": "An OpenAI API key (billed per use) will be added later as an option.",
+  "settingsVoiceSection": "Voice",
+  "settingsInfoSection": "About",
+  "settingsPrivacy": "How your data is handled",
+  "settingsLicenses": "Open-source licenses",
+  "settingsClose": "Close",
+  "homeSettings": "Settings"
 }

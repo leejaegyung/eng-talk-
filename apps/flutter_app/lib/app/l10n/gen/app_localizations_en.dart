@@ -303,4 +303,53 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get onboardingStart => 'Get started';
+
+  @override
+  String get settingsTitle => 'Settings';
+
+  @override
+  String get settingsAiSection => 'AI connection';
+
+  @override
+  String get settingsChatGpt => 'ChatGPT plan';
+
+  @override
+  String get settingsNotConnected =>
+      'Not connected — sign in to talk at no extra charge';
+
+  @override
+  String settingsConnectedModel(String model) {
+    return 'Connected · model $model (picked automatically)';
+  }
+
+  @override
+  String get settingsChecking => 'Checking connection…';
+
+  @override
+  String get settingsRetry => 'Check again';
+
+  @override
+  String get settingsSignOut => 'Sign out';
+
+  @override
+  String get settingsApiKeyNote =>
+      'An OpenAI API key (billed per use) will be added later as an option.';
+
+  @override
+  String get settingsVoiceSection => 'Voice';
+
+  @override
+  String get settingsInfoSection => 'About';
+
+  @override
+  String get settingsPrivacy => 'How your data is handled';
+
+  @override
+  String get settingsLicenses => 'Open-source licenses';
+
+  @override
+  String get settingsClose => 'Close';
+
+  @override
+  String get homeSettings => 'Settings';
 }

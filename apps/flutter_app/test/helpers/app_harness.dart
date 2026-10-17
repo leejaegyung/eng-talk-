@@ -11,6 +11,7 @@ Future<void> bootApp(
   WidgetTester tester, {
   required MemorySettings settings,
   FakeAccount? account,
+  Future<String> Function()? selectModel,
 }) async {
   tester.platformDispatcher.localesTestValue = const [Locale('ko')];
   addTearDown(tester.platformDispatcher.clearLocalesTestValue);
@@ -19,6 +20,9 @@ Future<void> bootApp(
       overrides: [
         settingsStoreProvider.overrideWithValue(settings),
         chatGptAccountProvider.overrideWithValue(account ?? FakeAccount()),
+        chatGptModelSelectorProvider.overrideWithValue(
+          selectModel ?? () async => 'plan-model',
+        ),
       ],
       child: const SpeakingCoachApp(),
     ),

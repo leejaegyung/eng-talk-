@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../app/l10n/gen/app_localizations.dart';
 import '../common/failure_text.dart';
+import '../common/privacy_notice.dart';
 import 'onboarding_controller.dart';
 
 class OnboardingScreen extends ConsumerWidget {
@@ -26,20 +27,7 @@ class OnboardingScreen extends ConsumerWidget {
       ),
       OnboardingStep.privacy => (
         l10n.onboardingPrivacyTitle,
-        <Widget>[
-          for (final (icon, text) in [
-            (Icons.chat_outlined, l10n.onboardingPrivacyText),
-            (Icons.mic_none, l10n.onboardingPrivacyVoice),
-            (Icons.voice_over_off, l10n.onboardingPrivacyNoRecording),
-            (Icons.phone_android, l10n.onboardingPrivacyLocal),
-            (Icons.lock_outline, l10n.onboardingPrivacyCredentials),
-          ])
-            ListTile(
-              contentPadding: EdgeInsets.zero,
-              leading: Icon(icon),
-              title: Text(text),
-            ),
-        ],
+        <Widget>[const PrivacyNotice()],
         <Widget>[
           TextButton(onPressed: ctrl.back, child: Text(l10n.onboardingBack)),
           FilledButton(onPressed: ctrl.next, child: Text(l10n.onboardingAgree)),

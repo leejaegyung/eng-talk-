@@ -292,4 +292,52 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get onboardingStart => '시작하기';
+
+  @override
+  String get settingsTitle => '설정';
+
+  @override
+  String get settingsAiSection => 'AI 연결';
+
+  @override
+  String get settingsChatGpt => 'ChatGPT 구독';
+
+  @override
+  String get settingsNotConnected => '연결 안 됨 — 로그인하면 추가 요금 없이 대화할 수 있어요';
+
+  @override
+  String settingsConnectedModel(String model) {
+    return '연결됨 · 모델 $model (자동 선택)';
+  }
+
+  @override
+  String get settingsChecking => '연결 확인 중…';
+
+  @override
+  String get settingsRetry => '다시 확인';
+
+  @override
+  String get settingsSignOut => '로그아웃';
+
+  @override
+  String get settingsApiKeyNote =>
+      'OpenAI API 키(사용량만큼 별도 과금)는 나중에 선택 항목으로 추가돼요.';
+
+  @override
+  String get settingsVoiceSection => '음성';
+
+  @override
+  String get settingsInfoSection => '정보';
+
+  @override
+  String get settingsPrivacy => '데이터 처리 안내';
+
+  @override
+  String get settingsLicenses => '오픈소스 라이선스';
+
+  @override
+  String get settingsClose => '닫기';
+
+  @override
+  String get homeSettings => '설정';
 }

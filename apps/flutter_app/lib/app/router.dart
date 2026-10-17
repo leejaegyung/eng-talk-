@@ -6,6 +6,7 @@ import '../features/audio_lab/audio_lab_screen.dart';
 import '../features/chatgpt_lab/chatgpt_lab_screen.dart';
 import '../features/home/home_screen.dart';
 import '../features/onboarding/onboarding_screen.dart';
+import '../features/settings/settings_screen.dart';
 import '../features/voice_lab/voice_lab_screen.dart';
 import 'onboarding_gate.dart';
 
@@ -13,6 +14,7 @@ abstract final class AppRoutes {
   static const splash = '/splash';
   static const onboarding = '/onboarding';
   static const home = '/';
+  static const settings = '/settings';
   static const audioLab = '/lab/audio';
   static const voiceLab = '/lab/voice';
   static const chatGptLab = '/lab/chatgpt';
@@ -55,6 +57,10 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: AppRoutes.home,
         builder: (context, state) => const HomeScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.settings,
+        builder: (context, state) => const SettingsScreen(),
       ),
       GoRoute(
         path: AppRoutes.audioLab,

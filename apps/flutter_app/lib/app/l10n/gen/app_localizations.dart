@@ -589,6 +589,96 @@ abstract class AppLocalizations {
   /// In ko, this message translates to:
   /// **'시작하기'**
   String get onboardingStart;
+
+  /// No description provided for @settingsTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'설정'**
+  String get settingsTitle;
+
+  /// No description provided for @settingsAiSection.
+  ///
+  /// In ko, this message translates to:
+  /// **'AI 연결'**
+  String get settingsAiSection;
+
+  /// No description provided for @settingsChatGpt.
+  ///
+  /// In ko, this message translates to:
+  /// **'ChatGPT 구독'**
+  String get settingsChatGpt;
+
+  /// No description provided for @settingsNotConnected.
+  ///
+  /// In ko, this message translates to:
+  /// **'연결 안 됨 — 로그인하면 추가 요금 없이 대화할 수 있어요'**
+  String get settingsNotConnected;
+
+  /// No description provided for @settingsConnectedModel.
+  ///
+  /// In ko, this message translates to:
+  /// **'연결됨 · 모델 {model} (자동 선택)'**
+  String settingsConnectedModel(String model);
+
+  /// No description provided for @settingsChecking.
+  ///
+  /// In ko, this message translates to:
+  /// **'연결 확인 중…'**
+  String get settingsChecking;
+
+  /// No description provided for @settingsRetry.
+  ///
+  /// In ko, this message translates to:
+  /// **'다시 확인'**
+  String get settingsRetry;
+
+  /// No description provided for @settingsSignOut.
+  ///
+  /// In ko, this message translates to:
+  /// **'로그아웃'**
+  String get settingsSignOut;
+
+  /// No description provided for @settingsApiKeyNote.
+  ///
+  /// In ko, this message translates to:
+  /// **'OpenAI API 키(사용량만큼 별도 과금)는 나중에 선택 항목으로 추가돼요.'**
+  String get settingsApiKeyNote;
+
+  /// No description provided for @settingsVoiceSection.
+  ///
+  /// In ko, this message translates to:
+  /// **'음성'**
+  String get settingsVoiceSection;
+
+  /// No description provided for @settingsInfoSection.
+  ///
+  /// In ko, this message translates to:
+  /// **'정보'**
+  String get settingsInfoSection;
+
+  /// No description provided for @settingsPrivacy.
+  ///
+  /// In ko, this message translates to:
+  /// **'데이터 처리 안내'**
+  String get settingsPrivacy;
+
+  /// No description provided for @settingsLicenses.
+  ///
+  /// In ko, this message translates to:
+  /// **'오픈소스 라이선스'**
+  String get settingsLicenses;
+
+  /// No description provided for @settingsClose.
+  ///
+  /// In ko, this message translates to:
+  /// **'닫기'**
+  String get settingsClose;
+
+  /// No description provided for @homeSettings.
+  ///
+  /// In ko, this message translates to:
+  /// **'설정'**
+  String get homeSettings;
 }
 
 class _AppLocalizationsDelegate
