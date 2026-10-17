@@ -487,6 +487,108 @@ abstract class AppLocalizations {
   /// In ko, this message translates to:
   /// **'음성 인식과 읽어주기는 기기에 내장된 무료 기능을 써요.'**
   String get chatGptLabFreeVoiceNote;
+
+  /// No description provided for @onboardingWelcomeTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'말하면서 배우는 영어 코치'**
+  String get onboardingWelcomeTitle;
+
+  /// No description provided for @onboardingWelcomeBody.
+  ///
+  /// In ko, this message translates to:
+  /// **'AI는 짧게 묻고, 여러분이 길게 말해요.\n대화 중에는 흐름을 끊지 않고, 끝난 뒤에 고칠 점을 모아서 알려드려요.'**
+  String get onboardingWelcomeBody;
+
+  /// No description provided for @onboardingNext.
+  ///
+  /// In ko, this message translates to:
+  /// **'다음'**
+  String get onboardingNext;
+
+  /// No description provided for @onboardingBack.
+  ///
+  /// In ko, this message translates to:
+  /// **'이전'**
+  String get onboardingBack;
+
+  /// No description provided for @onboardingPrivacyTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'데이터는 이렇게 다뤄요'**
+  String get onboardingPrivacyTitle;
+
+  /// No description provided for @onboardingPrivacyText.
+  ///
+  /// In ko, this message translates to:
+  /// **'대화 내용(글자)은 연결한 AI(ChatGPT 등)로 보내져 답변을 만들어요.'**
+  String get onboardingPrivacyText;
+
+  /// No description provided for @onboardingPrivacyVoice.
+  ///
+  /// In ko, this message translates to:
+  /// **'음성 인식은 기기에 내장된 기능을 써요. 기기 설정에 따라 Apple·Google·Microsoft 서버에서 처리될 수 있어요.'**
+  String get onboardingPrivacyVoice;
+
+  /// No description provided for @onboardingPrivacyNoRecording.
+  ///
+  /// In ko, this message translates to:
+  /// **'녹음 원본은 저장하지 않아요.'**
+  String get onboardingPrivacyNoRecording;
+
+  /// No description provided for @onboardingPrivacyLocal.
+  ///
+  /// In ko, this message translates to:
+  /// **'대화 기록은 이 기기에만 저장돼요.'**
+  String get onboardingPrivacyLocal;
+
+  /// No description provided for @onboardingPrivacyCredentials.
+  ///
+  /// In ko, this message translates to:
+  /// **'로그인 정보와 API 키는 기기의 보안 저장소에만 보관해요.'**
+  String get onboardingPrivacyCredentials;
+
+  /// No description provided for @onboardingAgree.
+  ///
+  /// In ko, this message translates to:
+  /// **'확인했어요'**
+  String get onboardingAgree;
+
+  /// No description provided for @onboardingConnectTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'AI 연결'**
+  String get onboardingConnectTitle;
+
+  /// No description provided for @onboardingConnectBody.
+  ///
+  /// In ko, this message translates to:
+  /// **'ChatGPT Plus/Pro 구독이 있으면 추가 요금 없이 쓸 수 있어요. 구독의 사용 한도 안에서 동작해요.'**
+  String get onboardingConnectBody;
+
+  /// No description provided for @onboardingConnected.
+  ///
+  /// In ko, this message translates to:
+  /// **'연결됐어요'**
+  String get onboardingConnected;
+
+  /// No description provided for @onboardingSkip.
+  ///
+  /// In ko, this message translates to:
+  /// **'나중에 할게요'**
+  String get onboardingSkip;
+
+  /// No description provided for @onboardingSkipNote.
+  ///
+  /// In ko, this message translates to:
+  /// **'연결하기 전에는 화면만 둘러볼 수 있어요.'**
+  String get onboardingSkipNote;
+
+  /// No description provided for @onboardingStart.
+  ///
+  /// In ko, this message translates to:
+  /// **'시작하기'**
+  String get onboardingStart;
 }
 
 class _AppLocalizationsDelegate

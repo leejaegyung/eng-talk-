@@ -244,4 +244,63 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get chatGptLabFreeVoiceNote =>
       'Speech recognition and read-aloud use your device\'s free built-in features.';
+
+  @override
+  String get onboardingWelcomeTitle =>
+      'An English coach you learn with by talking';
+
+  @override
+  String get onboardingWelcomeBody =>
+      'The AI asks short questions and you do most of the talking.\nIt won\'t interrupt you for mistakes — you get corrections after the conversation.';
+
+  @override
+  String get onboardingNext => 'Next';
+
+  @override
+  String get onboardingBack => 'Back';
+
+  @override
+  String get onboardingPrivacyTitle => 'How your data is handled';
+
+  @override
+  String get onboardingPrivacyText =>
+      'What you say (as text) is sent to the AI you connect (such as ChatGPT) to make replies.';
+
+  @override
+  String get onboardingPrivacyVoice =>
+      'Speech recognition uses your device\'s built-in feature. Depending on device settings, Apple, Google or Microsoft may process it on their servers.';
+
+  @override
+  String get onboardingPrivacyNoRecording => 'Raw recordings are never saved.';
+
+  @override
+  String get onboardingPrivacyLocal =>
+      'Conversation history stays on this device.';
+
+  @override
+  String get onboardingPrivacyCredentials =>
+      'Sign-in tokens and API keys are kept only in your device\'s secure storage.';
+
+  @override
+  String get onboardingAgree => 'Got it';
+
+  @override
+  String get onboardingConnectTitle => 'Connect an AI';
+
+  @override
+  String get onboardingConnectBody =>
+      'With a ChatGPT Plus/Pro plan there\'s no extra charge — usage counts toward your plan\'s limits.';
+
+  @override
+  String get onboardingConnected => 'Connected';
+
+  @override
+  String get onboardingSkip => 'Later';
+
+  @override
+  String get onboardingSkipNote =>
+      'Until you connect, you can only look around.';
+
+  @override
+  String get onboardingStart => 'Get started';
 }

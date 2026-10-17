@@ -1,34 +1,11 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:speaking_coach/app/providers.dart';
-import 'package:speaking_coach/domain/credentials/provider_account.dart';
 import 'package:speaking_coach/domain/providers/ai_provider.dart';
 import 'package:speaking_coach/domain/providers/provider_failure.dart';
 import 'package:speaking_coach/features/chatgpt_lab/chatgpt_lab_controller.dart';
 
 import '../../helpers/fakes.dart';
-
-class FakeAccount implements ProviderAccount {
-  bool signedIn = false;
-  Object? signInError;
-  int signOuts = 0;
-
-  @override
-  Future<bool> isSignedIn() async => signedIn;
-
-  @override
-  Future<void> signIn() async {
-    if (signInError != null) throw signInError!;
-    signedIn = true;
-  }
-
-  @override
-  Future<bool> signOut() async {
-    signOuts++;
-    signedIn = false;
-    return true;
-  }
-}
 
 void main() {
   late FakeAccount account;

@@ -7,11 +7,13 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../data/audio/record_audio_input.dart';
 import '../data/audio/temp_file_audio_output.dart';
+import '../data/db/app_database.dart' show AppDatabase;
 import '../data/providers/chatgpt/chatgpt_auth.dart';
 import '../data/providers/chatgpt/chatgpt_plan_client.dart';
 import '../data/providers/chatgpt/provider_catalog.dart' as chatgpt;
 import '../data/providers/openai/openai_client.dart';
 import '../data/providers/openai/provider_catalog.dart';
+import '../data/settings/drift_settings_store.dart';
 import '../data/speech/os_speech_input.dart';
 import '../data/speech/os_speech_output.dart';
 import '../data/vault/secure_storage_vault.dart';
@@ -21,12 +23,23 @@ import '../domain/credentials/credential_vault.dart';
 import '../domain/credentials/provider_account.dart';
 import '../domain/providers/ai_provider.dart';
 import '../domain/providers/provider_failure.dart';
+import '../domain/settings/settings_store.dart';
 
 // The only place where data implementations are bound to domain interfaces.
 // Tests override these.
 
 final credentialVaultProvider = Provider<CredentialVault>(
   (ref) => SecureStorageVault(),
+);
+
+final appDatabaseProvider = Provider<AppDatabase>((ref) {
+  final db = AppDatabase.open();
+  ref.onDispose(db.close);
+  return db;
+});
+
+final settingsStoreProvider = Provider<SettingsStore>(
+  (ref) => DriftSettingsStore(ref.watch(appDatabaseProvider)),
 );
 
 final audioInputProvider = Provider<AudioInput>((ref) {

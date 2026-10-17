@@ -64,5 +64,22 @@
   "chatGptLabListening": "Listening… it sends when you stop talking",
   "chatGptLabSpeaking": "Speaking…",
   "chatGptLabSpeechUnavailable": "Speech recognition isn't available on this device. Allow speech recognition and microphone access in system settings, or type instead.",
-  "chatGptLabFreeVoiceNote": "Speech recognition and read-aloud use your device's free built-in features."
+  "chatGptLabFreeVoiceNote": "Speech recognition and read-aloud use your device's free built-in features.",
+  "onboardingWelcomeTitle": "An English coach you learn with by talking",
+  "onboardingWelcomeBody": "The AI asks short questions and you do most of the talking.\nIt won't interrupt you for mistakes — you get corrections after the conversation.",
+  "onboardingNext": "Next",
+  "onboardingBack": "Back",
+  "onboardingPrivacyTitle": "How your data is handled",
+  "onboardingPrivacyText": "What you say (as text) is sent to the AI you connect (such as ChatGPT) to make replies.",
+  "onboardingPrivacyVoice": "Speech recognition uses your device's built-in feature. Depending on device settings, Apple, Google or Microsoft may process it on their servers.",
+  "onboardingPrivacyNoRecording": "Raw recordings are never saved.",
+  "onboardingPrivacyLocal": "Conversation history stays on this device.",
+  "onboardingPrivacyCredentials": "Sign-in tokens and API keys are kept only in your device's secure storage.",
+  "onboardingAgree": "Got it",
+  "onboardingConnectTitle": "Connect an AI",
+  "onboardingConnectBody": "With a ChatGPT Plus/Pro plan there's no extra charge — usage counts toward your plan's limits.",
+  "onboardingConnected": "Connected",
+  "onboardingSkip": "Later",
+  "onboardingSkipNote": "Until you connect, you can only look around.",
+  "onboardingStart": "Get started"
 }

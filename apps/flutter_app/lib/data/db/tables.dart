@@ -76,3 +76,12 @@ class Corrections extends Table {
   TextColumn get explanation => text().nullable()();
   BoolColumn get practiced => boolean().withDefault(const Constant(false))();
 }
+
+/// Plain app preferences (v2). Credentials stay in CredentialVault.
+class AppSettings extends Table {
+  TextColumn get name => text()();
+  TextColumn get value => text()();
+
+  @override
+  Set<Column<Object>> get primaryKey => {name};
+}

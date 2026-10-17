@@ -1,26 +1,23 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:speaking_coach/app/app.dart';
+import 'package:speaking_coach/domain/settings/settings_store.dart';
+
+import 'helpers/app_harness.dart';
+import 'helpers/fakes.dart';
 
 void main() {
-  testWidgets('app boots to the home screen in Korean', (tester) async {
-    tester.platformDispatcher.localesTestValue = const [Locale('ko')];
-    addTearDown(tester.platformDispatcher.clearLocalesTestValue);
+  final onboarded = {SettingKeys.onboardingDone: 'true'};
 
-    await tester.pumpWidget(const ProviderScope(child: SpeakingCoachApp()));
-    await tester.pumpAndSettle();
+  testWidgets('onboarded app boots to the home screen in Korean', (
+    tester,
+  ) async {
+    await bootApp(tester, settings: MemorySettings(onboarded));
 
     expect(find.text('오늘도 영어로 말해볼까요?'), findsOneWidget);
     expect(find.text('대화 시작'), findsOneWidget);
   });
 
   testWidgets('home opens the audio test screen', (tester) async {
-    tester.platformDispatcher.localesTestValue = const [Locale('ko')];
-    addTearDown(tester.platformDispatcher.clearLocalesTestValue);
-
-    await tester.pumpWidget(const ProviderScope(child: SpeakingCoachApp()));
-    await tester.pumpAndSettle();
+    await bootApp(tester, settings: MemorySettings(onboarded));
     await tester.tap(find.text('오디오 테스트 (개발용)'));
     await tester.pumpAndSettle();
 

@@ -4,7 +4,9 @@ import 'dart:typed_data';
 import 'package:speaking_coach/domain/audio/audio_io.dart';
 import 'package:speaking_coach/domain/audio/speech_io.dart';
 import 'package:speaking_coach/domain/credentials/credential_vault.dart';
+import 'package:speaking_coach/domain/credentials/provider_account.dart';
 import 'package:speaking_coach/domain/providers/ai_provider.dart';
+import 'package:speaking_coach/domain/settings/settings_store.dart';
 
 class MemoryVault implements CredentialVault {
   final values = <String, String>{};
@@ -160,4 +162,38 @@ class FakeSpeechInput implements SpeechInput {
 
   @override
   Future<void> stop() async => stops++;
+}
+
+class MemorySettings implements SettingsStore {
+  MemorySettings([Map<String, String>? initial]) : values = {...?initial};
+
+  final Map<String, String> values;
+
+  @override
+  Future<String?> read(String key) async => values[key];
+
+  @override
+  Future<void> write(String key, String value) async => values[key] = value;
+}
+
+class FakeAccount implements ProviderAccount {
+  bool signedIn = false;
+  Object? signInError;
+  int signOuts = 0;
+
+  @override
+  Future<bool> isSignedIn() async => signedIn;
+
+  @override
+  Future<void> signIn() async {
+    if (signInError != null) throw signInError!;
+    signedIn = true;
+  }
+
+  @override
+  Future<bool> signOut() async {
+    signOuts++;
+    signedIn = false;
+    return true;
+  }
 }

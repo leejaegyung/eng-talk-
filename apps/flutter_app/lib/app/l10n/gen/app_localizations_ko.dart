@@ -236,4 +236,60 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get chatGptLabFreeVoiceNote => '음성 인식과 읽어주기는 기기에 내장된 무료 기능을 써요.';
+
+  @override
+  String get onboardingWelcomeTitle => '말하면서 배우는 영어 코치';
+
+  @override
+  String get onboardingWelcomeBody =>
+      'AI는 짧게 묻고, 여러분이 길게 말해요.\n대화 중에는 흐름을 끊지 않고, 끝난 뒤에 고칠 점을 모아서 알려드려요.';
+
+  @override
+  String get onboardingNext => '다음';
+
+  @override
+  String get onboardingBack => '이전';
+
+  @override
+  String get onboardingPrivacyTitle => '데이터는 이렇게 다뤄요';
+
+  @override
+  String get onboardingPrivacyText =>
+      '대화 내용(글자)은 연결한 AI(ChatGPT 등)로 보내져 답변을 만들어요.';
+
+  @override
+  String get onboardingPrivacyVoice =>
+      '음성 인식은 기기에 내장된 기능을 써요. 기기 설정에 따라 Apple·Google·Microsoft 서버에서 처리될 수 있어요.';
+
+  @override
+  String get onboardingPrivacyNoRecording => '녹음 원본은 저장하지 않아요.';
+
+  @override
+  String get onboardingPrivacyLocal => '대화 기록은 이 기기에만 저장돼요.';
+
+  @override
+  String get onboardingPrivacyCredentials =>
+      '로그인 정보와 API 키는 기기의 보안 저장소에만 보관해요.';
+
+  @override
+  String get onboardingAgree => '확인했어요';
+
+  @override
+  String get onboardingConnectTitle => 'AI 연결';
+
+  @override
+  String get onboardingConnectBody =>
+      'ChatGPT Plus/Pro 구독이 있으면 추가 요금 없이 쓸 수 있어요. 구독의 사용 한도 안에서 동작해요.';
+
+  @override
+  String get onboardingConnected => '연결됐어요';
+
+  @override
+  String get onboardingSkip => '나중에 할게요';
+
+  @override
+  String get onboardingSkipNote => '연결하기 전에는 화면만 둘러볼 수 있어요.';
+
+  @override
+  String get onboardingStart => '시작하기';
 }

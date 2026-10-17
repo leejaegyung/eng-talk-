@@ -2,9 +2,9 @@
 
 > 세션 시작 시 자동 주입된다. 태스크를 끝낼 때마다 갱신한다. 짧게 유지하고 오래된 상세는 "기록"으로 옮긴다.
 
-**현재 Phase:** 0 (PoC)
+**현재 Phase:** 1 (MVP) — Phase 0은 Windows 실행 확인만 남음
 **대상 플랫폼:** macOS·Windows 데스크톱 (Mac에서 개발), Galaxy는 APK 배포 후 확인 (ADR-009)
-**다음 태스크:** P0-T9 사용자 음성 확인 → v0.2.0 릴리스(Windows/Galaxy 확인) → Phase 0 종료 → P1-A
+**다음 태스크:** P1-A2 설정 화면(ChatGPT 계정 기본, API 키 선택) → A3 PromptComposer → A4 정책 → A5 대화 화면 → A6 피드백 → A7 결과·저장
 **과금 방향:** ADR-011 — ChatGPT 구독(추가 요금 없음) 기본, OpenAI API 키는 선택
 **Phase 0 순서:** T7 → T4 → T5 → T3 → T6(키·과금, 실행 전 확인). T2는 사용자 Windows 실행 확인 대기
 
@@ -22,7 +22,8 @@
 | P0-T6 OpenAI 왕복 (API 키, 선택 경로) | 🔄 | 구현: domain `LlmProvider`/`VoiceProvider`/`ProviderFailure`, `data/providers/openai`(키는 요청마다 vault에서 읽음, SSE 스트리밍, usage 토큰 수집, 오류 정규화), provider_catalog(라이브 모델 목록과 대조해 선택), 홈 → "음성 대화 테스트(개발용)"(키 입력·연결 테스트·말하기·구간별 지연·p50/p95·측정 사용량). 테스트: MockClient 18 + 컨트롤러 10 + 위젯 5. 실제 OpenAI에 가짜 키 → 401 → invalidKey 확인(과금 없음). **남음: 사용자 키로 실제 왕복 10회 측정** |
 | P0-T7 상태 머신 | ✅ | `domain/conversation/` 순수 Dart. 시퀀스(seq)+턴 ID로 지연 응답 거부, barge-in 시 `interruptsAssistant`, 연결 끊김→paused(connectionLost)→재연결. 테스트 31개 |
 | P0-T8 ChatGPT 구독 연결 | ✅ | Sign in with ChatGPT(오픈소스 plan usage): dynamic_agent_client 자가 등록, PKCE, 루프백 127.0.0.1 콜백, 토큰은 vault만, 갱신 직렬화·종료 오류만 세션 삭제, 로그아웃 시 revoke. `/v1/responses`(stream, store=false, instructions). 오류 3종 추가(signInRequired/planUsageLimit/planNotEligible). 홈 → "ChatGPT 대화 테스트". 테스트: auth 14 + client 12 + controller 10. **✅ 사용자 실로그인·대화 성공(2026-10-17)**. 실제 응답 확인: plan 모델 목록은 `{models:[{slug,priority,description,visibility,supported_in_api}]}` 형식 → 설명에 'fast'인 최상위 우선순위 모델 자동 선택, reasoning effort low. 첫 토큰 1.9s / 전체 2.3s(1회). 수정 이력: ext_agent_host_id는 `urn:uuid:` 형식 필수 |
-| P0-T9 OS 음성 (무료) | 🔄 | domain `SpeechInput`/`SpeechOutput`, data `OsSpeechInput`(speech_to_text, en_US dictation, 3초 멈춤=턴 종료)·`OsSpeechOutput`(flutter_tts en-US, 완료 대기). ChatGPT 테스트 화면에 🎤·답변 읽어주기·끼어들기(말하면 읽기 중단). macOS TTS 실기 integration_test 통과. v0.2.0 릴리스. Galaxy 로그인 → '네트워크 연결 불가': 토큰 교환이 브라우저가 앞에 있을 때(앱 백그라운드) 실행돼 차단된 것으로 추정 → 모바일은 앱 복귀 후 교환 + 완료 페이지에 '앱으로 돌아가기'(speakingcoach://signed-in) → v0.2.1. **남음: Galaxy 로그인·STT 확인, Windows STT(베타)** |
+| P0-T9 OS 음성 (무료) | ✅ | domain `SpeechInput`/`SpeechOutput`, data `OsSpeechInput`(speech_to_text, en_US dictation, 3초 멈춤=턴 종료)·`OsSpeechOutput`(flutter_tts en-US, 완료 대기). ChatGPT 테스트 화면에 🎤·답변 읽어주기·끼어들기(말하면 읽기 중단). macOS TTS 실기 integration_test 통과. v0.2.0 릴리스. Galaxy 로그인 → '네트워크 연결 불가': 토큰 교환이 브라우저가 앞에 있을 때(앱 백그라운드) 실행돼 차단된 것으로 추정 → 모바일은 앱 복귀 후 교환 + 완료 페이지에 '앱으로 돌아가기'(speakingcoach://signed-in) → v0.2.1. **✅ 사용자 Galaxy에서 로그인·음성 대화 확인(2026-10-17)**. Windows STT(베타)는 T2와 함께 |
+| P1-A1 앱 셸·온보딩 | ✅ | `app_settings` 테이블(스키마 v2, stepByStep 마이그레이션 + 스냅샷 테스트), `SettingsStore`(domain)·`DriftSettingsStore`, `OnboardingGate` + router redirect(splash → onboarding/home, 읽기 실패 시 온보딩). S01 최소판: 소개 → 데이터 처리 안내(텍스트 전송, OS 음성 인식 서버 처리 가능, 녹음 미저장, 로컬 기록, 보안 저장소) → ChatGPT 연결 또는 나중에. 테스트: redirect 4 + 온보딩 흐름 위젯 5 + 저장소 2, macOS 실제 DB 재열기 integration_test 통과. 언어 선택·마이크 테스트·진단은 슬라이스 D |
 
 ## 알려진 이슈
 - OS 음성 인식은 플랫폼에 따라 Apple/Google/Microsoft 서버에서 처리될 수 있음(앱은 원본을 저장하지 않음) → 온보딩 고지(P1)에 포함. OS STT 경로는 PCM을 받지 않아 VAD 발화 지표 미측정 → P1-B2에서 onSoundLevelChange 활용 검토
