@@ -33,6 +33,11 @@ class HomeScreen extends StatelessWidget {
               icon: const Icon(Icons.graphic_eq),
               label: Text(l10n.homeAudioLab),
             ),
+            TextButton.icon(
+              onPressed: () => context.push(AppRoutes.voiceLab),
+              icon: const Icon(Icons.record_voice_over),
+              label: Text(l10n.homeVoiceLab),
+            ),
           ],
         ),
       ),

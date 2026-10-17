@@ -1,57 +1,9 @@
-import 'dart:async';
-import 'dart:typed_data';
-
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:speaking_coach/app/providers.dart';
-import 'package:speaking_coach/domain/audio/audio_io.dart';
 import 'package:speaking_coach/features/audio_lab/audio_lab_controller.dart';
 
-class FakeInput implements AudioInput {
-  FakeInput({this.permitted = true});
-
-  final bool permitted;
-  final chunks = StreamController<Uint8List>();
-  bool stopped = false;
-
-  @override
-  int get sampleRate => 16000;
-
-  @override
-  Future<bool> ensurePermission() async => permitted;
-
-  @override
-  Future<Stream<Uint8List>> start() async => chunks.stream;
-
-  @override
-  Future<void> stop() async => stopped = true;
-
-  @override
-  Future<void> dispose() => chunks.close();
-}
-
-class FakeOutput implements AudioOutput {
-  final played = <(Uint8List, String)>[];
-
-  @override
-  Future<void> play(Uint8List bytes, {required String fileExtension}) async =>
-      played.add((bytes, fileExtension));
-
-  @override
-  Future<void> stop() async {}
-
-  @override
-  Future<void> dispose() async {}
-}
-
-/// 50 ms of PCM16 at 16 kHz with a constant sample value.
-Uint8List chunk(int sample) {
-  final data = ByteData(1600);
-  for (var i = 0; i < 800; i++) {
-    data.setInt16(i * 2, sample, Endian.little);
-  }
-  return data.buffer.asUint8List();
-}
+import '../../helpers/fakes.dart';
 
 void main() {
   late FakeInput input;
@@ -63,7 +15,7 @@ void main() {
 
   Future<void> send(int sample, int n) async {
     for (var i = 0; i < n; i++) {
-      input.chunks.add(chunk(sample));
+      input.chunks.add(pcmChunk(sample));
     }
     await pumpEventQueue();
   }

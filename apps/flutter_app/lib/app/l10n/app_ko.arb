@@ -37,5 +37,119 @@
   },
   "audioLabMicDenied": "마이크 권한이 없어 음성 모드를 쓸 수 없어요. 시스템 설정에서 마이크를 허용하거나, 텍스트로 대화할 수 있어요.",
   "audioLabFailed": "오디오 장치를 열 수 없어요. 마이크 연결을 확인해 주세요.",
-  "audioLabNoSignal": "마이크 신호가 들어오지 않아요. 맥북 덮개가 닫혀 있거나, 입력 장치가 음소거되었는지 확인해 주세요."
+  "audioLabNoSignal": "마이크 신호가 들어오지 않아요. 맥북 덮개가 닫혀 있거나, 입력 장치가 음소거되었는지 확인해 주세요.",
+  "homeVoiceLab": "음성 대화 테스트 (개발용)",
+  "voiceLabTitle": "음성 대화 테스트",
+  "voiceLabKeyTitle": "OpenAI API 키",
+  "voiceLabKeyHint": "키는 이 기기의 보안 저장소(키체인 등)에만 저장되고, OpenAI 외 다른 곳으로 보내지 않아요. 사용량만큼 본인 OpenAI 계정에 과금돼요.",
+  "voiceLabKeyField": "sk-로 시작하는 키",
+  "voiceLabKeySave": "저장",
+  "voiceLabKeyStored": "키 저장됨",
+  "voiceLabKeyDelete": "키 삭제",
+  "voiceLabTest": "연결 테스트",
+  "voiceLabChecking": "확인 중…",
+  "voiceLabModels": "사용 모델 — 대화: {chat} · 음성 인식: {stt} · 음성 합성: {tts}",
+  "@voiceLabModels": {
+    "placeholders": {
+      "chat": {
+        "type": "String"
+      },
+      "stt": {
+        "type": "String"
+      },
+      "tts": {
+        "type": "String"
+      }
+    }
+  },
+  "voiceLabTalk": "말하기",
+  "voiceLabStopListening": "말하기 끝",
+  "voiceLabPhaseListening": "듣는 중… 말을 멈추면 자동으로 보내요",
+  "voiceLabPhaseTranscribing": "음성 인식 중…",
+  "voiceLabPhaseThinking": "답변 생성 중…",
+  "voiceLabPhaseSpeaking": "말하는 중…",
+  "voiceLabHeard": "내 말: {text}",
+  "@voiceLabHeard": {
+    "placeholders": {
+      "text": {
+        "type": "String"
+      }
+    }
+  },
+  "voiceLabReply": "AI: {text}",
+  "@voiceLabReply": {
+    "placeholders": {
+      "text": {
+        "type": "String"
+      }
+    }
+  },
+  "voiceLabRunsTitle": "측정 기록 ({count}회)",
+  "@voiceLabRunsTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "voiceLabRunRow": "#{n} 인식 {stt} · 첫 토큰 {token} · 음성 첫 바이트 {tts} · 전체 {total} (ms)",
+  "@voiceLabRunRow": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      },
+      "stt": {
+        "type": "int"
+      },
+      "token": {
+        "type": "int"
+      },
+      "tts": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "voiceLabStats": "p50 / p95 — 인식 {stt} · 첫 토큰 {token} · 음성 첫 바이트 {tts} · 전체 {total} (ms)",
+  "@voiceLabStats": {
+    "placeholders": {
+      "stt": {
+        "type": "String"
+      },
+      "token": {
+        "type": "String"
+      },
+      "tts": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "voiceLabUsage": "측정된 사용량 — 입력 토큰 {input} · 출력 토큰 {output} · 업로드 음성 {seconds}초 · 합성 글자 {chars}자",
+  "@voiceLabUsage": {
+    "placeholders": {
+      "input": {
+        "type": "int"
+      },
+      "output": {
+        "type": "int"
+      },
+      "seconds": {
+        "type": "String"
+      },
+      "chars": {
+        "type": "int"
+      }
+    }
+  },
+  "failureInvalidKey": "API 키가 올바르지 않아요. 키를 확인하고 다시 입력해 주세요.",
+  "failureInsufficientQuota": "OpenAI 계정에 사용 가능한 크레딧이 없어요. platform.openai.com의 Billing에서 결제 수단이나 크레딧을 확인해 주세요.",
+  "failureRateLimited": "요청이 너무 많아요. 잠시 후 다시 시도해 주세요.",
+  "failureModelUnavailable": "이 계정에서 필요한 모델을 사용할 수 없어요.",
+  "failureNetwork": "네트워크에 연결할 수 없어요. 인터넷 연결을 확인해 주세요.",
+  "failureUnknown": "알 수 없는 오류가 발생했어요. 잠시 후 다시 시도해 주세요."
 }

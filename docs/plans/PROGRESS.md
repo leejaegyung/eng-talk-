@@ -4,7 +4,7 @@
 
 **현재 Phase:** 0 (PoC)
 **대상 플랫폼:** macOS·Windows 데스크톱 (Mac에서 개발), Galaxy는 APK 배포 후 확인 (ADR-009)
-**다음 태스크:** P0-T3 오디오 PoC (macOS 녹음·재생·진폭 VAD)
+**다음 태스크:** P0-T6 실측(사용자 키) → Phase 0 종료 → P1-A 텍스트 루프
 **Phase 0 순서:** T7 → T4 → T5 → T3 → T6(키·과금, 실행 전 확인). T2는 사용자 Windows 실행 확인 대기
 
 ## 상태
@@ -15,10 +15,10 @@
 | P0-T0 환경 | ✅ | Flutter 3.47.7, Xcode 27.1, Android SDK 36(cmdline tools), JDK 17, CocoaPods 1.17 |
 | P0-T1 프로젝트 생성 | ✅ | apps/flutter_app (macos/windows/android), check.sh 통과(테스트 5개), macOS·APK debug 빌드 성공 |
 | P0-T2 CI | 🔄 | github.com/leejaegyung/eng-talk- (public). CI 4개 job 녹색, v0.1.0 릴리스(win/mac/apk) 생성. Windows PC 실행 확인 대기 |
-| P0-T3 오디오 | 🔄 | 구현 완료: PCM16 스트림 녹음(record) → 메모리 → WAV → 재생(audioplayers, 전용 temp 폴더·재생 후 삭제·크래시 잔여물 정리), 순수 Dart 진폭 VAD(히스테리시스, user_speech 누적), 권한 거부 → 텍스트 모드 안내, 홈 → "오디오 테스트(개발용)" 화면. macOS 재생·S4 정리 integration_test 3개 통과. **남음: 사용자 macOS 마이크 녹음 확인, Windows/Galaxy는 다음 릴리스로 확인** |
+| P0-T3 오디오 | ✅ (macOS) | PCM16 스트림 녹음 → 메모리 → WAV 재생(전용 temp 폴더, 재생 후 삭제), 진폭 VAD, 권한 거부·무신호 안내. **사용자 macOS 녹음·재생 확인 (2026-10-17)**. Windows/Galaxy는 다음 릴리스로 확인 |
 | P0-T4 Vault | ✅ | `domain/credentials` 인터페이스 + `data/vault/SecureStorageVault`(byok. 네임스페이스, ref 검증으로 키가 키 이름에 들어가는 실수 차단). 단위 13개. macOS 실제 키체인에서 저장→재시작→조회→삭제→재시작→null 확인(integration_test 3회 실행). Windows/Android 실기 확인은 P1-A2 설정 화면에서 |
 | P0-T5 Drift | ✅ | 6개 테이블 v1, FK·cascade, enum은 domain. CRUD/cascade/FK/키 컬럼 금지(S1) 테스트 + validateDatabaseSchema + 스냅샷 v1(make-migrations) |
-| P0-T6 OpenAI 왕복 | ⬜ | 사용자 키 필요, 실행 전 확인 |
+| P0-T6 OpenAI 왕복 | 🔄 | 구현: domain `LlmProvider`/`VoiceProvider`/`ProviderFailure`, `data/providers/openai`(키는 요청마다 vault에서 읽음, SSE 스트리밍, usage 토큰 수집, 오류 정규화), provider_catalog(라이브 모델 목록과 대조해 선택), 홈 → "음성 대화 테스트(개발용)"(키 입력·연결 테스트·말하기·구간별 지연·p50/p95·측정 사용량). 테스트: MockClient 18 + 컨트롤러 10 + 위젯 5. 실제 OpenAI에 가짜 키 → 401 → invalidKey 확인(과금 없음). **남음: 사용자 키로 실제 왕복 10회 측정** |
 | P0-T7 상태 머신 | ✅ | `domain/conversation/` 순수 Dart. 시퀀스(seq)+턴 ID로 지연 응답 거부, barge-in 시 `interruptsAssistant`, 연결 끊김→paused(connectionLost)→재연결. 테스트 31개 |
 
 ## 알려진 이슈
