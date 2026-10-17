@@ -4,7 +4,7 @@
 
 **현재 Phase:** 0 (PoC)
 **대상 플랫폼:** macOS·Windows 데스크톱 (Mac에서 개발), Galaxy는 APK 배포 후 확인 (ADR-009)
-**다음 태스크:** P0-T2 CI — GitHub 원격 저장소 연결 필요(사용자 확인), 또는 P0-T7 상태 머신 먼저
+**다음 태스크:** P0-T2 마무리(첫 릴리스 v0.1.0 → Windows PC 실행 확인) → P0-T7 상태 머신
 
 ## 상태
 | 태스크 | 상태 | 증거 / 메모 |
@@ -13,7 +13,7 @@
 | 기획 문서 | ✅ | roadmap, phase-0, phase-1, decisions(ADR-001~009) |
 | P0-T0 환경 | ✅ | Flutter 3.47.7, Xcode 27.1, Android SDK 36(cmdline tools), JDK 17, CocoaPods 1.17 |
 | P0-T1 프로젝트 생성 | ✅ | apps/flutter_app (macos/windows/android), check.sh 통과(테스트 5개), macOS·APK debug 빌드 성공 |
-| P0-T2 CI | 🔄 | ci.yml 작성(check + macos/windows/apk 빌드). 원격 저장소 push 전이라 미실행 |
+| P0-T2 CI | 🔄 | github.com/leejaegyung/eng-talk- (public). ci(check+3빌드) + release(태그 → GitHub Release, ADR-010). Windows 실행 확인 대기 |
 | P0-T3 오디오 | ⬜ | record + audioplayers |
 | P0-T4 Vault | ⬜ | |
 | P0-T5 Drift | ⬜ | |
@@ -28,4 +28,5 @@
 - ADR-006 배포 방식 (Phase 3 전까지)
 
 ## 기록
+- 2026-10-17 GitHub 연결, 릴리스 워크플로(ADR-010)
 - 2026-10-17 스킬 16종 설치, 하네스·기획 문서 작성, 개발 환경 구성, 프로젝트 생성

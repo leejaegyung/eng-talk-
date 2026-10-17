@@ -1,0 +1,91 @@
+name: build
+
+# Reusable: check + release builds for macOS, Windows and Android.
+# Each target uploads one installable file as artifact `speaking_coach-<target>`.
+on:
+  workflow_call:
+    inputs:
+      build-name:
+        description: "Version shown in the app (e.g. 0.1.0). Empty = pubspec value."
+        type: string
+        default: ""
+      build-number:
+        description: "Monotonic build number (Android versionCode). Empty = pubspec value."
+        type: string
+        default: ""
+
+env:
+  FLUTTER_VERSION: "3.47.7"
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
+          cache: true
+      - run: cd apps/flutter_app && flutter pub get
+      - run: scripts/check.sh
+
+  build:
+    needs: check
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - target: macos
+            os: macos-latest
+          - target: windows
+            os: windows-latest
+          - target: apk
+            os: ubuntu-latest
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        shell: bash
+        working-directory: apps/flutter_app
+    env:
+      BUILD_NAME: ${{ inputs.build-name }}
+      BUILD_NUMBER: ${{ inputs.build-number }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-java@v4
+        if: matrix.target == 'apk'
+        with:
+          distribution: temurin
+          java-version: "17"
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
+          cache: true
+      - run: flutter pub get
+      # Unsigned builds until the distribution decision (ADR-006, ADR-010).
+      - name: flutter build
+        run: |
+          args=()
+          [[ -n "$BUILD_NAME" ]] && args+=(--build-name "$BUILD_NAME")
+          [[ -n "$BUILD_NUMBER" ]] && args+=(--build-number "$BUILD_NUMBER")
+          flutter build ${{ matrix.target }} --release "${args[@]}"
+      - name: package
+        run: |
+          version="${BUILD_NAME:-dev}"
+          mkdir -p dist
+          case "${{ matrix.target }}" in
+            macos)
+              ditto -c -k --keepParent build/macos/Build/Products/Release/speaking_coach.app \
+                "dist/SpeakingCoach-$version-macos.zip" ;;
+            windows)
+              (cd build/windows/x64/runner/Release && 7z a -tzip "$GITHUB_WORKSPACE/apps/flutter_app/dist/SpeakingCoach-$version-windows-x64.zip" .) ;;
+            apk)
+              cp build/app/outputs/flutter-apk/app-release.apk "dist/SpeakingCoach-$version-android.apk" ;;
+          esac
+          ls -la dist
+      - uses: actions/upload-artifact@v4
+        with:
+          name: speaking_coach-${{ matrix.target }}
+          path: apps/flutter_app/dist/*
+          retention-days: 14

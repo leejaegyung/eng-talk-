@@ -41,3 +41,10 @@ Galaxy(Android)는 배포 빌드(APK)를 설치해 최종 확인만 한다(USB �
 - Flutter 플랫폼: macos, windows, android. Windows 빌드는 Mac에서 불가 → GitHub Actions windows 러너로 빌드·아티팩트 배포, 실행 확인은 사용자 Windows PC.
 - 모든 패키지는 macOS·Windows·Android를 모두 지원해야 한다. 이에 따라 재생 패키지를 just_audio(Windows 미지원) → audioplayers로 교체.
 - 데스크톱 우선 UX: 키보드 단축키, 넓은 창 레이아웃, 마이크 장치 선택.
+
+## ADR-010 테스트 배포: GitHub Releases 버전 관리 — 확정 (2026-10-17)
+사용자 결정. 설치 파일은 GitHub Releases에 버전별로 올린다. ADR-006(최종 배포 방식)이 정해지기 전까지의 테스트 배포 경로.
+- `scripts/release.sh X.Y.Z` → pubspec 버전 갱신 + check + 커밋 + 태그 `vX.Y.Z` push → `release` 워크플로가 빌드 후 릴리스 생성.
+- 태그와 pubspec 버전이 다르면 릴리스 실패. 빌드 번호(Android versionCode)는 워크플로 실행 번호. `-` 포함 태그는 prerelease.
+- 산출물: `SpeakingCoach-<ver>-windows-x64.zip`, `-macos.zip`, `-android.apk`. 모두 서명 없음.
+- 알려진 한계: APK는 CI의 임시 디버그 키로 서명되어 버전 간 서명이 달라 업데이트 설치가 안 될 수 있음(삭제 후 재설치). 고정 키스토어를 GitHub Secrets에 두면 해결 — 필요 시 사용자 확인 후 추가.

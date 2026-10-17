@@ -1,0 +1,55 @@
+name: release
+
+# Push a tag `vX.Y.Z` (use scripts/release.sh) → build all targets → GitHub Release with installers.
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+jobs:
+  version:
+    runs-on: ubuntu-latest
+    outputs:
+      name: ${{ steps.v.outputs.name }}
+    steps:
+      - uses: actions/checkout@v5
+      - id: v
+        name: tag must match pubspec version
+        run: |
+          tag="${GITHUB_REF_NAME#v}"
+          pub="$(sed -n 's/^version: *\([^+]*\).*/\1/p' apps/flutter_app/pubspec.yaml)"
+          if [[ "$tag" != "$pub" ]]; then
+            echo "::error::tag $GITHUB_REF_NAME != pubspec version $pub"
+            exit 1
+          fi
+          echo "name=$tag" >> "$GITHUB_OUTPUT"
+
+  build:
+    needs: version
+    uses: ./.github/workflows/build.yml
+    with:
+      build-name: ${{ needs.version.outputs.name }}
+      build-number: ${{ github.run_number }}
+
+  publish:
+    needs: [version, build]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: speaking_coach-*
+          merge-multiple: true
+          path: dist
+      - name: create release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          flags=()
+          [[ "$GITHUB_REF_NAME" == *-* ]] && flags+=(--prerelease)
+          gh release create "$GITHUB_REF_NAME" dist/* \
+            --title "$GITHUB_REF_NAME" \
+            --notes-file .github/release-notes.md \
+            --generate-notes "${flags[@]}"
