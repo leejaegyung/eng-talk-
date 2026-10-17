@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
@@ -26,6 +27,9 @@ class FakeOpenAi {
   final authorizeUrls = <Uri>[];
   final tokenForms = <Map<String, String>>[];
   final revocations = <Map<String, String>>[];
+
+  /// Pages the loopback server showed the browser.
+  final pages = <String>[];
   String scope =
       'openid profile email offline_access resource.invoke '
       'chatgpt.tokens.use.direct';
@@ -50,7 +54,7 @@ class FakeOpenAi {
     Future<void>(() async {
       final client = HttpClient();
       final req = await client.getUrl(redirect);
-      await (await req.close()).drain<void>();
+      pages.add(await (await req.close()).transform(utf8.decoder).join());
       client.close();
     }).ignore();
   }
@@ -165,6 +169,43 @@ void main() {
       expect(second['client_id'], issuedClientId);
       expect(second.containsKey('agent_name_hint'), isFalse);
       expect(second['ext_agent_host_id'], first['ext_agent_host_id']);
+    });
+
+    test('code exchange waits until the app is back in front', () async {
+      final front = Completer<void>();
+      final a = ChatGptAuth(
+        vault: vault,
+        openBrowser: openAi.openBrowser,
+        client: openAi.client,
+        now: () => now,
+        preferredPort: 0,
+        whenForeground: () => front.future,
+      );
+      final signIn = a.signIn();
+      await Future<void>.delayed(const Duration(milliseconds: 100));
+      expect(openAi.pages, hasLength(1), reason: 'callback was delivered');
+      expect(openAi.tokenForms, isEmpty);
+
+      front.complete();
+      await signIn;
+      expect(openAi.tokenForms, hasLength(1));
+      expect(await a.isSignedIn(), isTrue);
+    });
+
+    test('done page links back to the app when a return link is set', () async {
+      await ChatGptAuth(
+        vault: vault,
+        openBrowser: openAi.openBrowser,
+        client: openAi.client,
+        now: () => now,
+        preferredPort: 0,
+        returnLink: 'myapp://signed-in',
+      ).signIn();
+      expect(openAi.pages.single, contains('href="myapp://signed-in"'));
+
+      await auth().signOut();
+      await auth().signIn();
+      expect(openAi.pages.last, isNot(contains('href=')));
     });
 
     test('state mismatch is rejected and nothing is stored', () async {

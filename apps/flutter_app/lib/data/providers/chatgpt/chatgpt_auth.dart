@@ -23,8 +23,12 @@ class ChatGptAuth implements ProviderAccount {
     DateTime Function()? now,
     this._preferredPort = 1455,
     this._callbackTimeout = const Duration(minutes: 5),
+    Future<void> Function()? whenForeground,
+    String? returnLink,
   }) : _client = client ?? http.Client(),
-       _now = now ?? DateTime.now;
+       _now = now ?? DateTime.now,
+       _whenForeground = whenForeground ?? _immediately,
+       _donePage = _page(returnLink);
 
   static const agentName = 'Speaking Coach';
   static const sessionRef = 'chatgpt.session';
@@ -54,6 +58,11 @@ class ChatGptAuth implements ProviderAccount {
   final DateTime Function() _now;
   final int _preferredPort;
   final Duration _callbackTimeout;
+
+  /// Completes once the app is in front again. Mobile OSes may cut network
+  /// access for background apps, and the browser is in front at callback.
+  final Future<void> Function() _whenForeground;
+  final String _donePage;
   final _random = Random.secure();
   Future<String>? _refreshing;
 
@@ -75,7 +84,7 @@ class ChatGptAuth implements ProviderAccount {
     try {
       final redirectUri = 'http://127.0.0.1:${server.port}/auth/callback';
       // Listen before opening the browser so the callback can't be missed.
-      final callback = _awaitCallback(server);
+      final callback = _awaitCallback(server, _donePage);
       await _openBrowser(
         _authorizeUrl.replace(
           queryParameters: {
@@ -109,6 +118,11 @@ class ChatGptAuth implements ProviderAccount {
       }
       final clientId = savedClientId ?? returnedClientId;
       if (clientId == null) _fail('no client id issued');
+
+      await _whenForeground().timeout(
+        _callbackTimeout,
+        onTimeout: () => _fail('app not resumed'),
+      );
 
       final tokens = await _tokenRequest({
         'grant_type': 'authorization_code',
@@ -236,7 +250,8 @@ class ChatGptAuth implements ProviderAccount {
       res = await _client
           .post(_tokenUrl, body: form)
           .timeout(const Duration(seconds: 30));
-    } on Exception {
+    } on Exception catch (e) {
+      _log.warning('token request failed: ${e.runtimeType}');
       throw const ProviderException(ProviderFailure.network);
     }
     Object? json;
@@ -286,7 +301,10 @@ class ChatGptAuth implements ProviderAccount {
     }
   }
 
-  static Future<Map<String, String>> _awaitCallback(HttpServer server) async {
+  static Future<Map<String, String>> _awaitCallback(
+    HttpServer server,
+    String donePage,
+  ) async {
     await for (final req in server) {
       if (req.uri.path != '/auth/callback') {
         req.response.statusCode = HttpStatus.notFound;
@@ -296,7 +314,7 @@ class ChatGptAuth implements ProviderAccount {
       req.response
         ..statusCode = HttpStatus.ok
         ..headers.contentType = ContentType.html
-        ..write(_donePage);
+        ..write(donePage);
       await req.response.close();
       return req.uri.queryParameters;
     }
@@ -344,11 +362,23 @@ class ChatGptAuth implements ProviderAccount {
     throw const ProviderException(ProviderFailure.signInRequired);
   }
 
-  static const _donePage =
-      '<!doctype html><meta charset="utf-8"><title>Speaking Coach</title>'
-      '<body style="font-family:sans-serif;text-align:center;padding:48px">'
-      '<h2>로그인 완료</h2><p>이 창을 닫고 앱으로 돌아가세요.</p>'
-      '<p>Signed in. You can close this window.</p></body>';
+  static Future<void> _immediately() async {}
+
+  /// [returnLink] opens the app from the browser where closing the tab
+  /// doesn't bring it back (Android).
+  static String _page(String? returnLink) {
+    final next = returnLink == null
+        ? '<p>이 창을 닫고 앱으로 돌아가세요.</p>'
+        : '<p><a href="$returnLink" style="display:inline-block;'
+              'padding:14px 28px;border-radius:24px;background:#3f51b5;'
+              'color:#fff;text-decoration:none">앱으로 돌아가기</a></p>';
+    return '<!doctype html><meta charset="utf-8">'
+        '<meta name="viewport" content="width=device-width,initial-scale=1">'
+        '<title>Speaking Coach</title>'
+        '<body style="font-family:sans-serif;text-align:center;padding:48px">'
+        '<h2>로그인 완료</h2>$next'
+        '<p>Signed in. You can close this window.</p></body>';
+  }
 }
 
 final class _TokenError implements Exception {

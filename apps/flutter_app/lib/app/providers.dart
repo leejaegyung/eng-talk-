@@ -1,3 +1,7 @@
+import 'dart:async';
+import 'dart:io';
+
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -85,8 +89,26 @@ final _chatGptAuthProvider = Provider<ChatGptAuth>(
         throw const ProviderException(ProviderFailure.signInRequired);
       }
     },
+    whenForeground: Platform.isAndroid || Platform.isIOS ? _untilResumed : null,
+    // Matches the intent filter in AndroidManifest.xml.
+    returnLink: Platform.isAndroid ? 'speakingcoach://signed-in' : null,
   ),
 );
+
+Future<void> _untilResumed() {
+  if (WidgetsBinding.instance.lifecycleState == AppLifecycleState.resumed) {
+    return Future.value();
+  }
+  final resumed = Completer<void>();
+  late final AppLifecycleListener listener;
+  listener = AppLifecycleListener(
+    onResume: () {
+      listener.dispose();
+      resumed.complete();
+    },
+  );
+  return resumed.future;
+}
 
 final chatGptAccountProvider = Provider<ProviderAccount>(
   (ref) => ref.watch(_chatGptAuthProvider),
