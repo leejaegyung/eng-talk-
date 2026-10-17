@@ -22,6 +22,8 @@
 | P0-T7 상태 머신 | ✅ | `domain/conversation/` 순수 Dart. 시퀀스(seq)+턴 ID로 지연 응답 거부, barge-in 시 `interruptsAssistant`, 연결 끊김→paused(connectionLost)→재연결. 테스트 31개 |
 
 ## 알려진 이슈
+- macOS: record_macos 2.1.1에서 echoCancel(voice processing)을 켜면 입력이 전부 0 → macOS는 끔. 스피커 사용 시 AI 목소리가 마이크로 들어가 barge-in 오검출 가능 → 헤드폰 권장 또는 P1-B1에서 재생 중 VAD 임계값 상향 검토
+- MacBook 덮개를 닫으면 내장 마이크가 하드웨어적으로 꺼져 입력이 0 → 오디오 화면이 2초 무신호 시 안내
 - macOS: 서명 없는 빌드라 legacy keychain 사용(`usesDataProtectionKeychain: false`). 앱 업데이트 후 키체인 접근 허용 창이 뜰 수 있음 — ADR-006 서명 결정 시 재검토
 - `flutter analyze`가 한글·공백 경로에서 크래시(LSP 버그) → check.sh는 `dart analyze --fatal-infos` 사용
 - Windows 빌드는 Mac에서 불가 → CI 아티팩트로만 확인

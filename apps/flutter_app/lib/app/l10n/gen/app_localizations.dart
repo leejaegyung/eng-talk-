@@ -193,6 +193,12 @@ abstract class AppLocalizations {
   /// In ko, this message translates to:
   /// **'오디오 장치를 열 수 없어요. 마이크 연결을 확인해 주세요.'**
   String get audioLabFailed;
+
+  /// No description provided for @audioLabNoSignal.
+  ///
+  /// In ko, this message translates to:
+  /// **'마이크 신호가 들어오지 않아요. 맥북 덮개가 닫혀 있거나, 입력 장치가 음소거되었는지 확인해 주세요.'**
+  String get audioLabNoSignal;
 }
 
 class _AppLocalizationsDelegate

@@ -19,6 +19,7 @@ final class AudioLabState {
     this.userSpeech = Duration.zero,
     this.recorded = Duration.zero,
     this.hasRecording = false,
+    this.noSignal = false,
   });
 
   final LabStatus status;
@@ -28,6 +29,9 @@ final class AudioLabState {
   final Duration recorded;
   final bool hasRecording;
 
+  /// Only digital silence so far: lid closed, muted or blocked input.
+  final bool noSignal;
+
   AudioLabState copyWith({
     LabStatus? status,
     double? levelDb,
@@ -35,6 +39,7 @@ final class AudioLabState {
     Duration? userSpeech,
     Duration? recorded,
     bool? hasRecording,
+    bool? noSignal,
   }) => AudioLabState(
     status: status ?? this.status,
     levelDb: levelDb ?? this.levelDb,
@@ -42,6 +47,7 @@ final class AudioLabState {
     userSpeech: userSpeech ?? this.userSpeech,
     recorded: recorded ?? this.recorded,
     hasRecording: hasRecording ?? this.hasRecording,
+    noSignal: noSignal ?? this.noSignal,
   );
 }
 
@@ -55,12 +61,16 @@ final audioLabProvider =
 class AudioLabController extends Notifier<AudioLabState> {
   static const _log = AppLogger('audio.lab');
 
+  /// A real microphone never yields exact zeros for this long.
+  static const _noSignalAfter = Duration(seconds: 2);
+
   late AudioInput _input;
   late AudioOutput _output;
   final _pcm = BytesBuilder(copy: false);
   Uint8List? _recording;
   StreamSubscription<Uint8List>? _sub;
   AmplitudeVad _vad = AmplitudeVad();
+  bool _signalSeen = false;
 
   @override
   AudioLabState build() {
@@ -89,6 +99,7 @@ class AudioLabController extends Notifier<AudioLabState> {
         return;
       }
       _vad = AmplitudeVad();
+      _signalSeen = false;
       _pcm.clear();
       _recording = null;
       final stream = await _input.start();
@@ -103,15 +114,18 @@ class AudioLabController extends Notifier<AudioLabState> {
   void _onChunk(Uint8List chunk) {
     _pcm.add(chunk);
     final db = pcm16Dbfs(chunk);
+    if (db > silenceFloorDb) _signalSeen = true;
     _vad.add(
       db,
       pcm16Duration(chunk.lengthInBytes, sampleRate: _input.sampleRate),
     );
+    final recorded = pcm16Duration(_pcm.length, sampleRate: _input.sampleRate);
     state = state.copyWith(
       levelDb: db,
       speaking: _vad.speaking,
       userSpeech: _vad.userSpeech,
-      recorded: pcm16Duration(_pcm.length, sampleRate: _input.sampleRate),
+      recorded: recorded,
+      noSignal: !_signalSeen && recorded >= _noSignalAfter,
     );
   }
 

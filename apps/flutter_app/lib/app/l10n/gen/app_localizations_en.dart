@@ -65,4 +65,8 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get audioLabFailed =>
       'Couldn\'t open the audio device. Check that a microphone is connected.';
+
+  @override
+  String get audioLabNoSignal =>
+      'No microphone signal. Check that the laptop lid is open and the input device isn\'t muted.';
 }

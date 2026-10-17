@@ -31,6 +31,7 @@ class AudioLabScreen extends ConsumerWidget {
               const SizedBox(height: 24),
               if (s.status == LabStatus.micDenied)
                 _Notice(l10n.audioLabMicDenied, Icons.mic_off),
+              if (s.noSignal) _Notice(l10n.audioLabNoSignal, Icons.mic_none),
               if (s.status == LabStatus.failed)
                 _Notice(l10n.audioLabFailed, Icons.error_outline),
               Text(l10n.audioLabLevel(s.levelDb.toStringAsFixed(0))),

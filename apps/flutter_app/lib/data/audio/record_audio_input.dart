@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:record/record.dart';
@@ -21,8 +22,10 @@ class RecordAudioInput implements AudioInput {
       encoder: AudioEncoder.pcm16bits,
       sampleRate: sampleRate,
       numChannels: 1,
-      // Keeps the assistant's voice out of the mic for barge-in (macOS/Android).
-      echoCancel: true,
+      // Keeps the assistant's voice out of the mic for barge-in. On macOS the
+      // voice-processing path of record_macos 2.1.1 delivers only zeros, so
+      // it stays off there (headphones needed for barge-in, PROGRESS).
+      echoCancel: !Platform.isMacOS,
     ),
   );
 

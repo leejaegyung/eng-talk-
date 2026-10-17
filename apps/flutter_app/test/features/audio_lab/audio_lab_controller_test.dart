@@ -133,4 +133,19 @@ void main() {
     await ctrl().play();
     expect(output.played, isEmpty);
   });
+
+  test('all-zero input for 2 s is reported as no signal', () async {
+    await ctrl().startRecording();
+    await send(0, 39); // 1.95 s
+    expect(state().noSignal, isFalse);
+    await send(0, 1);
+    expect(state().noSignal, isTrue);
+  });
+
+  test('any non-zero sample means the mic is live', () async {
+    await ctrl().startRecording();
+    await send(1, 1); // -90 dBFS: quiet, but a real signal
+    await send(0, 60);
+    expect(state().noSignal, isFalse);
+  });
 }
