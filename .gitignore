@@ -1,0 +1,31 @@
+# OS / editor
+.DS_Store
+.idea/
+.vscode/
+*.iml
+
+# Claude Code local
+.claude/settings.local.json
+.agents/
+
+# Flutter / Dart
+**/.dart_tool/
+**/build/
+**/.flutter-plugins
+**/.flutter-plugins-dependencies
+**/ios/Pods/
+**/macos/Pods/
+**/android/.gradle/
+**/android/local.properties
+**/android/key.properties
+*.keystore
+*.jks
+
+# Python
+__pycache__/
+.venv/
+.pytest_cache/
+
+# Secrets
+.env
+.env.*
