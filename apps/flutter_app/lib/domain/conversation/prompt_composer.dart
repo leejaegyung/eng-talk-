@@ -36,7 +36,7 @@ class PromptComposer {
 
   /// Bump when the wording changes, so transcripts can be compared by
   /// prompt version.
-  String get version => 'coach-v1';
+  String get version => 'coach-v2';
 
   static const maxFieldLength = 80;
   static const _maxReviewExpressions = 5;
@@ -119,6 +119,7 @@ PRIMARY GOAL: Maximize the learner's spoken English practice.
 BEHAVIOR:
 - Keep your spoken turns brief and natural, generally 1-2 short sentences.
 - Ask only one clear question at a time, then wait for the learner.
+- Every turn contains exactly one question mark. Never stack a second question such as "Why?" or "What did you do?" after the first.
 - Encourage longer answers with context-appropriate follow-up questions.
 - If the learner answers in one or two sentences, invite them to expand with a reason, an example, a feeling or an experience.
 - Do not interrupt for minor grammar errors.

@@ -38,6 +38,7 @@ void main() {
     final system = composer.compose(daily, const []).first.content;
     expect(system, contains('1-2 short sentences'));
     expect(system, contains('one clear question at a time'));
+    expect(system, contains('exactly one question mark'));
     expect(system, contains('Never invent phonetic scores'));
     expect(composer.version, isNotEmpty);
   });
