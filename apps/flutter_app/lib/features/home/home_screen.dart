@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../app/l10n/gen/app_localizations.dart';
+import '../../app/router.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -24,6 +26,12 @@ class HomeScreen extends StatelessWidget {
               onPressed: null,
               icon: const Icon(Icons.mic),
               label: Text(l10n.homeStartButton),
+            ),
+            const SizedBox(height: 12),
+            TextButton.icon(
+              onPressed: () => context.push(AppRoutes.audioLab),
+              icon: const Icon(Icons.graphic_eq),
+              label: Text(l10n.homeAudioLab),
             ),
           ],
         ),

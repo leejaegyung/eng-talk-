@@ -2,5 +2,18 @@
   "@@locale": "en",
   "appTitle": "AI English Speaking Coach",
   "homeHeadline": "Ready to speak English today?",
-  "homeStartButton": "Start conversation"
+  "homeStartButton": "Start conversation",
+  "homeAudioLab": "Audio test (dev)",
+  "audioLabTitle": "Audio test",
+  "audioLabHint": "Press Record, say a few words in English, then Stop and Play. The recording stays in memory and is discarded when you leave this screen.",
+  "audioLabRecord": "Record",
+  "audioLabStop": "Stop",
+  "audioLabPlay": "Play back",
+  "audioLabLevel": "Input level {db} dBFS",
+  "audioLabSpeaking": "Speaking",
+  "audioLabSilent": "Silent",
+  "audioLabSpeechTotal": "Detected speech {seconds}s",
+  "audioLabRecorded": "Recorded {seconds}s",
+  "audioLabMicDenied": "Microphone access is off, so voice mode is unavailable. Allow the microphone in system settings, or continue by text.",
+  "audioLabFailed": "Couldn't open the audio device. Check that a microphone is connected."
 }

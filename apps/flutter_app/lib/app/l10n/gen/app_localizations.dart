@@ -115,6 +115,84 @@ abstract class AppLocalizations {
   /// In ko, this message translates to:
   /// **'대화 시작'**
   String get homeStartButton;
+
+  /// No description provided for @homeAudioLab.
+  ///
+  /// In ko, this message translates to:
+  /// **'오디오 테스트 (개발용)'**
+  String get homeAudioLab;
+
+  /// No description provided for @audioLabTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'오디오 테스트'**
+  String get audioLabTitle;
+
+  /// No description provided for @audioLabHint.
+  ///
+  /// In ko, this message translates to:
+  /// **'녹음을 누르고 영어로 몇 마디 말한 뒤 정지 → 다시 듣기. 녹음은 메모리에만 있고 이 화면을 나가면 지워져요.'**
+  String get audioLabHint;
+
+  /// No description provided for @audioLabRecord.
+  ///
+  /// In ko, this message translates to:
+  /// **'녹음'**
+  String get audioLabRecord;
+
+  /// No description provided for @audioLabStop.
+  ///
+  /// In ko, this message translates to:
+  /// **'정지'**
+  String get audioLabStop;
+
+  /// No description provided for @audioLabPlay.
+  ///
+  /// In ko, this message translates to:
+  /// **'다시 듣기'**
+  String get audioLabPlay;
+
+  /// No description provided for @audioLabLevel.
+  ///
+  /// In ko, this message translates to:
+  /// **'입력 음량 {db} dBFS'**
+  String audioLabLevel(String db);
+
+  /// No description provided for @audioLabSpeaking.
+  ///
+  /// In ko, this message translates to:
+  /// **'말하는 중'**
+  String get audioLabSpeaking;
+
+  /// No description provided for @audioLabSilent.
+  ///
+  /// In ko, this message translates to:
+  /// **'조용함'**
+  String get audioLabSilent;
+
+  /// No description provided for @audioLabSpeechTotal.
+  ///
+  /// In ko, this message translates to:
+  /// **'감지된 발화 시간 {seconds}초'**
+  String audioLabSpeechTotal(String seconds);
+
+  /// No description provided for @audioLabRecorded.
+  ///
+  /// In ko, this message translates to:
+  /// **'녹음 길이 {seconds}초'**
+  String audioLabRecorded(String seconds);
+
+  /// No description provided for @audioLabMicDenied.
+  ///
+  /// In ko, this message translates to:
+  /// **'마이크 권한이 없어 음성 모드를 쓸 수 없어요. 시스템 설정에서 마이크를 허용하거나, 텍스트로 대화할 수 있어요.'**
+  String get audioLabMicDenied;
+
+  /// No description provided for @audioLabFailed.
+  ///
+  /// In ko, this message translates to:
+  /// **'오디오 장치를 열 수 없어요. 마이크 연결을 확인해 주세요.'**
+  String get audioLabFailed;
 }
 
 class _AppLocalizationsDelegate

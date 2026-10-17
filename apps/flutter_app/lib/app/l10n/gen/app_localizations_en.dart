@@ -17,4 +17,52 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get homeStartButton => 'Start conversation';
+
+  @override
+  String get homeAudioLab => 'Audio test (dev)';
+
+  @override
+  String get audioLabTitle => 'Audio test';
+
+  @override
+  String get audioLabHint =>
+      'Press Record, say a few words in English, then Stop and Play. The recording stays in memory and is discarded when you leave this screen.';
+
+  @override
+  String get audioLabRecord => 'Record';
+
+  @override
+  String get audioLabStop => 'Stop';
+
+  @override
+  String get audioLabPlay => 'Play back';
+
+  @override
+  String audioLabLevel(String db) {
+    return 'Input level $db dBFS';
+  }
+
+  @override
+  String get audioLabSpeaking => 'Speaking';
+
+  @override
+  String get audioLabSilent => 'Silent';
+
+  @override
+  String audioLabSpeechTotal(String seconds) {
+    return 'Detected speech ${seconds}s';
+  }
+
+  @override
+  String audioLabRecorded(String seconds) {
+    return 'Recorded ${seconds}s';
+  }
+
+  @override
+  String get audioLabMicDenied =>
+      'Microphone access is off, so voice mode is unavailable. Allow the microphone in system settings, or continue by text.';
+
+  @override
+  String get audioLabFailed =>
+      'Couldn\'t open the audio device. Check that a microphone is connected.';
 }
