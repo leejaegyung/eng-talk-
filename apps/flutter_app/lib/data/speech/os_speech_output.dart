@@ -12,10 +12,15 @@ class OsSpeechOutput implements SpeechOutput {
     await _tts.awaitSpeakCompletion(true);
   }();
 
+  // flutter_tts treats 0.5 as the platform's normal rate.
+  static const _normalRate = 0.5;
+  static const _slowRate = 0.38;
+
   @override
-  Future<void> speak(String text) async {
+  Future<void> speak(String text, {bool slow = false}) async {
     if (text.trim().isEmpty) return;
     await _ensureSetup();
+    await _tts.setSpeechRate(slow ? _slowRate : _normalRate);
     await _tts.speak(text);
   }
 

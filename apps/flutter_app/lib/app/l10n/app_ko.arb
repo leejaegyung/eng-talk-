@@ -235,5 +235,53 @@
   "settingsPrivacy": "데이터 처리 안내",
   "settingsLicenses": "오픈소스 라이선스",
   "settingsClose": "닫기",
-  "homeSettings": "설정"
+  "homeSettings": "설정",
+  "conversationModeDaily": "일상 대화",
+  "conversationTitle": "{mode} · {level}",
+  "@conversationTitle": {
+    "placeholders": {
+      "mode": {
+        "type": "String"
+      },
+      "level": {
+        "type": "String"
+      }
+    }
+  },
+  "conversationEnd": "종료",
+  "conversationConnecting": "연결 중…",
+  "conversationListening": "듣는 중… 말을 멈추면 보내요",
+  "conversationThinking": "생각 중…",
+  "conversationAiSpeaking": "AI가 말하는 중 — 🎤를 누르면 끊고 말할 수 있어요",
+  "conversationYourTurn": "내 차례예요. 🎤를 누르고 말해보세요",
+  "conversationHint": "힌트",
+  "conversationRepeat": "다시 말해줘",
+  "conversationSlower": "천천히",
+  "conversationCorrect": "이 문장 교정",
+  "conversationChangeTopic": "주제 변경",
+  "conversationHintSuggestion": "막히셨나요? 힌트를 눌러보세요.",
+  "conversationSubtitlesHidden": "자막을 숨겼어요. 듣고 말하는 데 집중해 보세요.",
+  "conversationShowSubtitles": "자막 보기",
+  "conversationHideSubtitles": "자막 숨기기",
+  "conversationInput": "영어로 입력해도 돼요",
+  "conversationSend": "보내기",
+  "conversationNeedsConnection": "대화하려면 AI 연결이 필요해요.",
+  "conversationOpenSettings": "설정에서 연결하기",
+  "conversationEndedTitle": "대화를 마쳤어요",
+  "conversationEndedSummary": "연습 시간 {minutes}분 {seconds}초 · 내 답변 {turns}회",
+  "@conversationEndedSummary": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      },
+      "seconds": {
+        "type": "int"
+      },
+      "turns": {
+        "type": "int"
+      }
+    }
+  },
+  "conversationEndedNext": "교정과 복습은 다음 업데이트에서 추가돼요.",
+  "conversationBackHome": "홈으로"
 }

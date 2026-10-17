@@ -352,4 +352,85 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get homeSettings => 'Settings';
+
+  @override
+  String get conversationModeDaily => 'Daily talk';
+
+  @override
+  String conversationTitle(String mode, String level) {
+    return '$mode · $level';
+  }
+
+  @override
+  String get conversationEnd => 'End';
+
+  @override
+  String get conversationConnecting => 'Connecting…';
+
+  @override
+  String get conversationListening => 'Listening… sends when you pause';
+
+  @override
+  String get conversationThinking => 'Thinking…';
+
+  @override
+  String get conversationAiSpeaking => 'AI is speaking — tap 🎤 to cut in';
+
+  @override
+  String get conversationYourTurn => 'Your turn — tap 🎤 and speak';
+
+  @override
+  String get conversationHint => 'Hint';
+
+  @override
+  String get conversationRepeat => 'Say again';
+
+  @override
+  String get conversationSlower => 'Slower';
+
+  @override
+  String get conversationCorrect => 'Correct this';
+
+  @override
+  String get conversationChangeTopic => 'New topic';
+
+  @override
+  String get conversationHintSuggestion => 'Stuck? Try a hint.';
+
+  @override
+  String get conversationSubtitlesHidden =>
+      'Subtitles hidden — focus on listening and speaking.';
+
+  @override
+  String get conversationShowSubtitles => 'Show subtitles';
+
+  @override
+  String get conversationHideSubtitles => 'Hide subtitles';
+
+  @override
+  String get conversationInput => 'You can also type in English';
+
+  @override
+  String get conversationSend => 'Send';
+
+  @override
+  String get conversationNeedsConnection => 'Connect an AI to start talking.';
+
+  @override
+  String get conversationOpenSettings => 'Connect in Settings';
+
+  @override
+  String get conversationEndedTitle => 'Conversation finished';
+
+  @override
+  String conversationEndedSummary(int minutes, int seconds, int turns) {
+    return 'Practice time ${minutes}m ${seconds}s · your answers: $turns';
+  }
+
+  @override
+  String get conversationEndedNext =>
+      'Corrections and review are coming in the next update.';
+
+  @override
+  String get conversationBackHome => 'Home';
 }

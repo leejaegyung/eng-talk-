@@ -679,6 +679,156 @@ abstract class AppLocalizations {
   /// In ko, this message translates to:
   /// **'설정'**
   String get homeSettings;
+
+  /// No description provided for @conversationModeDaily.
+  ///
+  /// In ko, this message translates to:
+  /// **'일상 대화'**
+  String get conversationModeDaily;
+
+  /// No description provided for @conversationTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'{mode} · {level}'**
+  String conversationTitle(String mode, String level);
+
+  /// No description provided for @conversationEnd.
+  ///
+  /// In ko, this message translates to:
+  /// **'종료'**
+  String get conversationEnd;
+
+  /// No description provided for @conversationConnecting.
+  ///
+  /// In ko, this message translates to:
+  /// **'연결 중…'**
+  String get conversationConnecting;
+
+  /// No description provided for @conversationListening.
+  ///
+  /// In ko, this message translates to:
+  /// **'듣는 중… 말을 멈추면 보내요'**
+  String get conversationListening;
+
+  /// No description provided for @conversationThinking.
+  ///
+  /// In ko, this message translates to:
+  /// **'생각 중…'**
+  String get conversationThinking;
+
+  /// No description provided for @conversationAiSpeaking.
+  ///
+  /// In ko, this message translates to:
+  /// **'AI가 말하는 중 — 🎤를 누르면 끊고 말할 수 있어요'**
+  String get conversationAiSpeaking;
+
+  /// No description provided for @conversationYourTurn.
+  ///
+  /// In ko, this message translates to:
+  /// **'내 차례예요. 🎤를 누르고 말해보세요'**
+  String get conversationYourTurn;
+
+  /// No description provided for @conversationHint.
+  ///
+  /// In ko, this message translates to:
+  /// **'힌트'**
+  String get conversationHint;
+
+  /// No description provided for @conversationRepeat.
+  ///
+  /// In ko, this message translates to:
+  /// **'다시 말해줘'**
+  String get conversationRepeat;
+
+  /// No description provided for @conversationSlower.
+  ///
+  /// In ko, this message translates to:
+  /// **'천천히'**
+  String get conversationSlower;
+
+  /// No description provided for @conversationCorrect.
+  ///
+  /// In ko, this message translates to:
+  /// **'이 문장 교정'**
+  String get conversationCorrect;
+
+  /// No description provided for @conversationChangeTopic.
+  ///
+  /// In ko, this message translates to:
+  /// **'주제 변경'**
+  String get conversationChangeTopic;
+
+  /// No description provided for @conversationHintSuggestion.
+  ///
+  /// In ko, this message translates to:
+  /// **'막히셨나요? 힌트를 눌러보세요.'**
+  String get conversationHintSuggestion;
+
+  /// No description provided for @conversationSubtitlesHidden.
+  ///
+  /// In ko, this message translates to:
+  /// **'자막을 숨겼어요. 듣고 말하는 데 집중해 보세요.'**
+  String get conversationSubtitlesHidden;
+
+  /// No description provided for @conversationShowSubtitles.
+  ///
+  /// In ko, this message translates to:
+  /// **'자막 보기'**
+  String get conversationShowSubtitles;
+
+  /// No description provided for @conversationHideSubtitles.
+  ///
+  /// In ko, this message translates to:
+  /// **'자막 숨기기'**
+  String get conversationHideSubtitles;
+
+  /// No description provided for @conversationInput.
+  ///
+  /// In ko, this message translates to:
+  /// **'영어로 입력해도 돼요'**
+  String get conversationInput;
+
+  /// No description provided for @conversationSend.
+  ///
+  /// In ko, this message translates to:
+  /// **'보내기'**
+  String get conversationSend;
+
+  /// No description provided for @conversationNeedsConnection.
+  ///
+  /// In ko, this message translates to:
+  /// **'대화하려면 AI 연결이 필요해요.'**
+  String get conversationNeedsConnection;
+
+  /// No description provided for @conversationOpenSettings.
+  ///
+  /// In ko, this message translates to:
+  /// **'설정에서 연결하기'**
+  String get conversationOpenSettings;
+
+  /// No description provided for @conversationEndedTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'대화를 마쳤어요'**
+  String get conversationEndedTitle;
+
+  /// No description provided for @conversationEndedSummary.
+  ///
+  /// In ko, this message translates to:
+  /// **'연습 시간 {minutes}분 {seconds}초 · 내 답변 {turns}회'**
+  String conversationEndedSummary(int minutes, int seconds, int turns);
+
+  /// No description provided for @conversationEndedNext.
+  ///
+  /// In ko, this message translates to:
+  /// **'교정과 복습은 다음 업데이트에서 추가돼요.'**
+  String get conversationEndedNext;
+
+  /// No description provided for @conversationBackHome.
+  ///
+  /// In ko, this message translates to:
+  /// **'홈으로'**
+  String get conversationBackHome;
 }
 
 class _AppLocalizationsDelegate

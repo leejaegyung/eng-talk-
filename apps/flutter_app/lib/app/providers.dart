@@ -32,6 +32,9 @@ final credentialVaultProvider = Provider<CredentialVault>(
   (ref) => SecureStorageVault(),
 );
 
+/// Wall clock, overridable in tests.
+final clockProvider = Provider<DateTime Function()>((ref) => DateTime.now);
+
 final appDatabaseProvider = Provider<AppDatabase>((ref) {
   final db = AppDatabase.open();
   ref.onDispose(db.close);

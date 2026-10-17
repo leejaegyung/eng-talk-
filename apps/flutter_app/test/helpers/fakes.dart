@@ -132,10 +132,14 @@ Uint8List pcmChunk(int sample) {
 
 class FakeSpeechOutput implements SpeechOutput {
   final spoken = <String>[];
+  final slow = <bool>[];
   int stops = 0;
 
   @override
-  Future<void> speak(String text) async => spoken.add(text);
+  Future<void> speak(String text, {bool slow = false}) async {
+    spoken.add(text);
+    this.slow.add(slow);
+  }
 
   @override
   Future<void> stop() async => stops++;

@@ -1,7 +1,8 @@
 /// Speaks text with an on-device voice (free path, ADR-011).
 abstract interface class SpeechOutput {
-  /// Completes when speaking finishes or [stop] is called.
-  Future<void> speak(String text);
+  /// Completes when speaking finishes or [stop] is called. [slow] lowers
+  /// the speaking rate for the "slower" action.
+  Future<void> speak(String text, {bool slow = false});
 
   Future<void> stop();
 }

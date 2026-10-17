@@ -340,4 +340,83 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get homeSettings => '설정';
+
+  @override
+  String get conversationModeDaily => '일상 대화';
+
+  @override
+  String conversationTitle(String mode, String level) {
+    return '$mode · $level';
+  }
+
+  @override
+  String get conversationEnd => '종료';
+
+  @override
+  String get conversationConnecting => '연결 중…';
+
+  @override
+  String get conversationListening => '듣는 중… 말을 멈추면 보내요';
+
+  @override
+  String get conversationThinking => '생각 중…';
+
+  @override
+  String get conversationAiSpeaking => 'AI가 말하는 중 — 🎤를 누르면 끊고 말할 수 있어요';
+
+  @override
+  String get conversationYourTurn => '내 차례예요. 🎤를 누르고 말해보세요';
+
+  @override
+  String get conversationHint => '힌트';
+
+  @override
+  String get conversationRepeat => '다시 말해줘';
+
+  @override
+  String get conversationSlower => '천천히';
+
+  @override
+  String get conversationCorrect => '이 문장 교정';
+
+  @override
+  String get conversationChangeTopic => '주제 변경';
+
+  @override
+  String get conversationHintSuggestion => '막히셨나요? 힌트를 눌러보세요.';
+
+  @override
+  String get conversationSubtitlesHidden => '자막을 숨겼어요. 듣고 말하는 데 집중해 보세요.';
+
+  @override
+  String get conversationShowSubtitles => '자막 보기';
+
+  @override
+  String get conversationHideSubtitles => '자막 숨기기';
+
+  @override
+  String get conversationInput => '영어로 입력해도 돼요';
+
+  @override
+  String get conversationSend => '보내기';
+
+  @override
+  String get conversationNeedsConnection => '대화하려면 AI 연결이 필요해요.';
+
+  @override
+  String get conversationOpenSettings => '설정에서 연결하기';
+
+  @override
+  String get conversationEndedTitle => '대화를 마쳤어요';
+
+  @override
+  String conversationEndedSummary(int minutes, int seconds, int turns) {
+    return '연습 시간 $minutes분 $seconds초 · 내 답변 $turns회';
+  }
+
+  @override
+  String get conversationEndedNext => '교정과 복습은 다음 업데이트에서 추가돼요.';
+
+  @override
+  String get conversationBackHome => '홈으로';
 }

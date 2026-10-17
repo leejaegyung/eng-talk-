@@ -10,4 +10,7 @@ abstract final class SettingKeys {
 
   /// Read AI replies aloud by default ('true'/'false'; unset = true).
   static const speakReplies = 'voice.speak_replies';
+
+  /// [LearnerLevel] name; unset until the placement assessment (slice D).
+  static const learnerLevel = 'learner.level';
 }

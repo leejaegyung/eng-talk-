@@ -31,8 +31,7 @@ class HomeScreen extends StatelessWidget {
             ),
             const SizedBox(height: 24),
             FilledButton.icon(
-              // Wired to the conversation flow in P1-A5.
-              onPressed: null,
+              onPressed: () => context.push(AppRoutes.conversation),
               icon: const Icon(Icons.mic),
               label: Text(l10n.homeStartButton),
             ),
