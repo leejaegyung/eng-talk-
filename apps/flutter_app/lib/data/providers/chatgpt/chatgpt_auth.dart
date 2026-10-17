@@ -66,7 +66,7 @@ class ChatGptAuth implements ProviderAccount {
   Future<void> signIn() async {
     final registration = await _readJson(registrationRef);
     final savedClientId = registration?['client_id'] as String?;
-    final hostId = registration?['host_id'] as String? ?? _randomString(32);
+    final hostId = registration?['host_id'] as String? ?? _newHostId();
     final verifier = _randomString(64);
     final state = _randomString(32);
     final nonce = _randomString(32);
@@ -319,6 +319,17 @@ class ChatGptAuth implements ProviderAccount {
         (_) => chars.codeUnitAt(_random.nextInt(chars.length)),
       ),
     );
+  }
+
+  /// Stable per-install host id in the `urn:uuid:` form the docs show; any
+  /// other shape is rejected as `invalid_authorize_request`.
+  String _newHostId() {
+    final b = List<int>.generate(16, (_) => _random.nextInt(256));
+    b[6] = (b[6] & 0x0f) | 0x40; // version 4
+    b[8] = (b[8] & 0x3f) | 0x80; // RFC 4122 variant
+    final hex = [for (final x in b) x.toRadixString(16).padLeft(2, '0')].join();
+    return 'urn:uuid:${hex.substring(0, 8)}-${hex.substring(8, 12)}-'
+        '${hex.substring(12, 16)}-${hex.substring(16, 20)}-${hex.substring(20)}';
   }
 
   static String _challenge(String verifier) => base64Url

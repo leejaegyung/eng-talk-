@@ -129,7 +129,15 @@ void main() {
         Uri.parse(q['redirect_uri']!).replace(port: 0).toString(),
         'http://127.0.0.1:0/auth/callback',
       );
-      expect(q['ext_agent_host_id'], isNotEmpty);
+      expect(
+        q['ext_agent_host_id'],
+        matches(
+          RegExp(
+            r'^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}'
+            r'-[0-9a-f]{12}$',
+          ),
+        ),
+      );
 
       final form = openAi.tokenForms.single;
       expect(form['grant_type'], 'authorization_code');
