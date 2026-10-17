@@ -4,7 +4,7 @@
 
 **현재 Phase:** 1 (MVP) — Phase 0은 Windows 실행 확인만 남음
 **대상 플랫폼:** macOS·Windows 데스크톱 (Mac에서 개발), Galaxy는 APK 배포 후 확인 (ADR-009)
-**다음 태스크:** P1-A3 PromptComposer → A4 정책 → A5 대화 화면 → A6 피드백 → A7 결과·저장
+**다음 태스크:** P1-A4 정책 → A5 대화 화면 → A6 피드백 → A7 결과·저장
 **과금 방향:** ADR-011 — ChatGPT 구독(추가 요금 없음) 기본, OpenAI API 키는 선택
 **Phase 0 순서:** T7 → T4 → T5 → T3 → T6(키·과금, 실행 전 확인). T2는 사용자 Windows 실행 확인 대기
 
@@ -25,6 +25,7 @@
 | P0-T9 OS 음성 (무료) | ✅ | domain `SpeechInput`/`SpeechOutput`, data `OsSpeechInput`(speech_to_text, en_US dictation, 3초 멈춤=턴 종료)·`OsSpeechOutput`(flutter_tts en-US, 완료 대기). ChatGPT 테스트 화면에 🎤·답변 읽어주기·끼어들기(말하면 읽기 중단). macOS TTS 실기 integration_test 통과. v0.2.0 릴리스. Galaxy 로그인 → '네트워크 연결 불가': 토큰 교환이 브라우저가 앞에 있을 때(앱 백그라운드) 실행돼 차단된 것으로 추정 → 모바일은 앱 복귀 후 교환 + 완료 페이지에 '앱으로 돌아가기'(speakingcoach://signed-in) → v0.2.1. **✅ 사용자 Galaxy에서 로그인·음성 대화 확인(2026-10-17)**. Windows STT(베타)는 T2와 함께 |
 | P1-A1 앱 셸·온보딩 | ✅ | `app_settings` 테이블(스키마 v2, stepByStep 마이그레이션 + 스냅샷 테스트), `SettingsStore`(domain)·`DriftSettingsStore`, `OnboardingGate` + router redirect(splash → onboarding/home, 읽기 실패 시 온보딩). S01 최소판: 소개 → 데이터 처리 안내(텍스트 전송, OS 음성 인식 서버 처리 가능, 녹음 미저장, 로컬 기록, 보안 저장소) → ChatGPT 연결 또는 나중에. 테스트: redirect 4 + 온보딩 흐름 위젯 5 + 저장소 2, macOS 실제 DB 재열기 integration_test 통과. 언어 선택·마이크 테스트·진단은 슬라이스 D |
 | P1-A2 설정 | ✅ | S02/S11 최소판: ChatGPT 연결 상태·로그인/로그아웃·연결 확인(자동 선택 모델 표시), 실패 4종(로그인 필요/구독 불가/한도/네트워크) 메시지 위젯 테스트, 답변 읽어주기 기본값 저장(`voice.speak_replies`), 데이터 처리 안내(온보딩과 공유 위젯), 오픈소스 라이선스. 홈 ⚙️. API 키 입력은 ADR-011로 선택 항목 → 후속 |
+| P1-A3 PromptComposer | ✅ | `domain/conversation/prompt_composer.dart`(버전 `coach-v1`) + `domain/learning/LearnerLevel`. 계층: 마스터(spec §8.2) → SESSION RULES(모드 7종·레벨 5종·정책 노트) → `<learner_context>`(주제·목표·역할·복습 표현, 따옴표 한 줄·80자 제한·태그/중괄호 무력화) → 대화(시스템 메시지 제거, 최근 N개, 잘리면 user부터). 테스트 16. 프롬프트는 계획의 packages/prompt_assets 대신 domain 상수로 둠(앱 하나뿐이라 패키지 분리 이득 없음) |
 
 ## 알려진 이슈
 - OS 음성 인식은 플랫폼에 따라 Apple/Google/Microsoft 서버에서 처리될 수 있음(앱은 원본을 저장하지 않음) → 온보딩 고지(P1)에 포함. OS STT 경로는 PCM을 받지 않아 VAD 발화 지표 미측정 → P1-B2에서 onSoundLevelChange 활용 검토
