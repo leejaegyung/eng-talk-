@@ -79,15 +79,19 @@ final chatGptAccountProvider = Provider<ProviderAccount>(
   (ref) => ref.watch(_chatGptAuthProvider),
 );
 
-final chatGptLlmProvider = Provider<LlmProvider>((ref) {
+final _chatGptPlanClientProvider = Provider<ChatGptPlanClient>((ref) {
   final auth = ref.watch(_chatGptAuthProvider);
   final client = ChatGptPlanClient(accessToken: auth.accessToken);
   ref.onDispose(client.close);
   return client;
 });
 
+final chatGptLlmProvider = Provider<LlmProvider>(
+  (ref) => ref.watch(_chatGptPlanClientProvider),
+);
+
 /// Picks the chat model offered to the signed-in ChatGPT account.
 final chatGptModelSelectorProvider = Provider<Future<String> Function()>((ref) {
-  final llm = ref.watch(chatGptLlmProvider);
-  return () async => chatgpt.selectChatGptPlanModel(await llm.listModels());
+  final client = ref.watch(_chatGptPlanClientProvider);
+  return () async => chatgpt.selectChatGptPlanModel(await client.planModels());
 });

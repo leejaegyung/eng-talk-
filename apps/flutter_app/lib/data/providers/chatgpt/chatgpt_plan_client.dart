@@ -6,6 +6,7 @@ import 'package:http/http.dart' as http;
 
 import '../../../domain/providers/ai_provider.dart';
 import '../../../domain/providers/provider_failure.dart';
+import 'provider_catalog.dart';
 
 /// GPT through the user's ChatGPT plan (ADR-011): `POST /v1/responses` with
 /// the Sign in with ChatGPT access token. Plan usage requires `stream: true`
@@ -24,17 +25,29 @@ class ChatGptPlanClient implements LlmProvider {
   void close() => _client.close();
 
   @override
-  Future<List<String>> listModels() async {
+  Future<List<String>> listModels() async => [
+    for (final m in await planModels())
+      if (m.listed) m.slug,
+  ];
+
+  /// The account's models with the metadata used to choose one. Accepts the
+  /// plan format (`models`/`slug`) and the API-key format (`data`/`id`).
+  Future<List<PlanModel>> planModels() async {
     final res = await _send(http.Request('GET', _base.resolve('models')));
     final json = jsonDecode(await res.stream.bytesToString());
-    final data = json is Map ? json['data'] : null;
+    if (json is! Map) return const [];
+    final entries = json['models'] ?? json['data'];
     return [
-      if (data is List)
-        for (final m in data)
-          if (m is Map &&
-              m['id'] is String &&
-              (m['visibility'] == null || m['visibility'] == 'list'))
-            m['id'] as String,
+      if (entries is List)
+        for (final m in entries)
+          if (m is Map && (m['slug'] ?? m['id']) is String)
+            PlanModel(
+              slug: (m['slug'] ?? m['id']) as String,
+              priority: (m['priority'] as num?)?.toInt() ?? 1 << 30,
+              description: m['description'] as String? ?? '',
+              listed: m['visibility'] == null || m['visibility'] == 'list',
+              supportedInApi: m['supported_in_api'] != false,
+            ),
     ];
   }
 
@@ -62,6 +75,8 @@ class ChatGptPlanClient implements LlmProvider {
         ],
         'stream': true,
         'store': false,
+        // Turn-taking needs a fast first token more than deep reasoning.
+        'reasoning': {'effort': 'low'},
       });
 
     final res = await _send(req);

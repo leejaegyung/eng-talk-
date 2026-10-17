@@ -188,27 +188,92 @@ void main() {
     });
   });
 
-  test('listModels keeps listed models in API order', () async {
+  test('planModels parses the plan format', () async {
+    final models = await client(
+      200,
+      jsonEncode({
+        'models': [
+          {
+            'slug': 'big',
+            'priority': 1,
+            'description': 'Workhorse model.',
+            'visibility': 'list',
+            'supported_in_api': true,
+          },
+          {'slug': 'hidden', 'priority': 2, 'visibility': 'hide'},
+        ],
+      }),
+    ).planModels();
+    expect(models.map((m) => m.slug), ['big', 'hidden']);
+    expect(models.first.priority, 1);
+    expect(models.first.description, 'Workhorse model.');
+    expect(models.last.listed, isFalse);
+    expect(requests.single.method, 'GET');
+  });
+
+  test('listModels returns listed slugs; API-key format also works', () async {
     final models = await client(
       200,
       jsonEncode({
         'data': [
           {'id': 'z-model', 'visibility': 'list'},
           {'id': 'hidden', 'visibility': 'hide'},
-          {'id': 'a-model', 'visibility': 'list'},
+          {'id': 'a-model'},
         ],
       }),
     ).listModels();
     expect(models, ['z-model', 'a-model']);
-    expect(requests.single.method, 'GET');
   });
 
   group('selectChatGptPlanModel', () {
-    test('uses the first model offered to the account', () {
-      expect(selectChatGptPlanModel(['first', 'second']), 'first');
+    const big = PlanModel(slug: 'big', priority: 1, description: 'Workhorse.');
+    const fastNew = PlanModel(
+      slug: 'fast-new',
+      priority: 4,
+      description: 'Fast and affordable model for easier tasks.',
+    );
+    const fastOld = PlanModel(
+      slug: 'fast-old',
+      priority: 9,
+      description: 'Older fast and efficient model.',
+    );
+
+    test('prefers the highest-priority model described as fast', () {
+      expect(selectChatGptPlanModel([big, fastOld, fastNew]), 'fast-new');
     });
 
-    test('no models → modelUnavailable', () {
+    test('falls back to the highest-priority usable model', () {
+      expect(
+        selectChatGptPlanModel([
+          const PlanModel(slug: 'second', priority: 2),
+          big,
+        ]),
+        'big',
+      );
+    });
+
+    test('skips hidden and API-unsupported models', () {
+      expect(
+        selectChatGptPlanModel([
+          const PlanModel(
+            slug: 'h',
+            priority: 0,
+            description: 'fast',
+            listed: false,
+          ),
+          const PlanModel(
+            slug: 'n',
+            priority: 0,
+            description: 'fast',
+            supportedInApi: false,
+          ),
+          big,
+        ]),
+        'big',
+      );
+    });
+
+    test('no usable models → modelUnavailable', () {
       expect(
         () => selectChatGptPlanModel([]),
         throwsA(

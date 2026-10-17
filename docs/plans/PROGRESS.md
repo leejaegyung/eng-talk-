@@ -21,7 +21,7 @@
 | P0-T5 Drift | ✅ | 6개 테이블 v1, FK·cascade, enum은 domain. CRUD/cascade/FK/키 컬럼 금지(S1) 테스트 + validateDatabaseSchema + 스냅샷 v1(make-migrations) |
 | P0-T6 OpenAI 왕복 (API 키, 선택 경로) | 🔄 | 구현: domain `LlmProvider`/`VoiceProvider`/`ProviderFailure`, `data/providers/openai`(키는 요청마다 vault에서 읽음, SSE 스트리밍, usage 토큰 수집, 오류 정규화), provider_catalog(라이브 모델 목록과 대조해 선택), 홈 → "음성 대화 테스트(개발용)"(키 입력·연결 테스트·말하기·구간별 지연·p50/p95·측정 사용량). 테스트: MockClient 18 + 컨트롤러 10 + 위젯 5. 실제 OpenAI에 가짜 키 → 401 → invalidKey 확인(과금 없음). **남음: 사용자 키로 실제 왕복 10회 측정** |
 | P0-T7 상태 머신 | ✅ | `domain/conversation/` 순수 Dart. 시퀀스(seq)+턴 ID로 지연 응답 거부, barge-in 시 `interruptsAssistant`, 연결 끊김→paused(connectionLost)→재연결. 테스트 31개 |
-| P0-T8 ChatGPT 구독 연결 | 🔄 | Sign in with ChatGPT(오픈소스 plan usage): dynamic_agent_client 자가 등록, PKCE, 루프백 127.0.0.1 콜백, 토큰은 vault만, 갱신 직렬화·종료 오류만 세션 삭제, 로그아웃 시 revoke. `/v1/responses`(stream, store=false, instructions). 오류 3종 추가(signInRequired/planUsageLimit/planNotEligible). 홈 → "ChatGPT 대화 테스트". 테스트: auth 14 + client 12 + controller 10. curl은 Cloudflare 403(브라우저는 통과 예상) → **사용자 실로그인 확인 필요** |
+| P0-T8 ChatGPT 구독 연결 | 🔄 | Sign in with ChatGPT(오픈소스 plan usage): dynamic_agent_client 자가 등록, PKCE, 루프백 127.0.0.1 콜백, 토큰은 vault만, 갱신 직렬화·종료 오류만 세션 삭제, 로그아웃 시 revoke. `/v1/responses`(stream, store=false, instructions). 오류 3종 추가(signInRequired/planUsageLimit/planNotEligible). 홈 → "ChatGPT 대화 테스트". 테스트: auth 14 + client 12 + controller 10. **사용자 실로그인 성공(2026-10-17)**. 실제 응답 확인: plan 모델 목록은 `{models:[{slug,priority,description,visibility,supported_in_api}]}` 형식 → 설명에 'fast'인 최상위 우선순위 모델 자동 선택, reasoning effort low. 첫 토큰 1.9s / 전체 2.3s(1회). 수정 이력: ext_agent_host_id는 `urn:uuid:` 형식 필수 |
 | P0-T9 OS 음성 (무료) | ⬜ | flutter_tts(4플랫폼), speech_to_text(Windows 베타) |
 
 ## 알려진 이슈
