@@ -135,15 +135,17 @@ class DriftSessionRepository implements SessionRepository {
   }
 
   Future<SessionSummary> _summary(Session s) async {
-    final userTurns =
+    final count = _db.turns.id.count();
+    final words = _db.turns.wordCount.sum();
+    final (userTurns, userWords) =
         await (_db.selectOnly(_db.turns)
-              ..addColumns([_db.turns.id.count()])
+              ..addColumns([count, words])
               ..where(
                 _db.turns.sessionId.equals(s.id) &
                     _db.turns.speaker.equalsValue(Speaker.user) &
                     _db.turns.isRequest.equals(false),
               ))
-            .map((r) => r.read(_db.turns.id.count()) ?? 0)
+            .map((r) => (r.read(count) ?? 0, r.read(words) ?? 0))
             .getSingle();
     final m = await (_db.select(
       _db.speechMetrics,
@@ -164,6 +166,10 @@ class DriftSessionRepository implements SessionRepository {
       endedAt: s.endedAt,
       status: s.status,
       userTurns: userTurns,
+      userWords: userWords,
+      nextTopic: s.feedbackJson == null
+          ? null
+          : decodeFeedback(s.feedbackJson!).nextTopic,
       stats: m == null
           ? null
           : SpeechStats(

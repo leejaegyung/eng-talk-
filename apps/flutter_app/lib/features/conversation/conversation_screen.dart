@@ -6,7 +6,9 @@ import '../../app/l10n/gen/app_localizations.dart';
 import '../../app/router.dart';
 import '../../domain/conversation/conversation_policy.dart';
 import '../../domain/conversation/session_enums.dart';
+import '../../domain/conversation/session_types.dart';
 import '../common/failure_text.dart';
+import '../common/mode_text.dart';
 import 'conversation_controller.dart';
 
 /// S06. No scores or mistake counters here (spec §3.3).
@@ -39,13 +41,16 @@ class _ConversationScreenState extends ConsumerState<ConversationScreen> {
     final ctrl = ref.read(conversationProvider.notifier);
     final theme = Theme.of(context);
 
-    final modeName = switch (s.mode) {
-      SessionMode.daily => l10n.conversationModeDaily,
-      _ => s.mode.name,
-    };
+    // Ended and saved → result (S08).
+    ref.listen(conversationProvider, (prev, next) {
+      final id = next.sessionId;
+      if (prev?.ended == false && next.ended && id != null) {
+        context.pushReplacement(AppRoutes.result(id));
+      }
+    });
 
-    Widget body;
-    if (s.signedIn == false && !s.ended) {
+    final Widget body;
+    if (s.signedIn == false) {
       body = _Centered(
         children: [
           Text(l10n.conversationNeedsConnection),
@@ -57,39 +62,57 @@ class _ConversationScreenState extends ConsumerState<ConversationScreen> {
         ],
       );
     } else if (s.ended) {
-      final userTurns = s.turns
-          .where((t) => t.speaker == Speaker.user && !t.isRequest)
-          .length;
       body = _Centered(
         children: [
-          Text(
-            l10n.conversationEndedTitle,
-            style: theme.textTheme.headlineSmall,
+          const CircularProgressIndicator(),
+          Text(l10n.conversationSaving),
+        ],
+      );
+    } else if (s.paused) {
+      body = _Centered(
+        children: [
+          Icon(
+            s.connectionLost ? Icons.wifi_off : Icons.pause_circle_outline,
+            size: 56,
+            color: theme.colorScheme.outline,
           ),
           Text(
-            l10n.conversationEndedSummary(
-              s.elapsed.inMinutes,
-              s.elapsed.inSeconds % 60,
-              userTurns,
+            s.connectionLost
+                ? l10n.conversationConnectionLost
+                : l10n.conversationPaused,
+            style: theme.textTheme.titleMedium,
+            textAlign: TextAlign.center,
+          ),
+          if (s.connectionLost) ...[
+            FilledButton(
+              onPressed: ctrl.resume,
+              child: Text(l10n.conversationReconnect),
             ),
-          ),
-          Text(l10n.conversationEndedNext, style: theme.textTheme.bodySmall),
-          FilledButton(
-            onPressed: () => context.go(AppRoutes.home),
-            child: Text(l10n.conversationBackHome),
-          ),
+            OutlinedButton(
+              onPressed: ctrl.continueAsText,
+              child: Text(l10n.conversationContinueText),
+            ),
+            TextButton(
+              onPressed: ctrl.end,
+              child: Text(l10n.conversationSaveAndEnd),
+            ),
+          ] else
+            FilledButton(
+              onPressed: ctrl.resume,
+              child: Text(l10n.conversationResume),
+            ),
         ],
       );
     } else {
-      final status = switch (s) {
-        ConversationState(active: false) => l10n.conversationConnecting,
-        ConversationState(listening: true) =>
+      final status = switch (s.phase) {
+        SessionPhase.userSpeaking =>
           s.partial.isEmpty ? l10n.conversationListening : s.partial,
-        ConversationState(streaming: true) => l10n.conversationThinking,
-        ConversationState(speaking: true) => l10n.conversationAiSpeaking,
-        _ => l10n.conversationYourTurn,
+        SessionPhase.processing => l10n.conversationThinking,
+        SessionPhase.aiSpeaking => l10n.conversationAiSpeaking,
+        SessionPhase.listening => l10n.conversationYourTurn,
+        _ => l10n.conversationConnecting,
       };
-      final canAct = s.active && !s.busy;
+      final canAct = s.learnerCanAct;
       body = Column(
         children: [
           Expanded(
@@ -182,12 +205,16 @@ class _ConversationScreenState extends ConsumerState<ConversationScreen> {
                 IconButton.filled(
                   iconSize: 32,
                   tooltip: l10n.chatGptLabTalk,
-                  onPressed: !s.active || s.streaming
-                      ? null
-                      : s.listening
+                  onPressed: s.phase == SessionPhase.userSpeaking
                       ? ctrl.stopListening
-                      : ctrl.talk,
-                  icon: Icon(s.listening ? Icons.stop : Icons.mic),
+                      : canAct
+                      ? ctrl.talk
+                      : null,
+                  icon: Icon(
+                    s.phase == SessionPhase.userSpeaking
+                        ? Icons.stop
+                        : Icons.mic,
+                  ),
                 ),
                 const SizedBox(width: 12),
                 Expanded(
@@ -213,39 +240,54 @@ class _ConversationScreenState extends ConsumerState<ConversationScreen> {
       );
     }
 
-    final remaining = s.length - s.elapsed;
+    final overTime = s.elapsed > s.setup.length;
+    final live = s.active || s.paused;
     return Scaffold(
       appBar: AppBar(
-        title: Text(l10n.conversationTitle(modeName, s.level.label)),
+        title: Text(
+          l10n.conversationTitle(
+            modeName(l10n, s.setup.mode),
+            s.setup.level.label,
+          ),
+        ),
         actions: [
-          if (s.active) ...[
+          if (live) ...[
             Center(
               child: Text(
                 _clock(s.elapsed),
                 style: theme.textTheme.titleMedium?.copyWith(
-                  color: remaining.isNegative ? theme.colorScheme.error : null,
+                  color: overTime ? theme.colorScheme.error : null,
                 ),
               ),
             ),
-            IconButton(
-              tooltip: s.subtitles
-                  ? l10n.conversationHideSubtitles
-                  : l10n.conversationShowSubtitles,
-              onPressed: ctrl.toggleSubtitles,
-              icon: Icon(
-                s.subtitles
-                    ? Icons.closed_caption_outlined
-                    : Icons.closed_caption_disabled_outlined,
+            if (s.active) ...[
+              IconButton(
+                tooltip: s.subtitles
+                    ? l10n.conversationHideSubtitles
+                    : l10n.conversationShowSubtitles,
+                onPressed: ctrl.toggleSubtitles,
+                icon: Icon(
+                  s.subtitles
+                      ? Icons.closed_caption_outlined
+                      : Icons.closed_caption_disabled_outlined,
+                ),
               ),
-            ),
+              IconButton(
+                tooltip: l10n.conversationPause,
+                onPressed: ctrl.pause,
+                icon: const Icon(Icons.pause),
+              ),
+            ],
             TextButton(onPressed: ctrl.end, child: Text(l10n.conversationEnd)),
           ],
         ],
       ),
-      body: Center(
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 720),
-          child: body,
+      body: SafeArea(
+        child: Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 720),
+            child: body,
+          ),
         ),
       ),
     );

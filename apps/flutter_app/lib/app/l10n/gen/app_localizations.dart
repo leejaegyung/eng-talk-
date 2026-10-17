@@ -806,29 +806,761 @@ abstract class AppLocalizations {
   /// **'설정에서 연결하기'**
   String get conversationOpenSettings;
 
-  /// No description provided for @conversationEndedTitle.
-  ///
-  /// In ko, this message translates to:
-  /// **'대화를 마쳤어요'**
-  String get conversationEndedTitle;
-
-  /// No description provided for @conversationEndedSummary.
-  ///
-  /// In ko, this message translates to:
-  /// **'연습 시간 {minutes}분 {seconds}초 · 내 답변 {turns}회'**
-  String conversationEndedSummary(int minutes, int seconds, int turns);
-
-  /// No description provided for @conversationEndedNext.
-  ///
-  /// In ko, this message translates to:
-  /// **'교정과 복습은 다음 업데이트에서 추가돼요.'**
-  String get conversationEndedNext;
-
   /// No description provided for @conversationBackHome.
   ///
   /// In ko, this message translates to:
   /// **'홈으로'**
   String get conversationBackHome;
+
+  /// No description provided for @modeTheme.
+  ///
+  /// In ko, this message translates to:
+  /// **'테마 대화'**
+  String get modeTheme;
+
+  /// No description provided for @modeRoleplay.
+  ///
+  /// In ko, this message translates to:
+  /// **'상황 역할극'**
+  String get modeRoleplay;
+
+  /// No description provided for @modeRandom.
+  ///
+  /// In ko, this message translates to:
+  /// **'랜덤 스피킹'**
+  String get modeRandom;
+
+  /// No description provided for @modeStorytelling.
+  ///
+  /// In ko, this message translates to:
+  /// **'경험·이야기'**
+  String get modeStorytelling;
+
+  /// No description provided for @modeOpinion.
+  ///
+  /// In ko, this message translates to:
+  /// **'의견·토론'**
+  String get modeOpinion;
+
+  /// No description provided for @modeAssessment.
+  ///
+  /// In ko, this message translates to:
+  /// **'레벨 진단'**
+  String get modeAssessment;
+
+  /// No description provided for @modeDailyDesc.
+  ///
+  /// In ko, this message translates to:
+  /// **'하루·취미·경험을 친구처럼 이야기해요'**
+  String get modeDailyDesc;
+
+  /// No description provided for @modeThemeDesc.
+  ///
+  /// In ko, this message translates to:
+  /// **'고른 주제 하나를 깊게 파고들어요'**
+  String get modeThemeDesc;
+
+  /// No description provided for @modeRoleplayDesc.
+  ///
+  /// In ko, this message translates to:
+  /// **'호텔·식당·면접 같은 상황을 연기해요'**
+  String get modeRoleplayDesc;
+
+  /// No description provided for @modeRandomDesc.
+  ///
+  /// In ko, this message translates to:
+  /// **'예상 못 한 질문에 바로 답해봐요'**
+  String get modeRandomDesc;
+
+  /// No description provided for @modeStorytellingDesc.
+  ///
+  /// In ko, this message translates to:
+  /// **'경험을 처음부터 끝까지 길게 말해요'**
+  String get modeStorytellingDesc;
+
+  /// No description provided for @modeOpinionDesc.
+  ///
+  /// In ko, this message translates to:
+  /// **'주장 → 이유 → 예시로 의견을 말해요'**
+  String get modeOpinionDesc;
+
+  /// No description provided for @conversationPaused.
+  ///
+  /// In ko, this message translates to:
+  /// **'일시정지했어요'**
+  String get conversationPaused;
+
+  /// No description provided for @conversationPause.
+  ///
+  /// In ko, this message translates to:
+  /// **'일시정지'**
+  String get conversationPause;
+
+  /// No description provided for @conversationResume.
+  ///
+  /// In ko, this message translates to:
+  /// **'이어하기'**
+  String get conversationResume;
+
+  /// No description provided for @conversationConnectionLost.
+  ///
+  /// In ko, this message translates to:
+  /// **'연결이 끊겼어요. 대화는 저장돼 있어요.'**
+  String get conversationConnectionLost;
+
+  /// No description provided for @conversationReconnect.
+  ///
+  /// In ko, this message translates to:
+  /// **'다시 연결'**
+  String get conversationReconnect;
+
+  /// No description provided for @conversationContinueText.
+  ///
+  /// In ko, this message translates to:
+  /// **'읽어주기 없이 계속'**
+  String get conversationContinueText;
+
+  /// No description provided for @conversationSaveAndEnd.
+  ///
+  /// In ko, this message translates to:
+  /// **'저장하고 끝내기'**
+  String get conversationSaveAndEnd;
+
+  /// No description provided for @conversationSaving.
+  ///
+  /// In ko, this message translates to:
+  /// **'저장 중…'**
+  String get conversationSaving;
+
+  /// No description provided for @resultTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'대화 결과'**
+  String get resultTitle;
+
+  /// No description provided for @resultPracticeTime.
+  ///
+  /// In ko, this message translates to:
+  /// **'연습 시간'**
+  String get resultPracticeTime;
+
+  /// No description provided for @resultAnswers.
+  ///
+  /// In ko, this message translates to:
+  /// **'내 답변'**
+  String get resultAnswers;
+
+  /// No description provided for @resultAnswerCount.
+  ///
+  /// In ko, this message translates to:
+  /// **'{count}회'**
+  String resultAnswerCount(int count);
+
+  /// No description provided for @resultMinSec.
+  ///
+  /// In ko, this message translates to:
+  /// **'{minutes}분 {seconds}초'**
+  String resultMinSec(int minutes, int seconds);
+
+  /// No description provided for @resultUserSpeech.
+  ///
+  /// In ko, this message translates to:
+  /// **'내 발화 (추정)'**
+  String get resultUserSpeech;
+
+  /// No description provided for @resultAiSpeech.
+  ///
+  /// In ko, this message translates to:
+  /// **'AI 발화 (추정)'**
+  String get resultAiSpeech;
+
+  /// No description provided for @resultRatio.
+  ///
+  /// In ko, this message translates to:
+  /// **'내 발화 비율'**
+  String get resultRatio;
+
+  /// No description provided for @resultRatioValue.
+  ///
+  /// In ko, this message translates to:
+  /// **'{percent}% (발화 시간만 기준)'**
+  String resultRatioValue(String percent);
+
+  /// No description provided for @resultEstimateNote.
+  ///
+  /// In ko, this message translates to:
+  /// **'음성 인식 타이밍으로 추정한 값이라 실제와 차이가 있을 수 있어요.'**
+  String get resultEstimateNote;
+
+  /// No description provided for @resultNotMeasured.
+  ///
+  /// In ko, this message translates to:
+  /// **'발화 시간은 🎤로 말하고 \'답변 소리로 듣기\'를 켰을 때만 추정해요.'**
+  String get resultNotMeasured;
+
+  /// No description provided for @resultGenerating.
+  ///
+  /// In ko, this message translates to:
+  /// **'대화 내용으로 피드백을 만드는 중…'**
+  String get resultGenerating;
+
+  /// No description provided for @resultRetry.
+  ///
+  /// In ko, this message translates to:
+  /// **'다시 시도'**
+  String get resultRetry;
+
+  /// No description provided for @resultReduced.
+  ///
+  /// In ko, this message translates to:
+  /// **'피드백을 일부만 만들 수 있었어요.'**
+  String get resultReduced;
+
+  /// No description provided for @resultNoAnswers.
+  ///
+  /// In ko, this message translates to:
+  /// **'답변이 없어서 피드백을 만들지 않았어요.'**
+  String get resultNoAnswers;
+
+  /// No description provided for @resultStrengths.
+  ///
+  /// In ko, this message translates to:
+  /// **'잘한 점'**
+  String get resultStrengths;
+
+  /// No description provided for @resultCorrections.
+  ///
+  /// In ko, this message translates to:
+  /// **'고쳐 말해볼 문장'**
+  String get resultCorrections;
+
+  /// No description provided for @resultNoCorrections.
+  ///
+  /// In ko, this message translates to:
+  /// **'이번 대화에서는 꼭 고칠 문장이 없었어요.'**
+  String get resultNoCorrections;
+
+  /// No description provided for @resultSayAgain.
+  ///
+  /// In ko, this message translates to:
+  /// **'다시 말하기'**
+  String get resultSayAgain;
+
+  /// No description provided for @resultYouSaid.
+  ///
+  /// In ko, this message translates to:
+  /// **'방금 말한 문장: {text}'**
+  String resultYouSaid(String text);
+
+  /// No description provided for @resultListening.
+  ///
+  /// In ko, this message translates to:
+  /// **'듣는 중…'**
+  String get resultListening;
+
+  /// No description provided for @resultExpressions.
+  ///
+  /// In ko, this message translates to:
+  /// **'써볼 만한 표현'**
+  String get resultExpressions;
+
+  /// No description provided for @resultNextTopic.
+  ///
+  /// In ko, this message translates to:
+  /// **'다음 추천 주제'**
+  String get resultNextTopic;
+
+  /// No description provided for @resultTalkAboutIt.
+  ///
+  /// In ko, this message translates to:
+  /// **'이 주제로 대화하기'**
+  String get resultTalkAboutIt;
+
+  /// No description provided for @resultReviewNote.
+  ///
+  /// In ko, this message translates to:
+  /// **'고친 문장은 복습 목록에 추가됐어요.'**
+  String get resultReviewNote;
+
+  /// No description provided for @setupTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'대화 준비'**
+  String get setupTitle;
+
+  /// No description provided for @setupMode.
+  ///
+  /// In ko, this message translates to:
+  /// **'모드'**
+  String get setupMode;
+
+  /// No description provided for @setupLevel.
+  ///
+  /// In ko, this message translates to:
+  /// **'레벨'**
+  String get setupLevel;
+
+  /// No description provided for @setupLevelNote.
+  ///
+  /// In ko, this message translates to:
+  /// **'L1 기초 문장 · L2 친숙한 대화 · L3 상황 대응 · L4 의견 표현 · L5 프리토킹'**
+  String get setupLevelNote;
+
+  /// No description provided for @setupTopic.
+  ///
+  /// In ko, this message translates to:
+  /// **'주제'**
+  String get setupTopic;
+
+  /// No description provided for @setupTopicOptional.
+  ///
+  /// In ko, this message translates to:
+  /// **'주제 (선택)'**
+  String get setupTopicOptional;
+
+  /// No description provided for @setupTopicHint.
+  ///
+  /// In ko, this message translates to:
+  /// **'직접 입력해도 돼요'**
+  String get setupTopicHint;
+
+  /// No description provided for @setupRandomNote.
+  ///
+  /// In ko, this message translates to:
+  /// **'랜덤 모드는 AI가 매번 다른 주제로 즉흥 질문을 해요.'**
+  String get setupRandomNote;
+
+  /// No description provided for @setupScenario.
+  ///
+  /// In ko, this message translates to:
+  /// **'상황'**
+  String get setupScenario;
+
+  /// No description provided for @setupRole.
+  ///
+  /// In ko, this message translates to:
+  /// **'AI 역할'**
+  String get setupRole;
+
+  /// No description provided for @setupSituation.
+  ///
+  /// In ko, this message translates to:
+  /// **'상황 설명'**
+  String get setupSituation;
+
+  /// No description provided for @setupGoal.
+  ///
+  /// In ko, this message translates to:
+  /// **'내 목표'**
+  String get setupGoal;
+
+  /// No description provided for @setupLength.
+  ///
+  /// In ko, this message translates to:
+  /// **'시간'**
+  String get setupLength;
+
+  /// No description provided for @setupMinutes.
+  ///
+  /// In ko, this message translates to:
+  /// **'{minutes}분'**
+  String setupMinutes(int minutes);
+
+  /// No description provided for @setupStart.
+  ///
+  /// In ko, this message translates to:
+  /// **'대화 시작'**
+  String get setupStart;
+
+  /// No description provided for @assessmentTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'레벨 진단'**
+  String get assessmentTitle;
+
+  /// No description provided for @assessmentIntro.
+  ///
+  /// In ko, this message translates to:
+  /// **'다섯 가지 질문에 영어로 답하면 시작 레벨을 추천해 드려요. 5분 정도 걸려요.'**
+  String get assessmentIntro;
+
+  /// No description provided for @assessmentLimit.
+  ///
+  /// In ko, this message translates to:
+  /// **'짧은 진단이라 정확도에 한계가 있어요. 레벨은 언제든 바꿀 수 있어요.'**
+  String get assessmentLimit;
+
+  /// No description provided for @assessmentMicCheck.
+  ///
+  /// In ko, this message translates to:
+  /// **'마이크 확인: 🎤를 누르고 \"Hello, nice to meet you\"라고 말해보세요.'**
+  String get assessmentMicCheck;
+
+  /// No description provided for @assessmentMicHeard.
+  ///
+  /// In ko, this message translates to:
+  /// **'들린 말: {text}'**
+  String assessmentMicHeard(String text);
+
+  /// No description provided for @assessmentMicNothing.
+  ///
+  /// In ko, this message translates to:
+  /// **'아무 말도 들리지 않았어요. 마이크·음성 인식 권한을 확인하거나, 글자로 답해도 돼요.'**
+  String get assessmentMicNothing;
+
+  /// No description provided for @assessmentQuestion.
+  ///
+  /// In ko, this message translates to:
+  /// **'질문 {n} / {total}'**
+  String assessmentQuestion(int n, int total);
+
+  /// No description provided for @assessmentAnswerHint.
+  ///
+  /// In ko, this message translates to:
+  /// **'🎤로 말하거나 영어로 입력하세요'**
+  String get assessmentAnswerHint;
+
+  /// No description provided for @assessmentNext.
+  ///
+  /// In ko, this message translates to:
+  /// **'다음'**
+  String get assessmentNext;
+
+  /// No description provided for @assessmentFinish.
+  ///
+  /// In ko, this message translates to:
+  /// **'결과 보기'**
+  String get assessmentFinish;
+
+  /// No description provided for @assessmentEvaluating.
+  ///
+  /// In ko, this message translates to:
+  /// **'답변을 평가하는 중…'**
+  String get assessmentEvaluating;
+
+  /// No description provided for @assessmentSuggested.
+  ///
+  /// In ko, this message translates to:
+  /// **'추천 레벨: {level}'**
+  String assessmentSuggested(String level);
+
+  /// No description provided for @assessmentRubricNote.
+  ///
+  /// In ko, this message translates to:
+  /// **'AI가 답변 내용(글자)만 보고 평가했어요. 발음과 유창성은 평가하지 않았어요.'**
+  String get assessmentRubricNote;
+
+  /// No description provided for @assessmentRelevance.
+  ///
+  /// In ko, this message translates to:
+  /// **'질문에 맞는 답변'**
+  String get assessmentRelevance;
+
+  /// No description provided for @assessmentSentences.
+  ///
+  /// In ko, this message translates to:
+  /// **'문장 만들기'**
+  String get assessmentSentences;
+
+  /// No description provided for @assessmentVocabulary.
+  ///
+  /// In ko, this message translates to:
+  /// **'어휘 다양성'**
+  String get assessmentVocabulary;
+
+  /// No description provided for @assessmentContinuity.
+  ///
+  /// In ko, this message translates to:
+  /// **'이어 말하기'**
+  String get assessmentContinuity;
+
+  /// No description provided for @assessmentScore.
+  ///
+  /// In ko, this message translates to:
+  /// **'{score} / 5'**
+  String assessmentScore(int score);
+
+  /// No description provided for @assessmentGradingFailed.
+  ///
+  /// In ko, this message translates to:
+  /// **'평가 결과를 읽지 못했어요. 직접 레벨을 골라 주세요.'**
+  String get assessmentGradingFailed;
+
+  /// No description provided for @assessmentPick.
+  ///
+  /// In ko, this message translates to:
+  /// **'다른 레벨로 하려면 고르세요'**
+  String get assessmentPick;
+
+  /// No description provided for @assessmentAccept.
+  ///
+  /// In ko, this message translates to:
+  /// **'이 레벨로 시작'**
+  String get assessmentAccept;
+
+  /// No description provided for @assessmentDone.
+  ///
+  /// In ko, this message translates to:
+  /// **'레벨을 저장했어요.'**
+  String get assessmentDone;
+
+  /// No description provided for @historyTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'학습 기록'**
+  String get historyTitle;
+
+  /// No description provided for @historySearch.
+  ///
+  /// In ko, this message translates to:
+  /// **'주제나 대화 내용으로 검색'**
+  String get historySearch;
+
+  /// No description provided for @historyEmpty.
+  ///
+  /// In ko, this message translates to:
+  /// **'아직 기록이 없어요.'**
+  String get historyEmpty;
+
+  /// No description provided for @historyNoMatch.
+  ///
+  /// In ko, this message translates to:
+  /// **'검색 결과가 없어요.'**
+  String get historyNoMatch;
+
+  /// No description provided for @historyAnswers.
+  ///
+  /// In ko, this message translates to:
+  /// **'답변 {count}회'**
+  String historyAnswers(int count);
+
+  /// No description provided for @historyUnfinished.
+  ///
+  /// In ko, this message translates to:
+  /// **'진행 중'**
+  String get historyUnfinished;
+
+  /// No description provided for @historyDelete.
+  ///
+  /// In ko, this message translates to:
+  /// **'삭제'**
+  String get historyDelete;
+
+  /// No description provided for @historyDeleteConfirm.
+  ///
+  /// In ko, this message translates to:
+  /// **'이 대화 기록을 삭제할까요? 교정·복습 항목도 함께 지워져요.'**
+  String get historyDeleteConfirm;
+
+  /// No description provided for @cancel.
+  ///
+  /// In ko, this message translates to:
+  /// **'취소'**
+  String get cancel;
+
+  /// No description provided for @reviewTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'복습'**
+  String get reviewTitle;
+
+  /// No description provided for @reviewEmpty.
+  ///
+  /// In ko, this message translates to:
+  /// **'지금 복습할 문장이 없어요. 대화를 마치면 고친 문장이 여기에 쌓여요.'**
+  String get reviewEmpty;
+
+  /// No description provided for @reviewIntro.
+  ///
+  /// In ko, this message translates to:
+  /// **'예전에 고친 문장을 소리 내어 다시 말해보세요.'**
+  String get reviewIntro;
+
+  /// No description provided for @reviewDone.
+  ///
+  /// In ko, this message translates to:
+  /// **'말해봤어요'**
+  String get reviewDone;
+
+  /// No description provided for @reviewLater.
+  ///
+  /// In ko, this message translates to:
+  /// **'나중에'**
+  String get reviewLater;
+
+  /// No description provided for @homeHistory.
+  ///
+  /// In ko, this message translates to:
+  /// **'학습 기록'**
+  String get homeHistory;
+
+  /// No description provided for @homeUnfinished.
+  ///
+  /// In ko, this message translates to:
+  /// **'끝나지 않은 대화가 있어요'**
+  String get homeUnfinished;
+
+  /// No description provided for @homeResume.
+  ///
+  /// In ko, this message translates to:
+  /// **'이어서 하기'**
+  String get homeResume;
+
+  /// No description provided for @homeCloseAndSee.
+  ///
+  /// In ko, this message translates to:
+  /// **'끝내고 결과 보기'**
+  String get homeCloseAndSee;
+
+  /// No description provided for @homePlacementTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'레벨 진단부터 해볼까요?'**
+  String get homePlacementTitle;
+
+  /// No description provided for @homePlacementBody.
+  ///
+  /// In ko, this message translates to:
+  /// **'5개 질문으로 시작 레벨을 추천해 드려요 (약 5분).'**
+  String get homePlacementBody;
+
+  /// No description provided for @homePlacementStart.
+  ///
+  /// In ko, this message translates to:
+  /// **'진단 시작'**
+  String get homePlacementStart;
+
+  /// No description provided for @homeToday.
+  ///
+  /// In ko, this message translates to:
+  /// **'오늘 말한 시간 (추정)'**
+  String get homeToday;
+
+  /// No description provided for @homeWeek.
+  ///
+  /// In ko, this message translates to:
+  /// **'최근 7일 (추정)'**
+  String get homeWeek;
+
+  /// No description provided for @homeStreak.
+  ///
+  /// In ko, this message translates to:
+  /// **'연속 학습'**
+  String get homeStreak;
+
+  /// No description provided for @homeStreakDays.
+  ///
+  /// In ko, this message translates to:
+  /// **'{days}일'**
+  String homeStreakDays(int days);
+
+  /// No description provided for @homeCompleted.
+  ///
+  /// In ko, this message translates to:
+  /// **'완료한 대화'**
+  String get homeCompleted;
+
+  /// No description provided for @homeCompletedValue.
+  ///
+  /// In ko, this message translates to:
+  /// **'{count}회 · 완료율 {percent}%'**
+  String homeCompletedValue(int count, int percent);
+
+  /// No description provided for @homeAvgAnswer.
+  ///
+  /// In ko, this message translates to:
+  /// **'평균 답변 길이'**
+  String get homeAvgAnswer;
+
+  /// No description provided for @homeAvgWords.
+  ///
+  /// In ko, this message translates to:
+  /// **'{words}단어'**
+  String homeAvgWords(String words);
+
+  /// No description provided for @homeReviews.
+  ///
+  /// In ko, this message translates to:
+  /// **'복습할 문장'**
+  String get homeReviews;
+
+  /// No description provided for @homeReviewCount.
+  ///
+  /// In ko, this message translates to:
+  /// **'{count}개'**
+  String homeReviewCount(int count);
+
+  /// No description provided for @homeNoData.
+  ///
+  /// In ko, this message translates to:
+  /// **'—'**
+  String get homeNoData;
+
+  /// No description provided for @homeSpeechNote.
+  ///
+  /// In ko, this message translates to:
+  /// **'말한 시간은 🎤로 대화했을 때 음성 인식 타이밍으로 추정해요.'**
+  String get homeSpeechNote;
+
+  /// No description provided for @homeNextTopic.
+  ///
+  /// In ko, this message translates to:
+  /// **'추천 주제: {topic}'**
+  String homeNextTopic(String topic);
+
+  /// No description provided for @homeDevTools.
+  ///
+  /// In ko, this message translates to:
+  /// **'개발용 테스트'**
+  String get homeDevTools;
+
+  /// No description provided for @homePlacementAgain.
+  ///
+  /// In ko, this message translates to:
+  /// **'레벨 다시 진단'**
+  String get homePlacementAgain;
+
+  /// No description provided for @settingsDataSection.
+  ///
+  /// In ko, this message translates to:
+  /// **'데이터'**
+  String get settingsDataSection;
+
+  /// No description provided for @settingsExport.
+  ///
+  /// In ko, this message translates to:
+  /// **'대화 기록 내보내기 (JSON·CSV)'**
+  String get settingsExport;
+
+  /// No description provided for @settingsExportNote.
+  ///
+  /// In ko, this message translates to:
+  /// **'로그인 정보와 API 키는 포함되지 않아요.'**
+  String get settingsExportNote;
+
+  /// No description provided for @settingsExportedTo.
+  ///
+  /// In ko, this message translates to:
+  /// **'저장 위치: {path}'**
+  String settingsExportedTo(String path);
+
+  /// No description provided for @settingsDeleteAll.
+  ///
+  /// In ko, this message translates to:
+  /// **'모든 대화 기록 삭제'**
+  String get settingsDeleteAll;
+
+  /// No description provided for @settingsDeleteAllConfirm.
+  ///
+  /// In ko, this message translates to:
+  /// **'모든 대화, 교정, 복습, 진단 기록을 지울까요? 되돌릴 수 없어요. (로그인과 설정은 유지돼요)'**
+  String get settingsDeleteAllConfirm;
+
+  /// No description provided for @settingsDeleted.
+  ///
+  /// In ko, this message translates to:
+  /// **'모든 기록을 삭제했어요.'**
+  String get settingsDeleted;
 }
 
 class _AppLocalizationsDelegate

@@ -100,6 +100,44 @@ class SettingsScreen extends ConsumerWidget {
                 value: s.speakReplies,
                 onChanged: ctrl.setSpeakReplies,
               ),
+              section(l10n.settingsDataSection),
+              ListTile(
+                leading: const Icon(Icons.download_outlined),
+                title: Text(l10n.settingsExport),
+                subtitle: Text(
+                  s.exportedTo == null
+                      ? l10n.settingsExportNote
+                      : l10n.settingsExportedTo(s.exportedTo!),
+                ),
+                onTap: ctrl.exportData,
+              ),
+              ListTile(
+                leading: Icon(
+                  Icons.delete_forever_outlined,
+                  color: theme.colorScheme.error,
+                ),
+                title: Text(l10n.settingsDeleteAll),
+                subtitle: s.cleared ? Text(l10n.settingsDeleted) : null,
+                onTap: () async {
+                  final ok = await showDialog<bool>(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                      content: Text(l10n.settingsDeleteAllConfirm),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.pop(context, false),
+                          child: Text(l10n.cancel),
+                        ),
+                        FilledButton(
+                          onPressed: () => Navigator.pop(context, true),
+                          child: Text(l10n.historyDelete),
+                        ),
+                      ],
+                    ),
+                  );
+                  if (ok ?? false) await ctrl.deleteAllData();
+                },
+              ),
               section(l10n.settingsInfoSection),
               ListTile(
                 leading: const Icon(Icons.privacy_tip_outlined),

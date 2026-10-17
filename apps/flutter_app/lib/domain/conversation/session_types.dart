@@ -64,6 +64,11 @@ final class SpeechEnded extends SessionEvent {
   const SpeechEnded();
 }
 
+/// Speech ended but nothing usable was recognized; no turn is taken.
+final class SpeechDiscarded extends SessionEvent {
+  const SpeechDiscarded();
+}
+
 /// The learner sent a typed message instead of speaking.
 final class TextSubmitted extends SessionEvent {
   const TextSubmitted();
@@ -92,6 +97,12 @@ final class ResponseStarted extends ResponseEvent {
 
 final class ResponseEnded extends ResponseEvent {
   const ResponseEnded({required super.turn});
+}
+
+/// The request failed (other than a lost connection); the learner keeps
+/// the turn.
+final class ResponseFailed extends ResponseEvent {
+  const ResponseFailed({required super.turn});
 }
 
 final class PauseRequested extends SessionEvent {

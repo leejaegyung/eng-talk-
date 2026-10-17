@@ -187,6 +187,42 @@ void main() {
     });
   });
 
+  group('discarded speech and failed responses', () {
+    test('nothing recognized returns to listening without a new turn', () {
+      final c = listening();
+      drive(c, const [SpeechStarted(), SpeechDiscarded()]);
+      expect(c.state.phase, SessionPhase.listening);
+      expect(c.state.turn, 0);
+    });
+
+    test('a failed response returns to listening', () {
+      final c = listening();
+      drive(c, const [TextSubmitted(), ResponseFailed(turn: 1)]);
+      expect(c.state.phase, SessionPhase.listening);
+    });
+
+    test('a failure after output started also returns to listening', () {
+      final c = listening();
+      drive(c, const [
+        TextSubmitted(),
+        ResponseStarted(turn: 1),
+        ResponseFailed(turn: 1),
+      ]);
+      expect(c.state.phase, SessionPhase.listening);
+    });
+
+    test('a stale failure is ignored', () {
+      final c = listening();
+      drive(c, const [TextSubmitted(), SpeechStarted(), SpeechEnded()]);
+      expect(c.dispatch(const ResponseFailed(turn: 1)), isA<Rejected>());
+      expect(c.state.phase, SessionPhase.processing);
+    });
+
+    test('discard is only valid while the user is speaking', () {
+      expect(listening().dispatch(const SpeechDiscarded()), isA<Rejected>());
+    });
+  });
+
   group('rejected transitions', () {
     final cases = <String, (List<SessionEvent>, SessionEvent)>{
       'AI output while the user is speaking': (

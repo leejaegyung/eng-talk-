@@ -407,16 +407,417 @@ class AppLocalizationsKo extends AppLocalizations {
   String get conversationOpenSettings => '설정에서 연결하기';
 
   @override
-  String get conversationEndedTitle => '대화를 마쳤어요';
+  String get conversationBackHome => '홈으로';
 
   @override
-  String conversationEndedSummary(int minutes, int seconds, int turns) {
-    return '연습 시간 $minutes분 $seconds초 · 내 답변 $turns회';
+  String get modeTheme => '테마 대화';
+
+  @override
+  String get modeRoleplay => '상황 역할극';
+
+  @override
+  String get modeRandom => '랜덤 스피킹';
+
+  @override
+  String get modeStorytelling => '경험·이야기';
+
+  @override
+  String get modeOpinion => '의견·토론';
+
+  @override
+  String get modeAssessment => '레벨 진단';
+
+  @override
+  String get modeDailyDesc => '하루·취미·경험을 친구처럼 이야기해요';
+
+  @override
+  String get modeThemeDesc => '고른 주제 하나를 깊게 파고들어요';
+
+  @override
+  String get modeRoleplayDesc => '호텔·식당·면접 같은 상황을 연기해요';
+
+  @override
+  String get modeRandomDesc => '예상 못 한 질문에 바로 답해봐요';
+
+  @override
+  String get modeStorytellingDesc => '경험을 처음부터 끝까지 길게 말해요';
+
+  @override
+  String get modeOpinionDesc => '주장 → 이유 → 예시로 의견을 말해요';
+
+  @override
+  String get conversationPaused => '일시정지했어요';
+
+  @override
+  String get conversationPause => '일시정지';
+
+  @override
+  String get conversationResume => '이어하기';
+
+  @override
+  String get conversationConnectionLost => '연결이 끊겼어요. 대화는 저장돼 있어요.';
+
+  @override
+  String get conversationReconnect => '다시 연결';
+
+  @override
+  String get conversationContinueText => '읽어주기 없이 계속';
+
+  @override
+  String get conversationSaveAndEnd => '저장하고 끝내기';
+
+  @override
+  String get conversationSaving => '저장 중…';
+
+  @override
+  String get resultTitle => '대화 결과';
+
+  @override
+  String get resultPracticeTime => '연습 시간';
+
+  @override
+  String get resultAnswers => '내 답변';
+
+  @override
+  String resultAnswerCount(int count) {
+    return '$count회';
   }
 
   @override
-  String get conversationEndedNext => '교정과 복습은 다음 업데이트에서 추가돼요.';
+  String resultMinSec(int minutes, int seconds) {
+    return '$minutes분 $seconds초';
+  }
 
   @override
-  String get conversationBackHome => '홈으로';
+  String get resultUserSpeech => '내 발화 (추정)';
+
+  @override
+  String get resultAiSpeech => 'AI 발화 (추정)';
+
+  @override
+  String get resultRatio => '내 발화 비율';
+
+  @override
+  String resultRatioValue(String percent) {
+    return '$percent% (발화 시간만 기준)';
+  }
+
+  @override
+  String get resultEstimateNote => '음성 인식 타이밍으로 추정한 값이라 실제와 차이가 있을 수 있어요.';
+
+  @override
+  String get resultNotMeasured => '발화 시간은 🎤로 말하고 \'답변 소리로 듣기\'를 켰을 때만 추정해요.';
+
+  @override
+  String get resultGenerating => '대화 내용으로 피드백을 만드는 중…';
+
+  @override
+  String get resultRetry => '다시 시도';
+
+  @override
+  String get resultReduced => '피드백을 일부만 만들 수 있었어요.';
+
+  @override
+  String get resultNoAnswers => '답변이 없어서 피드백을 만들지 않았어요.';
+
+  @override
+  String get resultStrengths => '잘한 점';
+
+  @override
+  String get resultCorrections => '고쳐 말해볼 문장';
+
+  @override
+  String get resultNoCorrections => '이번 대화에서는 꼭 고칠 문장이 없었어요.';
+
+  @override
+  String get resultSayAgain => '다시 말하기';
+
+  @override
+  String resultYouSaid(String text) {
+    return '방금 말한 문장: $text';
+  }
+
+  @override
+  String get resultListening => '듣는 중…';
+
+  @override
+  String get resultExpressions => '써볼 만한 표현';
+
+  @override
+  String get resultNextTopic => '다음 추천 주제';
+
+  @override
+  String get resultTalkAboutIt => '이 주제로 대화하기';
+
+  @override
+  String get resultReviewNote => '고친 문장은 복습 목록에 추가됐어요.';
+
+  @override
+  String get setupTitle => '대화 준비';
+
+  @override
+  String get setupMode => '모드';
+
+  @override
+  String get setupLevel => '레벨';
+
+  @override
+  String get setupLevelNote =>
+      'L1 기초 문장 · L2 친숙한 대화 · L3 상황 대응 · L4 의견 표현 · L5 프리토킹';
+
+  @override
+  String get setupTopic => '주제';
+
+  @override
+  String get setupTopicOptional => '주제 (선택)';
+
+  @override
+  String get setupTopicHint => '직접 입력해도 돼요';
+
+  @override
+  String get setupRandomNote => '랜덤 모드는 AI가 매번 다른 주제로 즉흥 질문을 해요.';
+
+  @override
+  String get setupScenario => '상황';
+
+  @override
+  String get setupRole => 'AI 역할';
+
+  @override
+  String get setupSituation => '상황 설명';
+
+  @override
+  String get setupGoal => '내 목표';
+
+  @override
+  String get setupLength => '시간';
+
+  @override
+  String setupMinutes(int minutes) {
+    return '$minutes분';
+  }
+
+  @override
+  String get setupStart => '대화 시작';
+
+  @override
+  String get assessmentTitle => '레벨 진단';
+
+  @override
+  String get assessmentIntro => '다섯 가지 질문에 영어로 답하면 시작 레벨을 추천해 드려요. 5분 정도 걸려요.';
+
+  @override
+  String get assessmentLimit => '짧은 진단이라 정확도에 한계가 있어요. 레벨은 언제든 바꿀 수 있어요.';
+
+  @override
+  String get assessmentMicCheck =>
+      '마이크 확인: 🎤를 누르고 \"Hello, nice to meet you\"라고 말해보세요.';
+
+  @override
+  String assessmentMicHeard(String text) {
+    return '들린 말: $text';
+  }
+
+  @override
+  String get assessmentMicNothing =>
+      '아무 말도 들리지 않았어요. 마이크·음성 인식 권한을 확인하거나, 글자로 답해도 돼요.';
+
+  @override
+  String assessmentQuestion(int n, int total) {
+    return '질문 $n / $total';
+  }
+
+  @override
+  String get assessmentAnswerHint => '🎤로 말하거나 영어로 입력하세요';
+
+  @override
+  String get assessmentNext => '다음';
+
+  @override
+  String get assessmentFinish => '결과 보기';
+
+  @override
+  String get assessmentEvaluating => '답변을 평가하는 중…';
+
+  @override
+  String assessmentSuggested(String level) {
+    return '추천 레벨: $level';
+  }
+
+  @override
+  String get assessmentRubricNote =>
+      'AI가 답변 내용(글자)만 보고 평가했어요. 발음과 유창성은 평가하지 않았어요.';
+
+  @override
+  String get assessmentRelevance => '질문에 맞는 답변';
+
+  @override
+  String get assessmentSentences => '문장 만들기';
+
+  @override
+  String get assessmentVocabulary => '어휘 다양성';
+
+  @override
+  String get assessmentContinuity => '이어 말하기';
+
+  @override
+  String assessmentScore(int score) {
+    return '$score / 5';
+  }
+
+  @override
+  String get assessmentGradingFailed => '평가 결과를 읽지 못했어요. 직접 레벨을 골라 주세요.';
+
+  @override
+  String get assessmentPick => '다른 레벨로 하려면 고르세요';
+
+  @override
+  String get assessmentAccept => '이 레벨로 시작';
+
+  @override
+  String get assessmentDone => '레벨을 저장했어요.';
+
+  @override
+  String get historyTitle => '학습 기록';
+
+  @override
+  String get historySearch => '주제나 대화 내용으로 검색';
+
+  @override
+  String get historyEmpty => '아직 기록이 없어요.';
+
+  @override
+  String get historyNoMatch => '검색 결과가 없어요.';
+
+  @override
+  String historyAnswers(int count) {
+    return '답변 $count회';
+  }
+
+  @override
+  String get historyUnfinished => '진행 중';
+
+  @override
+  String get historyDelete => '삭제';
+
+  @override
+  String get historyDeleteConfirm => '이 대화 기록을 삭제할까요? 교정·복습 항목도 함께 지워져요.';
+
+  @override
+  String get cancel => '취소';
+
+  @override
+  String get reviewTitle => '복습';
+
+  @override
+  String get reviewEmpty => '지금 복습할 문장이 없어요. 대화를 마치면 고친 문장이 여기에 쌓여요.';
+
+  @override
+  String get reviewIntro => '예전에 고친 문장을 소리 내어 다시 말해보세요.';
+
+  @override
+  String get reviewDone => '말해봤어요';
+
+  @override
+  String get reviewLater => '나중에';
+
+  @override
+  String get homeHistory => '학습 기록';
+
+  @override
+  String get homeUnfinished => '끝나지 않은 대화가 있어요';
+
+  @override
+  String get homeResume => '이어서 하기';
+
+  @override
+  String get homeCloseAndSee => '끝내고 결과 보기';
+
+  @override
+  String get homePlacementTitle => '레벨 진단부터 해볼까요?';
+
+  @override
+  String get homePlacementBody => '5개 질문으로 시작 레벨을 추천해 드려요 (약 5분).';
+
+  @override
+  String get homePlacementStart => '진단 시작';
+
+  @override
+  String get homeToday => '오늘 말한 시간 (추정)';
+
+  @override
+  String get homeWeek => '최근 7일 (추정)';
+
+  @override
+  String get homeStreak => '연속 학습';
+
+  @override
+  String homeStreakDays(int days) {
+    return '$days일';
+  }
+
+  @override
+  String get homeCompleted => '완료한 대화';
+
+  @override
+  String homeCompletedValue(int count, int percent) {
+    return '$count회 · 완료율 $percent%';
+  }
+
+  @override
+  String get homeAvgAnswer => '평균 답변 길이';
+
+  @override
+  String homeAvgWords(String words) {
+    return '$words단어';
+  }
+
+  @override
+  String get homeReviews => '복습할 문장';
+
+  @override
+  String homeReviewCount(int count) {
+    return '$count개';
+  }
+
+  @override
+  String get homeNoData => '—';
+
+  @override
+  String get homeSpeechNote => '말한 시간은 🎤로 대화했을 때 음성 인식 타이밍으로 추정해요.';
+
+  @override
+  String homeNextTopic(String topic) {
+    return '추천 주제: $topic';
+  }
+
+  @override
+  String get homeDevTools => '개발용 테스트';
+
+  @override
+  String get homePlacementAgain => '레벨 다시 진단';
+
+  @override
+  String get settingsDataSection => '데이터';
+
+  @override
+  String get settingsExport => '대화 기록 내보내기 (JSON·CSV)';
+
+  @override
+  String get settingsExportNote => '로그인 정보와 API 키는 포함되지 않아요.';
+
+  @override
+  String settingsExportedTo(String path) {
+    return '저장 위치: $path';
+  }
+
+  @override
+  String get settingsDeleteAll => '모든 대화 기록 삭제';
+
+  @override
+  String get settingsDeleteAllConfirm =>
+      '모든 대화, 교정, 복습, 진단 기록을 지울까요? 되돌릴 수 없어요. (로그인과 설정은 유지돼요)';
+
+  @override
+  String get settingsDeleted => '모든 기록을 삭제했어요.';
 }

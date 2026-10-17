@@ -1,11 +1,17 @@
 import 'dart:async';
 import 'dart:typed_data';
 
+import 'package:drift/drift.dart' show driftRuntimeOptions;
+import 'package:drift/native.dart';
+import 'package:speaking_coach/data/db/app_database.dart' show AppDatabase;
+import 'package:speaking_coach/data/sessions/drift_session_repository.dart';
+
 import 'package:speaking_coach/domain/audio/audio_io.dart';
 import 'package:speaking_coach/domain/audio/speech_io.dart';
 import 'package:speaking_coach/domain/credentials/credential_vault.dart';
 import 'package:speaking_coach/domain/credentials/provider_account.dart';
 import 'package:speaking_coach/domain/providers/ai_provider.dart';
+import 'package:speaking_coach/domain/sessions/export.dart';
 import 'package:speaking_coach/domain/settings/settings_store.dart';
 
 class MemoryVault implements CredentialVault {
@@ -78,6 +84,9 @@ class FakeAi implements LlmProvider, VoiceProvider {
   ];
   Object? chatError;
 
+  /// Per-request reply, e.g. feedback JSON for the feedback prompt.
+  List<ChatChunk>? Function(List<ChatMessage> messages)? responder;
+
   final transcribed = <Uint8List>[];
   final chats = <List<ChatMessage>>[];
   final spoken = <String>[];
@@ -103,7 +112,7 @@ class FakeAi implements LlmProvider, VoiceProvider {
   }) async* {
     chats.add([...messages]);
     if (chatError != null) throw chatError!;
-    yield* Stream.fromIterable(reply);
+    yield* Stream.fromIterable(responder?.call(messages) ?? reply);
   }
 
   @override
@@ -199,5 +208,53 @@ class FakeAccount implements ProviderAccount {
     signOuts++;
     signedIn = false;
     return true;
+  }
+}
+
+/// Real repository on an in-memory database.
+(AppDatabase, DriftSessionRepository) memoryRepository() {
+  driftRuntimeOptions.dontWarnAboutMultipleDatabases = true;
+  final db = AppDatabase(NativeDatabase.memory());
+  return (db, DriftSessionRepository(db));
+}
+
+/// Replies like the model would for the app's structured prompts: feedback
+/// JSON quoting the first learner line, a placement rubric, otherwise the
+/// default conversation reply.
+List<ChatChunk>? smartReplies(List<ChatMessage> messages) {
+  final system = messages.first.content;
+  if (system.contains('You review an English speaking practice')) {
+    final line = RegExp(r'\[t(\d+)\] learner: (.+)')
+        .firstMatch(messages[1].content);
+    if (line == null) return null;
+    return [
+      TextDelta(
+        '{"strengths": ["Kept the conversation going"], "corrections": '
+        '[{"turn_id": ${line.group(1)}, "original": "${line.group(2)}", '
+        '"suggested": "Fixed sentence.", "explanation_ko": "설명", '
+        '"severity": "high", "practice_prompt": "Say it again?"}], '
+        '"expressions": [{"phrase": "That reminds me of", "meaning_ko": "그러고 보니"}], '
+        '"next_topic": "Weekend plans"}',
+      ),
+    ];
+  }
+  if (system.contains('placement conversation')) {
+    return const [
+      TextDelta(
+        '{"relevance": 3, "sentence_formation": 3, "vocabulary": 3, '
+        '"continuity": 3, "comment_ko": "무난해요"}',
+      ),
+    ];
+  }
+  return null;
+}
+
+class CapturingExporter implements DataExporter {
+  final exports = <Map<String, String>>[];
+
+  @override
+  Future<String> export(Map<String, String> files) async {
+    exports.add(files);
+    return '/tmp/export';
   }
 }

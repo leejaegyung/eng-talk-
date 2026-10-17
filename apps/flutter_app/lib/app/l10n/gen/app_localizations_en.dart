@@ -420,17 +420,429 @@ class AppLocalizationsEn extends AppLocalizations {
   String get conversationOpenSettings => 'Connect in Settings';
 
   @override
-  String get conversationEndedTitle => 'Conversation finished';
+  String get conversationBackHome => 'Home';
 
   @override
-  String conversationEndedSummary(int minutes, int seconds, int turns) {
-    return 'Practice time ${minutes}m ${seconds}s · your answers: $turns';
+  String get modeTheme => 'Theme talk';
+
+  @override
+  String get modeRoleplay => 'Role-play';
+
+  @override
+  String get modeRandom => 'Random speaking';
+
+  @override
+  String get modeStorytelling => 'Storytelling';
+
+  @override
+  String get modeOpinion => 'Opinions';
+
+  @override
+  String get modeAssessment => 'Placement';
+
+  @override
+  String get modeDailyDesc => 'Chat about your day, hobbies and experiences';
+
+  @override
+  String get modeThemeDesc => 'Go deep on one topic you pick';
+
+  @override
+  String get modeRoleplayDesc =>
+      'Act out situations like hotels, restaurants, interviews';
+
+  @override
+  String get modeRandomDesc => 'Answer unexpected questions on the spot';
+
+  @override
+  String get modeStorytellingDesc => 'Tell a story from start to finish';
+
+  @override
+  String get modeOpinionDesc => 'Give opinions with reasons and examples';
+
+  @override
+  String get conversationPaused => 'Paused';
+
+  @override
+  String get conversationPause => 'Pause';
+
+  @override
+  String get conversationResume => 'Resume';
+
+  @override
+  String get conversationConnectionLost =>
+      'Connection lost. Your conversation is saved.';
+
+  @override
+  String get conversationReconnect => 'Reconnect';
+
+  @override
+  String get conversationContinueText => 'Continue without voice';
+
+  @override
+  String get conversationSaveAndEnd => 'Save and end';
+
+  @override
+  String get conversationSaving => 'Saving…';
+
+  @override
+  String get resultTitle => 'Session result';
+
+  @override
+  String get resultPracticeTime => 'Practice time';
+
+  @override
+  String get resultAnswers => 'Your answers';
+
+  @override
+  String resultAnswerCount(int count) {
+    return '$count';
   }
 
   @override
-  String get conversationEndedNext =>
-      'Corrections and review are coming in the next update.';
+  String resultMinSec(int minutes, int seconds) {
+    return '${minutes}m ${seconds}s';
+  }
 
   @override
-  String get conversationBackHome => 'Home';
+  String get resultUserSpeech => 'Your speaking (est.)';
+
+  @override
+  String get resultAiSpeech => 'AI speaking (est.)';
+
+  @override
+  String get resultRatio => 'Your share of speaking';
+
+  @override
+  String resultRatioValue(String percent) {
+    return '$percent% (speaking time only)';
+  }
+
+  @override
+  String get resultEstimateNote =>
+      'Estimated from speech-recognition timing; may differ from reality.';
+
+  @override
+  String get resultNotMeasured =>
+      'Speaking time is estimated only when you talk with 🎤 and replies are read aloud.';
+
+  @override
+  String get resultGenerating => 'Making feedback from your conversation…';
+
+  @override
+  String get resultRetry => 'Try again';
+
+  @override
+  String get resultReduced => 'Feedback could only be partly generated.';
+
+  @override
+  String get resultNoAnswers => 'No answers, so no feedback was made.';
+
+  @override
+  String get resultStrengths => 'Strengths';
+
+  @override
+  String get resultCorrections => 'Sentences to fix';
+
+  @override
+  String get resultNoCorrections => 'Nothing important to fix this time.';
+
+  @override
+  String get resultSayAgain => 'Say it again';
+
+  @override
+  String resultYouSaid(String text) {
+    return 'You said: $text';
+  }
+
+  @override
+  String get resultListening => 'Listening…';
+
+  @override
+  String get resultExpressions => 'Expressions to try';
+
+  @override
+  String get resultNextTopic => 'Next topic';
+
+  @override
+  String get resultTalkAboutIt => 'Talk about this';
+
+  @override
+  String get resultReviewNote => 'Corrections were added to your review list.';
+
+  @override
+  String get setupTitle => 'Set up a conversation';
+
+  @override
+  String get setupMode => 'Mode';
+
+  @override
+  String get setupLevel => 'Level';
+
+  @override
+  String get setupLevelNote =>
+      'L1 basics · L2 familiar talk · L3 situations · L4 opinions · L5 free talk';
+
+  @override
+  String get setupTopic => 'Topic';
+
+  @override
+  String get setupTopicOptional => 'Topic (optional)';
+
+  @override
+  String get setupTopicHint => 'Or type your own';
+
+  @override
+  String get setupRandomNote =>
+      'In random mode the AI asks impromptu questions on varied topics.';
+
+  @override
+  String get setupScenario => 'Situation';
+
+  @override
+  String get setupRole => 'AI\'s role';
+
+  @override
+  String get setupSituation => 'Situation';
+
+  @override
+  String get setupGoal => 'Your goal';
+
+  @override
+  String get setupLength => 'Length';
+
+  @override
+  String setupMinutes(int minutes) {
+    return '$minutes min';
+  }
+
+  @override
+  String get setupStart => 'Start';
+
+  @override
+  String get assessmentTitle => 'Placement';
+
+  @override
+  String get assessmentIntro =>
+      'Answer five questions in English and we\'ll suggest a starting level. About 5 minutes.';
+
+  @override
+  String get assessmentLimit =>
+      'A short test has limited accuracy. You can change your level any time.';
+
+  @override
+  String get assessmentMicCheck =>
+      'Mic check: tap 🎤 and say \"Hello, nice to meet you\".';
+
+  @override
+  String assessmentMicHeard(String text) {
+    return 'Heard: $text';
+  }
+
+  @override
+  String get assessmentMicNothing =>
+      'Nothing was heard. Check mic and speech permissions, or type your answers.';
+
+  @override
+  String assessmentQuestion(int n, int total) {
+    return 'Question $n of $total';
+  }
+
+  @override
+  String get assessmentAnswerHint => 'Speak with 🎤 or type in English';
+
+  @override
+  String get assessmentNext => 'Next';
+
+  @override
+  String get assessmentFinish => 'See result';
+
+  @override
+  String get assessmentEvaluating => 'Evaluating your answers…';
+
+  @override
+  String assessmentSuggested(String level) {
+    return 'Suggested level: $level';
+  }
+
+  @override
+  String get assessmentRubricNote =>
+      'The AI judged only the text of your answers — not pronunciation or fluency.';
+
+  @override
+  String get assessmentRelevance => 'Relevance';
+
+  @override
+  String get assessmentSentences => 'Sentence formation';
+
+  @override
+  String get assessmentVocabulary => 'Vocabulary';
+
+  @override
+  String get assessmentContinuity => 'Continuity';
+
+  @override
+  String assessmentScore(int score) {
+    return '$score / 5';
+  }
+
+  @override
+  String get assessmentGradingFailed =>
+      'Couldn\'t read the evaluation. Please choose a level yourself.';
+
+  @override
+  String get assessmentPick => 'Or pick another level';
+
+  @override
+  String get assessmentAccept => 'Start with this level';
+
+  @override
+  String get assessmentDone => 'Level saved.';
+
+  @override
+  String get historyTitle => 'History';
+
+  @override
+  String get historySearch => 'Search topics or conversations';
+
+  @override
+  String get historyEmpty => 'No sessions yet.';
+
+  @override
+  String get historyNoMatch => 'No matches.';
+
+  @override
+  String historyAnswers(int count) {
+    return '$count answers';
+  }
+
+  @override
+  String get historyUnfinished => 'In progress';
+
+  @override
+  String get historyDelete => 'Delete';
+
+  @override
+  String get historyDeleteConfirm =>
+      'Delete this session? Its corrections and review items are deleted too.';
+
+  @override
+  String get cancel => 'Cancel';
+
+  @override
+  String get reviewTitle => 'Review';
+
+  @override
+  String get reviewEmpty =>
+      'Nothing to review now. Corrections from your sessions show up here.';
+
+  @override
+  String get reviewIntro => 'Say your corrected sentences out loud again.';
+
+  @override
+  String get reviewDone => 'I said it';
+
+  @override
+  String get reviewLater => 'Later';
+
+  @override
+  String get homeHistory => 'History';
+
+  @override
+  String get homeUnfinished => 'You have an unfinished conversation';
+
+  @override
+  String get homeResume => 'Continue';
+
+  @override
+  String get homeCloseAndSee => 'End and see result';
+
+  @override
+  String get homePlacementTitle => 'Start with a placement?';
+
+  @override
+  String get homePlacementBody =>
+      'Five questions to suggest your starting level (about 5 min).';
+
+  @override
+  String get homePlacementStart => 'Start placement';
+
+  @override
+  String get homeToday => 'Spoken today (est.)';
+
+  @override
+  String get homeWeek => 'Last 7 days (est.)';
+
+  @override
+  String get homeStreak => 'Streak';
+
+  @override
+  String homeStreakDays(int days) {
+    return '$days days';
+  }
+
+  @override
+  String get homeCompleted => 'Completed';
+
+  @override
+  String homeCompletedValue(int count, int percent) {
+    return '$count · $percent% done';
+  }
+
+  @override
+  String get homeAvgAnswer => 'Average answer';
+
+  @override
+  String homeAvgWords(String words) {
+    return '$words words';
+  }
+
+  @override
+  String get homeReviews => 'To review';
+
+  @override
+  String homeReviewCount(int count) {
+    return '$count';
+  }
+
+  @override
+  String get homeNoData => '—';
+
+  @override
+  String get homeSpeechNote =>
+      'Speaking time is estimated from speech-recognition timing when you talk with 🎤.';
+
+  @override
+  String homeNextTopic(String topic) {
+    return 'Suggested topic: $topic';
+  }
+
+  @override
+  String get homeDevTools => 'Developer tests';
+
+  @override
+  String get homePlacementAgain => 'Retake placement';
+
+  @override
+  String get settingsDataSection => 'Data';
+
+  @override
+  String get settingsExport => 'Export history (JSON, CSV)';
+
+  @override
+  String get settingsExportNote => 'Sign-in and API keys are never included.';
+
+  @override
+  String settingsExportedTo(String path) {
+    return 'Saved to: $path';
+  }
+
+  @override
+  String get settingsDeleteAll => 'Delete all history';
+
+  @override
+  String get settingsDeleteAllConfirm =>
+      'Delete all conversations, corrections, reviews and placements? This can\'t be undone. (Sign-in and settings are kept.)';
+
+  @override
+  String get settingsDeleted => 'All history deleted.';
 }

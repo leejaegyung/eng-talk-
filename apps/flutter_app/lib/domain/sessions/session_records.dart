@@ -96,7 +96,9 @@ final class SessionSummary {
     this.endedAt,
     required this.status,
     this.userTurns = 0,
+    this.userWords = 0,
     this.stats,
+    this.nextTopic,
   });
 
   final int id;
@@ -105,7 +107,13 @@ final class SessionSummary {
   final DateTime? endedAt;
   final SessionStatus status;
   final int userTurns;
+
+  /// Words in the learner's own answers (exact, from the transcript).
+  final int userWords;
   final SpeechStats? stats;
+
+  /// From the session's feedback, if any.
+  final String? nextTopic;
 
   Duration get duration => (endedAt ?? startedAt).difference(startedAt);
 }

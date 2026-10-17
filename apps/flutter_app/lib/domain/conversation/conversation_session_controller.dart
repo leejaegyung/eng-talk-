@@ -67,6 +67,8 @@ class ConversationSessionController {
         SessionPhase.userSpeaking,
       SpeechEnded() when p == SessionPhase.userSpeaking =>
         SessionPhase.processing,
+      SpeechDiscarded() when p == SessionPhase.userSpeaking =>
+        SessionPhase.listening,
       TextSubmitted() || AssistantTurnRequested()
           when p == SessionPhase.listening =>
         SessionPhase.processing,
@@ -74,6 +76,7 @@ class ConversationSessionController {
         SessionPhase.aiSpeaking,
       ResponseEnded() when p == SessionPhase.aiSpeaking =>
         SessionPhase.listening,
+      ResponseFailed() when _assistantActive(p) => SessionPhase.listening,
       PauseRequested() when _inConversation(p) => SessionPhase.paused,
       ConnectionLost()
           when p == SessionPhase.connecting || _inConversation(p) =>

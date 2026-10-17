@@ -6,6 +6,7 @@ import '../../app/providers.dart';
 import '../../core/logging/app_logger.dart';
 import '../../domain/credentials/provider_account.dart';
 import '../../domain/providers/provider_failure.dart';
+import '../../domain/sessions/export.dart';
 import '../../domain/settings/settings_store.dart';
 
 final class SettingsState {
@@ -15,6 +16,8 @@ final class SettingsState {
     this.model,
     this.failure,
     this.speakReplies = true,
+    this.exportedTo,
+    this.cleared = false,
   });
 
   /// Null until the stored session has been checked.
@@ -26,6 +29,10 @@ final class SettingsState {
   final ProviderFailure? failure;
   final bool speakReplies;
 
+  /// Where the last export was saved.
+  final String? exportedTo;
+  final bool cleared;
+
   static const _unset = Object();
 
   SettingsState copyWith({
@@ -34,6 +41,8 @@ final class SettingsState {
     Object? model = _unset,
     Object? failure = _unset,
     bool? speakReplies,
+    String? exportedTo,
+    bool? cleared,
   }) => SettingsState(
     signedIn: signedIn ?? this.signedIn,
     busy: busy ?? this.busy,
@@ -42,6 +51,8 @@ final class SettingsState {
         ? this.failure
         : failure as ProviderFailure?,
     speakReplies: speakReplies ?? this.speakReplies,
+    exportedTo: exportedTo ?? this.exportedTo,
+    cleared: cleared ?? this.cleared,
   );
 }
 
@@ -113,6 +124,20 @@ class SettingsController extends Notifier<SettingsState> {
     if (ref.mounted) {
       state = state.copyWith(signedIn: false, model: null, failure: null);
     }
+  }
+
+  /// JSON + CSV of all sessions; credentials are never included (S1).
+  Future<void> exportData() async {
+    final data = await ref.read(sessionRepositoryProvider).exportAll();
+    final at = await ref.read(dataExporterProvider).export(exportFiles(data));
+    if (ref.mounted) state = state.copyWith(exportedTo: at);
+  }
+
+  /// Deletes every session, transcript, correction, review and assessment.
+  /// Sign-in and preferences are kept.
+  Future<void> deleteAllData() async {
+    await ref.read(sessionRepositoryProvider).deleteAll();
+    if (ref.mounted) state = state.copyWith(cleared: true);
   }
 
   Future<void> setSpeakReplies(bool on) async {
