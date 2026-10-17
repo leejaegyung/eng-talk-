@@ -58,5 +58,11 @@
   "chatGptLabSignedIn": "Connected to ChatGPT · model {model}",
   "chatGptLabInput": "Type something in English",
   "chatGptLabSend": "Send",
-  "chatGptLabStats": "Measured — first token p50 {p50}ms · p95 {p95}ms ({count}) · tokens in {input} / out {output}"
+  "chatGptLabStats": "Measured — first token p50 {p50}ms · p95 {p95}ms ({count}) · tokens in {input} / out {output}",
+  "chatGptLabSpeakReplies": "Read replies aloud",
+  "chatGptLabTalk": "Speak",
+  "chatGptLabListening": "Listening… it sends when you stop talking",
+  "chatGptLabSpeaking": "Speaking…",
+  "chatGptLabSpeechUnavailable": "Speech recognition isn't available on this device. Allow speech recognition and microphone access in system settings, or type instead.",
+  "chatGptLabFreeVoiceNote": "Speech recognition and read-aloud use your device's free built-in features."
 }

@@ -190,5 +190,11 @@
         "type": "int"
       }
     }
-  }
+  },
+  "chatGptLabSpeakReplies": "답변 소리로 듣기",
+  "chatGptLabTalk": "말하기",
+  "chatGptLabListening": "듣는 중… 말을 멈추면 자동으로 보내요",
+  "chatGptLabSpeaking": "읽어주는 중…",
+  "chatGptLabSpeechUnavailable": "이 기기에서 음성 인식을 쓸 수 없어요. 시스템 설정에서 음성 인식·마이크 권한을 허용하거나, 글자로 입력해 주세요.",
+  "chatGptLabFreeVoiceNote": "음성 인식과 읽어주기는 기기에 내장된 무료 기능을 써요."
 }

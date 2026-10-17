@@ -451,6 +451,42 @@ abstract class AppLocalizations {
   /// In ko, this message translates to:
   /// **'측정값 — 첫 토큰 p50 {p50}ms · p95 {p95}ms ({count}회) · 토큰 입력 {input} / 출력 {output}'**
   String chatGptLabStats(int p50, int p95, int count, int input, int output);
+
+  /// No description provided for @chatGptLabSpeakReplies.
+  ///
+  /// In ko, this message translates to:
+  /// **'답변 소리로 듣기'**
+  String get chatGptLabSpeakReplies;
+
+  /// No description provided for @chatGptLabTalk.
+  ///
+  /// In ko, this message translates to:
+  /// **'말하기'**
+  String get chatGptLabTalk;
+
+  /// No description provided for @chatGptLabListening.
+  ///
+  /// In ko, this message translates to:
+  /// **'듣는 중… 말을 멈추면 자동으로 보내요'**
+  String get chatGptLabListening;
+
+  /// No description provided for @chatGptLabSpeaking.
+  ///
+  /// In ko, this message translates to:
+  /// **'읽어주는 중…'**
+  String get chatGptLabSpeaking;
+
+  /// No description provided for @chatGptLabSpeechUnavailable.
+  ///
+  /// In ko, this message translates to:
+  /// **'이 기기에서 음성 인식을 쓸 수 없어요. 시스템 설정에서 음성 인식·마이크 권한을 허용하거나, 글자로 입력해 주세요.'**
+  String get chatGptLabSpeechUnavailable;
+
+  /// No description provided for @chatGptLabFreeVoiceNote.
+  ///
+  /// In ko, this message translates to:
+  /// **'음성 인식과 읽어주기는 기기에 내장된 무료 기능을 써요.'**
+  String get chatGptLabFreeVoiceNote;
 }
 
 class _AppLocalizationsDelegate

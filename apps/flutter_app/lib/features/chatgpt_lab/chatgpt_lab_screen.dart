@@ -72,10 +72,26 @@ class _ChatGptLabScreenState extends ConsumerState<ChatGptLabScreen> {
                         ),
                       ),
                     ],
-                    if (s.signedIn == true && s.model != null)
+                    if (s.signedIn == true && s.model != null) ...[
                       Text(
                         l10n.chatGptLabSignedIn(s.model!),
                         style: theme.textTheme.bodySmall,
+                      ),
+                      SwitchListTile(
+                        contentPadding: EdgeInsets.zero,
+                        title: Text(l10n.chatGptLabSpeakReplies),
+                        subtitle: Text(l10n.chatGptLabFreeVoiceNote),
+                        value: s.speakReplies,
+                        onChanged: ctrl.setSpeakReplies,
+                      ),
+                    ],
+                    if (s.speechUnavailable)
+                      Card(
+                        margin: const EdgeInsets.only(top: 12),
+                        child: ListTile(
+                          leading: const Icon(Icons.mic_off),
+                          title: Text(l10n.chatGptLabSpeechUnavailable),
+                        ),
                       ),
                     if (s.failure case final f?)
                       Card(
@@ -111,15 +127,38 @@ class _ChatGptLabScreenState extends ConsumerState<ChatGptLabScreen> {
                   ],
                 ),
               ),
+              if (s.listening || s.speaking)
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 8),
+                  child: Text(
+                    s.listening
+                        ? (s.partial.isEmpty
+                              ? l10n.chatGptLabListening
+                              : s.partial)
+                        : l10n.chatGptLabSpeaking,
+                    style: theme.textTheme.titleMedium,
+                  ),
+                ),
               if (s.model != null)
                 Padding(
                   padding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
                   child: Row(
                     children: [
+                      IconButton.filled(
+                        iconSize: 28,
+                        tooltip: l10n.chatGptLabTalk,
+                        onPressed: s.streaming
+                            ? null
+                            : s.listening
+                            ? ctrl.stopListening
+                            : ctrl.talk,
+                        icon: Icon(s.listening ? Icons.stop : Icons.mic),
+                      ),
+                      const SizedBox(width: 12),
                       Expanded(
                         child: TextField(
                           controller: _input,
-                          enabled: !s.streaming,
+                          enabled: !s.streaming && !s.listening,
                           decoration: InputDecoration(
                             border: const OutlineInputBorder(),
                             hintText: l10n.chatGptLabInput,
@@ -129,7 +168,7 @@ class _ChatGptLabScreenState extends ConsumerState<ChatGptLabScreen> {
                       ),
                       const SizedBox(width: 12),
                       FilledButton(
-                        onPressed: s.streaming ? null : _send,
+                        onPressed: s.streaming || s.listening ? null : _send,
                         child: Text(l10n.chatGptLabSend),
                       ),
                     ],

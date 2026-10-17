@@ -8,8 +8,11 @@ import '../data/providers/chatgpt/chatgpt_plan_client.dart';
 import '../data/providers/chatgpt/provider_catalog.dart' as chatgpt;
 import '../data/providers/openai/openai_client.dart';
 import '../data/providers/openai/provider_catalog.dart';
+import '../data/speech/os_speech_input.dart';
+import '../data/speech/os_speech_output.dart';
 import '../data/vault/secure_storage_vault.dart';
 import '../domain/audio/audio_io.dart';
+import '../domain/audio/speech_io.dart';
 import '../domain/credentials/credential_vault.dart';
 import '../domain/credentials/provider_account.dart';
 import '../domain/providers/ai_provider.dart';
@@ -31,6 +34,16 @@ final audioInputProvider = Provider<AudioInput>((ref) {
 final audioOutputProvider = Provider<AudioOutput>((ref) {
   final output = TempFileAudioOutput();
   ref.onDispose(output.dispose);
+  return output;
+});
+
+// On-device voice (ADR-011): free STT/TTS for the ChatGPT plan path.
+
+final speechInputProvider = Provider<SpeechInput>((ref) => OsSpeechInput());
+
+final speechOutputProvider = Provider<SpeechOutput>((ref) {
+  final output = OsSpeechOutput();
+  ref.onDispose(output.stop);
   return output;
 });
 

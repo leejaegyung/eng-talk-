@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../app/providers.dart';
 import '../../core/logging/app_logger.dart';
+import '../../domain/audio/speech_io.dart';
 import '../../domain/credentials/provider_account.dart';
 import '../../domain/providers/ai_provider.dart';
 import '../../domain/providers/provider_failure.dart';
@@ -19,6 +20,11 @@ final class ChatGptLabState {
     this.firstTokens = const [],
     this.inputTokens = 0,
     this.outputTokens = 0,
+    this.speakReplies = true,
+    this.listening = false,
+    this.partial = '',
+    this.speaking = false,
+    this.speechUnavailable = false,
   });
 
   /// Null until the stored session has been checked.
@@ -36,6 +42,15 @@ final class ChatGptLabState {
   final int inputTokens;
   final int outputTokens;
 
+  /// Read replies aloud with the on-device voice.
+  final bool speakReplies;
+  final bool listening;
+
+  /// Words recognized so far while listening.
+  final String partial;
+  final bool speaking;
+  final bool speechUnavailable;
+
   static const _unset = Object();
 
   ChatGptLabState copyWith({
@@ -48,6 +63,11 @@ final class ChatGptLabState {
     List<Duration>? firstTokens,
     int? inputTokens,
     int? outputTokens,
+    bool? speakReplies,
+    bool? listening,
+    String? partial,
+    bool? speaking,
+    bool? speechUnavailable,
   }) => ChatGptLabState(
     signedIn: signedIn ?? this.signedIn,
     busy: busy ?? this.busy,
@@ -60,6 +80,11 @@ final class ChatGptLabState {
     firstTokens: firstTokens ?? this.firstTokens,
     inputTokens: inputTokens ?? this.inputTokens,
     outputTokens: outputTokens ?? this.outputTokens,
+    speakReplies: speakReplies ?? this.speakReplies,
+    listening: listening ?? this.listening,
+    partial: partial ?? this.partial,
+    speaking: speaking ?? this.speaking,
+    speechUnavailable: speechUnavailable ?? this.speechUnavailable,
   );
 }
 
@@ -80,12 +105,20 @@ class ChatGptLabController extends Notifier<ChatGptLabState> {
   late ProviderAccount _account;
   late LlmProvider _llm;
   late Future<String> Function() _selectModel;
+  late SpeechInput _mic;
+  late SpeechOutput _voice;
 
   @override
   ChatGptLabState build() {
     _account = ref.watch(chatGptAccountProvider);
     _llm = ref.watch(chatGptLlmProvider);
     _selectModel = ref.watch(chatGptModelSelectorProvider);
+    _mic = ref.watch(speechInputProvider);
+    _voice = ref.watch(speechOutputProvider);
+    ref.onDispose(() {
+      unawaited(_mic.stop());
+      unawaited(_voice.stop());
+    });
     unawaited(_restore());
     return const ChatGptLabState();
   }
@@ -114,9 +147,43 @@ class ChatGptLabController extends Notifier<ChatGptLabState> {
   }
 
   Future<void> signOut() async {
+    await _voice.stop();
     await _account.signOut();
     if (ref.mounted) state = const ChatGptLabState(signedIn: false);
   }
+
+  void setSpeakReplies(bool on) {
+    state = state.copyWith(speakReplies: on);
+    if (!on) unawaited(_voice.stop());
+  }
+
+  /// Listens for one utterance with the on-device recognizer and sends it.
+  Future<void> talk() async {
+    if (state.model == null || state.streaming || state.listening) return;
+    // Barge-in: the learner talking takes precedence over the AI voice.
+    await _voice.stop();
+    if (!await _mic.ensureAvailable()) {
+      if (ref.mounted) state = state.copyWith(speechUnavailable: true);
+      return;
+    }
+    state = state.copyWith(
+      listening: true,
+      partial: '',
+      speaking: false,
+      speechUnavailable: false,
+      failure: null,
+    );
+    final heard = await _mic.listenOnce(
+      onPartial: (p) {
+        if (ref.mounted) state = state.copyWith(partial: p);
+      },
+    );
+    if (!ref.mounted) return;
+    state = state.copyWith(listening: false, partial: '');
+    await send(heard);
+  }
+
+  Future<void> stopListening() => _mic.stop();
 
   Future<void> _pickModel() async {
     try {
@@ -170,10 +237,17 @@ class ChatGptLabController extends Notifier<ChatGptLabState> {
       if (ref.mounted && firstToken != null) {
         state = state.copyWith(firstTokens: [...state.firstTokens, firstToken]);
       }
+      final replyText = reply.toString().trim();
+      if (ref.mounted && state.speakReplies && replyText.isNotEmpty) {
+        state = state.copyWith(streaming: false, speaking: true);
+        await _voice.speak(replyText);
+      }
     } on ProviderException catch (e) {
       _onFailure(e);
     } finally {
-      if (ref.mounted) state = state.copyWith(streaming: false);
+      if (ref.mounted) {
+        state = state.copyWith(streaming: false, speaking: false);
+      }
     }
   }
 

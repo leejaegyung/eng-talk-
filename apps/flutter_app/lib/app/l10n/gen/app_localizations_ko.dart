@@ -217,4 +217,23 @@ class AppLocalizationsKo extends AppLocalizations {
   String chatGptLabStats(int p50, int p95, int count, int input, int output) {
     return '측정값 — 첫 토큰 p50 ${p50}ms · p95 ${p95}ms ($count회) · 토큰 입력 $input / 출력 $output';
   }
+
+  @override
+  String get chatGptLabSpeakReplies => '답변 소리로 듣기';
+
+  @override
+  String get chatGptLabTalk => '말하기';
+
+  @override
+  String get chatGptLabListening => '듣는 중… 말을 멈추면 자동으로 보내요';
+
+  @override
+  String get chatGptLabSpeaking => '읽어주는 중…';
+
+  @override
+  String get chatGptLabSpeechUnavailable =>
+      '이 기기에서 음성 인식을 쓸 수 없어요. 시스템 설정에서 음성 인식·마이크 권한을 허용하거나, 글자로 입력해 주세요.';
+
+  @override
+  String get chatGptLabFreeVoiceNote => '음성 인식과 읽어주기는 기기에 내장된 무료 기능을 써요.';
 }

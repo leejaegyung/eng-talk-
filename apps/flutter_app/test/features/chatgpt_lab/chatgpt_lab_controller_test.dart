@@ -33,6 +33,8 @@ class FakeAccount implements ProviderAccount {
 void main() {
   late FakeAccount account;
   late FakeAi ai;
+  late FakeSpeechInput mic;
+  late FakeSpeechOutput voice;
   late ProviderContainer container;
 
   ChatGptLabController ctrl() => container.read(chatGptLabProvider.notifier);
@@ -42,6 +44,8 @@ void main() {
     final c = ProviderContainer(
       overrides: [
         chatGptAccountProvider.overrideWithValue(account),
+        speechInputProvider.overrideWithValue(mic),
+        speechOutputProvider.overrideWithValue(voice),
         chatGptLlmProvider.overrideWithValue(ai),
         chatGptModelSelectorProvider.overrideWithValue(
           selectModel ?? () async => 'plan-model',
@@ -55,6 +59,8 @@ void main() {
   setUp(() async {
     account = FakeAccount();
     ai = FakeAi();
+    mic = FakeSpeechInput();
+    voice = FakeSpeechOutput();
     container = make();
     await pumpEventQueue();
   });
@@ -147,5 +153,58 @@ void main() {
     expect(account.signOuts, 1);
     expect(state().signedIn, isFalse);
     expect(state().turns, isEmpty);
+  });
+
+  group('voice (on-device, free)', () {
+    setUp(() => ctrl().signIn());
+
+    test('replies are spoken by default', () async {
+      await ctrl().send('Hi');
+      expect(voice.spoken, ['Nice! Where do you hike?']);
+      expect(state().speaking, isFalse);
+    });
+
+    test('speaking can be turned off', () async {
+      ctrl().setSpeakReplies(false);
+      await ctrl().send('Hi');
+      expect(voice.spoken, isEmpty);
+    });
+
+    test('talk: recognized speech is sent and the reply spoken', () async {
+      mic.queue.add('I like hiking.');
+      await ctrl().talk();
+      expect(ai.chats.single.last.content, 'I like hiking.');
+      expect(state().turns.first.content, 'I like hiking.');
+      expect(voice.spoken.single, 'Nice! Where do you hike?');
+      expect(state().listening, isFalse);
+      expect(state().partial, isEmpty);
+    });
+
+    test('nothing recognized sends nothing', () async {
+      await ctrl().talk();
+      expect(ai.chats, isEmpty);
+      expect(state().listening, isFalse);
+    });
+
+    test('unavailable recognizer suggests typing', () async {
+      mic = FakeSpeechInput(available: false);
+      container = make();
+      await ctrl().signIn();
+      await ctrl().talk();
+      expect(state().speechUnavailable, isTrue);
+      expect(ai.chats, isEmpty);
+    });
+
+    test('talking while the AI speaks interrupts it', () async {
+      mic.queue.add('Wait.');
+      await ctrl().talk();
+      expect(voice.stops, greaterThanOrEqualTo(1));
+    });
+
+    test('a failed reply is not spoken', () async {
+      ai.chatError = const ProviderException(ProviderFailure.planUsageLimit);
+      await ctrl().send('Hi');
+      expect(voice.spoken, isEmpty);
+    });
   });
 }

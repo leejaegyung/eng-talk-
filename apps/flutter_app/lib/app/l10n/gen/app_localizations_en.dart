@@ -224,4 +224,24 @@ class AppLocalizationsEn extends AppLocalizations {
   String chatGptLabStats(int p50, int p95, int count, int input, int output) {
     return 'Measured — first token p50 ${p50}ms · p95 ${p95}ms ($count) · tokens in $input / out $output';
   }
+
+  @override
+  String get chatGptLabSpeakReplies => 'Read replies aloud';
+
+  @override
+  String get chatGptLabTalk => 'Speak';
+
+  @override
+  String get chatGptLabListening => 'Listening… it sends when you stop talking';
+
+  @override
+  String get chatGptLabSpeaking => 'Speaking…';
+
+  @override
+  String get chatGptLabSpeechUnavailable =>
+      'Speech recognition isn\'t available on this device. Allow speech recognition and microphone access in system settings, or type instead.';
+
+  @override
+  String get chatGptLabFreeVoiceNote =>
+      'Speech recognition and read-aloud use your device\'s free built-in features.';
 }

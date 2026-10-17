@@ -30,5 +30,7 @@
 	<string>영어 말하기 연습을 위해 마이크로 음성을 듣습니다. 녹음 원본은 저장하지 않습니다.</string>
 	<key>NSPrincipalClass</key>
 	<string>NSApplication</string>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>영어로 말한 내용을 글자로 바꿔 AI 코치에게 전달하기 위해 음성 인식을 사용합니다.</string>
 </dict>
 </plist>

@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:typed_data';
 
 import 'package:speaking_coach/domain/audio/audio_io.dart';
+import 'package:speaking_coach/domain/audio/speech_io.dart';
 import 'package:speaking_coach/domain/credentials/credential_vault.dart';
 import 'package:speaking_coach/domain/providers/ai_provider.dart';
 
@@ -125,4 +126,38 @@ Uint8List pcmChunk(int sample) {
     data.setInt16(i * 2, sample, Endian.little);
   }
   return data.buffer.asUint8List();
+}
+
+class FakeSpeechOutput implements SpeechOutput {
+  final spoken = <String>[];
+  int stops = 0;
+
+  @override
+  Future<void> speak(String text) async => spoken.add(text);
+
+  @override
+  Future<void> stop() async => stops++;
+}
+
+class FakeSpeechInput implements SpeechInput {
+  FakeSpeechInput({this.available = true});
+
+  final bool available;
+
+  /// Transcripts returned by successive [listenOnce] calls.
+  final queue = <String>[];
+  int stops = 0;
+
+  @override
+  Future<bool> ensureAvailable() async => available;
+
+  @override
+  Future<String> listenOnce({void Function(String partial)? onPartial}) async {
+    final text = queue.isEmpty ? '' : queue.removeAt(0);
+    if (text.isNotEmpty) onPartial?.call(text.split(' ').first);
+    return text;
+  }
+
+  @override
+  Future<void> stop() async => stops++;
 }
