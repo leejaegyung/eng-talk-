@@ -75,21 +75,21 @@ void main() {
   group('session phases (spec §2.4)', () {
     test('30-minute preset: 3 / 4 / 18 / 5', () {
       final p = ConversationPolicy(length: const Duration(minutes: 30));
-      expect(p.phaseAt(Duration.zero), SessionPhase.warmUp);
-      expect(p.phaseAt(const Duration(minutes: 3)), SessionPhase.activation);
-      expect(p.phaseAt(const Duration(minutes: 7)), SessionPhase.focus);
+      expect(p.stageAt(Duration.zero), LessonStage.warmUp);
+      expect(p.stageAt(const Duration(minutes: 3)), LessonStage.activation);
+      expect(p.stageAt(const Duration(minutes: 7)), LessonStage.focus);
       expect(
-        p.phaseAt(const Duration(minutes: 24, seconds: 59)),
-        SessionPhase.focus,
+        p.stageAt(const Duration(minutes: 24, seconds: 59)),
+        LessonStage.focus,
       );
-      expect(p.phaseAt(const Duration(minutes: 25)), SessionPhase.wrapUp);
-      expect(p.phaseAt(const Duration(minutes: 40)), SessionPhase.wrapUp);
+      expect(p.stageAt(const Duration(minutes: 25)), LessonStage.wrapUp);
+      expect(p.stageAt(const Duration(minutes: 40)), LessonStage.wrapUp);
     });
 
     test('other lengths scale proportionally', () {
       final p = ConversationPolicy(length: const Duration(minutes: 20));
-      expect(p.phaseAt(const Duration(minutes: 2)), SessionPhase.activation);
-      expect(p.phaseAt(const Duration(minutes: 17)), SessionPhase.wrapUp);
+      expect(p.stageAt(const Duration(minutes: 2)), LessonStage.activation);
+      expect(p.stageAt(const Duration(minutes: 17)), LessonStage.wrapUp);
     });
 
     test('each phase adds its own note', () {

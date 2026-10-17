@@ -10,7 +10,7 @@ enum HintStage { word, sentenceStarter, korean, example }
 enum CoachAction { hint, repeat, slower, correctLast, changeTopic }
 
 /// spec §2.4: warm-up → expression activation → focused talk → wrap-up.
-enum SessionPhase { warmUp, activation, focus, wrapUp }
+enum LessonStage { warmUp, activation, focus, wrapUp }
 
 /// What to send for an action: a visible learner line plus notes for the
 /// next request.
@@ -83,7 +83,7 @@ class ConversationPolicy {
   /// Notes for every request at [elapsed] into the session.
   List<String> standingNotes(Duration elapsed) => [
     if (_slower) 'For the rest of the session use shorter, simpler sentences.',
-    ?_phaseNote(phaseAt(elapsed)),
+    ?_stageNote(stageAt(elapsed)),
     if (correctionDue(elapsed))
       'At a natural pause, briefly point out at most one important mistake '
           'from recent learner messages, then continue the conversation.',
@@ -96,26 +96,26 @@ class ConversationPolicy {
 
   void correctionGiven(Duration elapsed) => _lastCorrection = elapsed;
 
-  SessionPhase phaseAt(Duration elapsed) {
+  LessonStage stageAt(Duration elapsed) {
     final f = elapsed.inMilliseconds / length.inMilliseconds;
     // 3 / 4 / 18 / 5 out of 30 minutes.
-    if (f < 3 / 30) return SessionPhase.warmUp;
-    if (f < 7 / 30) return SessionPhase.activation;
-    if (f < 25 / 30) return SessionPhase.focus;
-    return SessionPhase.wrapUp;
+    if (f < 3 / 30) return LessonStage.warmUp;
+    if (f < 7 / 30) return LessonStage.activation;
+    if (f < 25 / 30) return LessonStage.focus;
+    return LessonStage.wrapUp;
   }
 
   bool suggestHint(Duration silence) => silence >= hintAfterSilence;
 
-  static String? _phaseNote(SessionPhase p) => switch (p) {
-    SessionPhase.warmUp =>
+  static String? _stageNote(LessonStage p) => switch (p) {
+    LessonStage.warmUp =>
       'Warm-up: ask easy, familiar questions to get them talking.',
-    SessionPhase.activation =>
+    LessonStage.activation =>
       'Expression activation: naturally model one or two useful expressions '
           'for this topic and invite the learner to use them.',
-    SessionPhase.focus =>
+    LessonStage.focus =>
       'Focused practice: maximize learner talk with follow-up questions.',
-    SessionPhase.wrapUp =>
+    LessonStage.wrapUp =>
       'Time to wrap up: within one or two turns, close the conversation '
           'warmly. Detailed feedback is given separately.',
   };
