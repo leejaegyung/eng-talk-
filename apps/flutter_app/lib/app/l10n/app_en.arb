@@ -45,5 +45,18 @@
   "failureRateLimited": "Too many requests. Please try again shortly.",
   "failureModelUnavailable": "A required model isn't available on this account.",
   "failureNetwork": "Can't reach the network. Check your internet connection.",
-  "failureUnknown": "Something went wrong. Please try again shortly."
+  "failureUnknown": "Something went wrong. Please try again shortly.",
+  "failureSignInRequired": "Please sign in with ChatGPT again.",
+  "failurePlanUsageLimit": "You've reached your ChatGPT plan's usage limit. Check ChatGPT Settings → Usage.",
+  "failurePlanNotEligible": "This ChatGPT account can't use its plan in apps (Plus or Pro required).",
+  "homeChatGptLab": "ChatGPT chat test (uses your plan)",
+  "chatGptLabTitle": "ChatGPT chat test",
+  "chatGptLabIntro": "Uses GPT through your ChatGPT Plus/Pro plan. No API key or extra charges — it runs within your plan's usage limits.",
+  "chatGptLabSignIn": "Sign in with ChatGPT",
+  "chatGptLabSigningIn": "Finish signing in in your browser…",
+  "chatGptLabSignOut": "Sign out",
+  "chatGptLabSignedIn": "Connected to ChatGPT · model {model}",
+  "chatGptLabInput": "Type something in English",
+  "chatGptLabSend": "Send",
+  "chatGptLabStats": "Measured — first token p50 {p50}ms · p95 {p95}ms ({count}) · tokens in {input} / out {output}"
 }

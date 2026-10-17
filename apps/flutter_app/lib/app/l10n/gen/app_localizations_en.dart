@@ -178,4 +178,50 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get failureUnknown =>
       'Something went wrong. Please try again shortly.';
+
+  @override
+  String get failureSignInRequired => 'Please sign in with ChatGPT again.';
+
+  @override
+  String get failurePlanUsageLimit =>
+      'You\'ve reached your ChatGPT plan\'s usage limit. Check ChatGPT Settings → Usage.';
+
+  @override
+  String get failurePlanNotEligible =>
+      'This ChatGPT account can\'t use its plan in apps (Plus or Pro required).';
+
+  @override
+  String get homeChatGptLab => 'ChatGPT chat test (uses your plan)';
+
+  @override
+  String get chatGptLabTitle => 'ChatGPT chat test';
+
+  @override
+  String get chatGptLabIntro =>
+      'Uses GPT through your ChatGPT Plus/Pro plan. No API key or extra charges — it runs within your plan\'s usage limits.';
+
+  @override
+  String get chatGptLabSignIn => 'Sign in with ChatGPT';
+
+  @override
+  String get chatGptLabSigningIn => 'Finish signing in in your browser…';
+
+  @override
+  String get chatGptLabSignOut => 'Sign out';
+
+  @override
+  String chatGptLabSignedIn(String model) {
+    return 'Connected to ChatGPT · model $model';
+  }
+
+  @override
+  String get chatGptLabInput => 'Type something in English';
+
+  @override
+  String get chatGptLabSend => 'Send';
+
+  @override
+  String chatGptLabStats(int p50, int p95, int count, int input, int output) {
+    return 'Measured — first token p50 ${p50}ms · p95 ${p95}ms ($count) · tokens in $input / out $output';
+  }
 }

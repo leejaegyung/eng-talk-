@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../app/l10n/gen/app_localizations.dart';
 import '../../domain/metrics/latency_stats.dart';
-import '../../domain/providers/provider_failure.dart';
+import '../common/failure_text.dart';
 import 'voice_lab_controller.dart';
 
 class VoiceLabScreen extends ConsumerStatefulWidget {
@@ -105,7 +105,7 @@ class _VoiceLabScreenState extends ConsumerState<VoiceLabScreen> {
                 ),
               ],
               if (s.failure case final f?)
-                _Notice(_failureText(l10n, f), Icons.error_outline),
+                _Notice(failureText(l10n, f), Icons.error_outline),
               if (s.micDenied) _Notice(l10n.audioLabMicDenied, Icons.mic_off),
               const Divider(height: 40),
               Center(
@@ -165,16 +165,6 @@ class _VoiceLabScreenState extends ConsumerState<VoiceLabScreen> {
     VoicePhase.thinking => l10n.voiceLabPhaseThinking,
     VoicePhase.speaking => l10n.voiceLabPhaseSpeaking,
   };
-
-  static String _failureText(AppLocalizations l10n, ProviderFailure f) =>
-      switch (f) {
-        ProviderFailure.invalidKey => l10n.failureInvalidKey,
-        ProviderFailure.insufficientQuota => l10n.failureInsufficientQuota,
-        ProviderFailure.rateLimited => l10n.failureRateLimited,
-        ProviderFailure.modelUnavailable => l10n.failureModelUnavailable,
-        ProviderFailure.network => l10n.failureNetwork,
-        ProviderFailure.unknown => l10n.failureUnknown,
-      };
 }
 
 class _Measurements extends StatelessWidget {

@@ -4,7 +4,8 @@
 
 **현재 Phase:** 0 (PoC)
 **대상 플랫폼:** macOS·Windows 데스크톱 (Mac에서 개발), Galaxy는 APK 배포 후 확인 (ADR-009)
-**다음 태스크:** P0-T6 실측(사용자 키) → Phase 0 종료 → P1-A 텍스트 루프
+**다음 태스크:** P0-T8 ChatGPT 로그인 실사용 확인(사용자) → P0-T9 OS 음성(TTS→STT) → Phase 0 종료
+**과금 방향:** ADR-011 — ChatGPT 구독(추가 요금 없음) 기본, OpenAI API 키는 선택
 **Phase 0 순서:** T7 → T4 → T5 → T3 → T6(키·과금, 실행 전 확인). T2는 사용자 Windows 실행 확인 대기
 
 ## 상태
@@ -18,8 +19,10 @@
 | P0-T3 오디오 | ✅ (macOS) | PCM16 스트림 녹음 → 메모리 → WAV 재생(전용 temp 폴더, 재생 후 삭제), 진폭 VAD, 권한 거부·무신호 안내. **사용자 macOS 녹음·재생 확인 (2026-10-17)**. Windows/Galaxy는 다음 릴리스로 확인 |
 | P0-T4 Vault | ✅ | `domain/credentials` 인터페이스 + `data/vault/SecureStorageVault`(byok. 네임스페이스, ref 검증으로 키가 키 이름에 들어가는 실수 차단). 단위 13개. macOS 실제 키체인에서 저장→재시작→조회→삭제→재시작→null 확인(integration_test 3회 실행). Windows/Android 실기 확인은 P1-A2 설정 화면에서 |
 | P0-T5 Drift | ✅ | 6개 테이블 v1, FK·cascade, enum은 domain. CRUD/cascade/FK/키 컬럼 금지(S1) 테스트 + validateDatabaseSchema + 스냅샷 v1(make-migrations) |
-| P0-T6 OpenAI 왕복 | 🔄 | 구현: domain `LlmProvider`/`VoiceProvider`/`ProviderFailure`, `data/providers/openai`(키는 요청마다 vault에서 읽음, SSE 스트리밍, usage 토큰 수집, 오류 정규화), provider_catalog(라이브 모델 목록과 대조해 선택), 홈 → "음성 대화 테스트(개발용)"(키 입력·연결 테스트·말하기·구간별 지연·p50/p95·측정 사용량). 테스트: MockClient 18 + 컨트롤러 10 + 위젯 5. 실제 OpenAI에 가짜 키 → 401 → invalidKey 확인(과금 없음). **남음: 사용자 키로 실제 왕복 10회 측정** |
+| P0-T6 OpenAI 왕복 (API 키, 선택 경로) | 🔄 | 구현: domain `LlmProvider`/`VoiceProvider`/`ProviderFailure`, `data/providers/openai`(키는 요청마다 vault에서 읽음, SSE 스트리밍, usage 토큰 수집, 오류 정규화), provider_catalog(라이브 모델 목록과 대조해 선택), 홈 → "음성 대화 테스트(개발용)"(키 입력·연결 테스트·말하기·구간별 지연·p50/p95·측정 사용량). 테스트: MockClient 18 + 컨트롤러 10 + 위젯 5. 실제 OpenAI에 가짜 키 → 401 → invalidKey 확인(과금 없음). **남음: 사용자 키로 실제 왕복 10회 측정** |
 | P0-T7 상태 머신 | ✅ | `domain/conversation/` 순수 Dart. 시퀀스(seq)+턴 ID로 지연 응답 거부, barge-in 시 `interruptsAssistant`, 연결 끊김→paused(connectionLost)→재연결. 테스트 31개 |
+| P0-T8 ChatGPT 구독 연결 | 🔄 | Sign in with ChatGPT(오픈소스 plan usage): dynamic_agent_client 자가 등록, PKCE, 루프백 127.0.0.1 콜백, 토큰은 vault만, 갱신 직렬화·종료 오류만 세션 삭제, 로그아웃 시 revoke. `/v1/responses`(stream, store=false, instructions). 오류 3종 추가(signInRequired/planUsageLimit/planNotEligible). 홈 → "ChatGPT 대화 테스트". 테스트: auth 14 + client 12 + controller 10. curl은 Cloudflare 403(브라우저는 통과 예상) → **사용자 실로그인 확인 필요** |
+| P0-T9 OS 음성 (무료) | ⬜ | flutter_tts(4플랫폼), speech_to_text(Windows 베타) |
 
 ## 알려진 이슈
 - macOS: record_macos 2.1.1에서 echoCancel(voice processing)을 켜면 입력이 전부 0 → macOS는 끔. 스피커 사용 시 AI 목소리가 마이크로 들어가 barge-in 오검출 가능 → 헤드폰 권장 또는 P1-B1에서 재생 중 VAD 임계값 상향 검토

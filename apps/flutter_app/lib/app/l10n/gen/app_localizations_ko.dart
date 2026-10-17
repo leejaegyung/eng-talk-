@@ -171,4 +171,50 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get failureUnknown => '알 수 없는 오류가 발생했어요. 잠시 후 다시 시도해 주세요.';
+
+  @override
+  String get failureSignInRequired => 'ChatGPT 로그인이 필요해요. 다시 로그인해 주세요.';
+
+  @override
+  String get failurePlanUsageLimit =>
+      'ChatGPT 구독의 사용 한도에 도달했어요. ChatGPT 설정 → 사용량에서 확인할 수 있어요.';
+
+  @override
+  String get failurePlanNotEligible =>
+      '이 ChatGPT 계정은 앱에서 구독을 사용할 수 없어요. (Plus 또는 Pro 구독 필요)';
+
+  @override
+  String get homeChatGptLab => 'ChatGPT 대화 테스트 (구독 사용)';
+
+  @override
+  String get chatGptLabTitle => 'ChatGPT 대화 테스트';
+
+  @override
+  String get chatGptLabIntro =>
+      'ChatGPT Plus/Pro 구독으로 GPT를 사용해요. API 키나 추가 요금이 필요 없고, 구독의 사용 한도 안에서 동작해요.';
+
+  @override
+  String get chatGptLabSignIn => 'ChatGPT로 로그인';
+
+  @override
+  String get chatGptLabSigningIn => '브라우저에서 로그인을 완료해 주세요…';
+
+  @override
+  String get chatGptLabSignOut => '로그아웃';
+
+  @override
+  String chatGptLabSignedIn(String model) {
+    return 'ChatGPT 연결됨 · 모델 $model';
+  }
+
+  @override
+  String get chatGptLabInput => '영어로 입력해 보세요';
+
+  @override
+  String get chatGptLabSend => '보내기';
+
+  @override
+  String chatGptLabStats(int p50, int p95, int count, int input, int output) {
+    return '측정값 — 첫 토큰 p50 ${p50}ms · p95 ${p95}ms ($count회) · 토큰 입력 $input / 출력 $output';
+  }
 }

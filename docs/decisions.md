@@ -17,7 +17,7 @@ spec §19 기본 선택. MVP에는 세션 브로커를 운영하지 않는다. R
 ## ADR-004 계정 없음, 원본 녹음 미저장 — 기본값 채택 (2026-10-17)
 로그인·동기화 없음. 음성은 STT 전송 후 메모리에서 폐기한다.
 
-## ADR-005 첫 공급자: OpenAI — 기본값 채택 (2026-10-17)
+## ADR-005 첫 공급자: OpenAI — 기본값 채택 (2026-10-17), 과금 경로는 ADR-011로 대체
 STT/LLM/TTS를 한 공급자로 PoC. 모델 ID는 공급자의 모델 목록 API + 앱 내 catalog 설정으로 고르고 하드코딩하지 않는다.
 Anthropic/Gemini는 Phase 2 어댑터 (Anthropic은 STT/TTS가 없으므로 텍스트 LLM 전용 → 음성 공급자 분리 설정 필요).
 
@@ -48,3 +48,11 @@ Galaxy(Android)는 배포 빌드(APK)를 설치해 최종 확인만 한다(USB �
 - 태그와 pubspec 버전이 다르면 릴리스 실패. 빌드 번호(Android versionCode)는 워크플로 실행 번호. `-` 포함 태그는 prerelease.
 - 산출물: `SpeakingCoach-<ver>-windows-x64.zip`, `-macos.zip`, `-android.apk`. 모두 서명 없음.
 - 알려진 한계: APK는 CI의 임시 디버그 키로 서명되어 버전 간 서명이 달라 업데이트 설치가 안 될 수 있음(삭제 후 재설치). 고정 키스토어를 GitHub Secrets에 두면 해결 — 필요 시 사용자 확인 후 추가.
+
+## ADR-011 과금 경로: ChatGPT 구독 우선(추가 요금 없음), API 키는 선택 — 확정 (2026-10-17)
+사용자 결정: "gpt를 연결해서 쓰고 싶은데 추가 요금이 안나오게". ADR-005(OpenAI API 키 우선)를 대체한다.
+- LLM: **Sign in with ChatGPT**(오픈소스 앱용 plan usage, developers.openai.com/siwc). `dynamic_agent_client` 자가 등록 → 발급 client_id 저장, PKCE 공개 클라이언트, 루프백 리다이렉트 `http://127.0.0.1:<port>/auth/callback`. `POST /v1/responses`(stream=true, store=false, system은 `instructions`)만 지원. Plus/Pro 구독 한도 내 사용.
+- STT/TTS: plan usage가 오디오·전사를 지원하지 않으므로 OS 기본 음성(`speech_to_text`, `flutter_tts`) — 무료. Windows STT는 패키지가 베타 → P0에서 검증.
+- OpenAI API 키(BYOK) 경로는 "고품질 음성" 선택 옵션으로 유지(P0-T6 코드 재사용).
+- 토큰(access/refresh/id)과 발급 client_id는 CredentialVault에만 저장(S1과 동일 취급).
+- 위험: 오픈소스 앱 조건(저장소 공개 + 라이선스), 프리뷰 기능 변경 가능성, Android 루프백 리다이렉트 미문서화, 무료 사용자는 대상 아님(문서상 Plus/Pro).

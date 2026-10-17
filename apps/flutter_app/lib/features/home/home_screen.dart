@@ -29,6 +29,11 @@ class HomeScreen extends StatelessWidget {
             ),
             const SizedBox(height: 12),
             TextButton.icon(
+              onPressed: () => context.push(AppRoutes.chatGptLab),
+              icon: const Icon(Icons.chat_bubble_outline),
+              label: Text(l10n.homeChatGptLab),
+            ),
+            TextButton.icon(
               onPressed: () => context.push(AppRoutes.audioLab),
               icon: const Icon(Icons.graphic_eq),
               label: Text(l10n.homeAudioLab),

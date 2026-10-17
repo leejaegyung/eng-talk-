@@ -373,6 +373,84 @@ abstract class AppLocalizations {
   /// In ko, this message translates to:
   /// **'알 수 없는 오류가 발생했어요. 잠시 후 다시 시도해 주세요.'**
   String get failureUnknown;
+
+  /// No description provided for @failureSignInRequired.
+  ///
+  /// In ko, this message translates to:
+  /// **'ChatGPT 로그인이 필요해요. 다시 로그인해 주세요.'**
+  String get failureSignInRequired;
+
+  /// No description provided for @failurePlanUsageLimit.
+  ///
+  /// In ko, this message translates to:
+  /// **'ChatGPT 구독의 사용 한도에 도달했어요. ChatGPT 설정 → 사용량에서 확인할 수 있어요.'**
+  String get failurePlanUsageLimit;
+
+  /// No description provided for @failurePlanNotEligible.
+  ///
+  /// In ko, this message translates to:
+  /// **'이 ChatGPT 계정은 앱에서 구독을 사용할 수 없어요. (Plus 또는 Pro 구독 필요)'**
+  String get failurePlanNotEligible;
+
+  /// No description provided for @homeChatGptLab.
+  ///
+  /// In ko, this message translates to:
+  /// **'ChatGPT 대화 테스트 (구독 사용)'**
+  String get homeChatGptLab;
+
+  /// No description provided for @chatGptLabTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'ChatGPT 대화 테스트'**
+  String get chatGptLabTitle;
+
+  /// No description provided for @chatGptLabIntro.
+  ///
+  /// In ko, this message translates to:
+  /// **'ChatGPT Plus/Pro 구독으로 GPT를 사용해요. API 키나 추가 요금이 필요 없고, 구독의 사용 한도 안에서 동작해요.'**
+  String get chatGptLabIntro;
+
+  /// No description provided for @chatGptLabSignIn.
+  ///
+  /// In ko, this message translates to:
+  /// **'ChatGPT로 로그인'**
+  String get chatGptLabSignIn;
+
+  /// No description provided for @chatGptLabSigningIn.
+  ///
+  /// In ko, this message translates to:
+  /// **'브라우저에서 로그인을 완료해 주세요…'**
+  String get chatGptLabSigningIn;
+
+  /// No description provided for @chatGptLabSignOut.
+  ///
+  /// In ko, this message translates to:
+  /// **'로그아웃'**
+  String get chatGptLabSignOut;
+
+  /// No description provided for @chatGptLabSignedIn.
+  ///
+  /// In ko, this message translates to:
+  /// **'ChatGPT 연결됨 · 모델 {model}'**
+  String chatGptLabSignedIn(String model);
+
+  /// No description provided for @chatGptLabInput.
+  ///
+  /// In ko, this message translates to:
+  /// **'영어로 입력해 보세요'**
+  String get chatGptLabInput;
+
+  /// No description provided for @chatGptLabSend.
+  ///
+  /// In ko, this message translates to:
+  /// **'보내기'**
+  String get chatGptLabSend;
+
+  /// No description provided for @chatGptLabStats.
+  ///
+  /// In ko, this message translates to:
+  /// **'측정값 — 첫 토큰 p50 {p50}ms · p95 {p95}ms ({count}회) · 토큰 입력 {input} / 출력 {output}'**
+  String chatGptLabStats(int p50, int p95, int count, int input, int output);
 }
 
 class _AppLocalizationsDelegate
