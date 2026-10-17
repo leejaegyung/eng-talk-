@@ -48,3 +48,9 @@ app: 모든 레이어를 배선(DI)할 수 있는 유일한 곳
 
 ## 오류 모델
 공급자 오류는 `data/`에서 `ProviderFailure`(invalidKey, insufficientQuota, rateLimited, modelUnavailable, network, unknown)로 정규화한다. UI는 이 enum으로만 분기한다 (spec §11).
+
+## 로컬 DB (Drift)
+- 테이블: `lib/data/db/tables.dart`, DB: `lib/data/db/app_database.dart` (생성 파일 `*.g.dart`는 커밋한다 → CI에 build_runner 불필요)
+- 테이블 변경 후: `dart run build_runner build`
+- 스키마 변경 시: `schemaVersion` 증가 → `dart run drift_dev make-migrations` (스냅샷 `drift_schemas/` + 단계별 마이그레이션 테스트 `test/drift/` 생성) → `migration` 구현. 스냅샷 누락은 `test/data/db/schema_test.dart`가 잡는다.
+- enum 컬럼은 이름으로 저장 → `domain/conversation/session_enums.dart` 값 이름 변경 = 마이그레이션 필요.
