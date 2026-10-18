@@ -3,6 +3,8 @@
 // temporary file. Only the microphone is scripted, since nobody speaks
 // during the run; the user's own data and settings are not touched.
 //   flutter test integration_test/mac_e2e_test.dart -d macos
+// With --dart-define=AI=scripted the AI is scripted too, so the run needs
+// no ChatGPT sign-in (and no keychain prompt) — everything else stays real.
 import 'dart:io';
 
 import 'package:drift/native.dart';
@@ -17,11 +19,66 @@ import 'package:speaking_coach/data/db/app_database.dart' show AppDatabase;
 import 'package:speaking_coach/domain/audio/speech_io.dart';
 import 'package:speaking_coach/domain/conversation/session_enums.dart';
 import 'package:speaking_coach/domain/conversation/session_types.dart';
+import 'package:speaking_coach/domain/credentials/provider_account.dart';
+import 'package:speaking_coach/domain/providers/ai_provider.dart';
 import 'package:speaking_coach/domain/sessions/export.dart';
+import 'package:speaking_coach/features/assessment/assessment_controller.dart';
 import 'package:speaking_coach/features/conversation/conversation_controller.dart';
 import 'package:speaking_coach/features/home/home_controller.dart';
+import 'package:speaking_coach/features/setup/setup_controller.dart';
 
 const _log = AppLogger('e2e');
+const _scriptedAi = String.fromEnvironment('AI') == 'scripted';
+
+class SignedIn implements ProviderAccount {
+  @override
+  Future<bool> isSignedIn() async => true;
+
+  @override
+  Future<void> signIn() async {}
+
+  @override
+  Future<bool> signOut() async => true;
+}
+
+/// Streams replies shaped like the model's for each of the app's prompts.
+class ScriptedLlm implements LlmProvider {
+  @override
+  Future<List<String>> listModels() async => const ['scripted'];
+
+  @override
+  Stream<ChatChunk> streamChat({
+    required String model,
+    required List<ChatMessage> messages,
+    int maxOutputTokens = 200,
+  }) async* {
+    final system = messages.first.content;
+    final String reply;
+    if (system.contains('You review an English speaking practice')) {
+      final line = RegExp(r'\[t(\d+)\] learner: (.+)')
+          .firstMatch(messages[1].content)!;
+      reply =
+          '{"strengths": ["You explained what you wanted clearly"], '
+          '"corrections": [{"turn_id": ${line[1]}, "original": "${line[2]}", '
+          '"suggested": "Hi, I have a reservation for two nights under Kim.", '
+          '"explanation_ko": "문장 부호와 연결을 다듬었어요", '
+          '"severity": "medium", "category": "structure", '
+          '"practice_prompt": "How would you check in?"}], '
+          '"expressions": [{"phrase": "I booked a room for", '
+          '"meaning_ko": "~로 방을 예약했어요"}], "next_topic": "Ordering room service"}';
+    } else if (system.contains('placement conversation')) {
+      reply =
+          '{"relevance": 4, "sentence_formation": 3, "vocabulary": 3, '
+          '"continuity": 3, "comment_ko": "질문에 맞게 잘 답했어요"}';
+    } else {
+      reply = 'Welcome to our hotel! Could you tell me your name, please?';
+    }
+    for (final word in reply.split(' ')) {
+      await Future<void>.delayed(const Duration(milliseconds: 20));
+      yield TextDelta('$word ');
+    }
+  }
+}
 
 /// Answers in place of the microphone, with partial results spread out so
 /// the speaking-time estimate is measured.
@@ -81,12 +138,22 @@ void main() {
           }),
           speechInputProvider.overrideWithValue(mic),
           dataExporterProvider.overrideWithValue(exporter),
+          if (_scriptedAi) ...[
+            chatGptAccountProvider.overrideWithValue(SignedIn()),
+            chatGptLlmProvider.overrideWithValue(ScriptedLlm()),
+            chatGptModelSelectorProvider.overrideWithValue(
+              () async => 'scripted',
+            ),
+          ],
         ],
       );
       return c;
     }
 
     tester.platformDispatcher.localesTestValue = const [Locale('ko')];
+    // Typed text comes from the test, not the macOS keyboard.
+    tester.binding.testTextInput.register();
+    addTearDown(tester.binding.testTextInput.unregister);
     var container = boot();
     await tester.pumpWidget(
       UncontrolledProviderScope(
@@ -102,7 +169,13 @@ void main() {
     }) async {
       final end = DateTime.now().add(timeout);
       while (!done()) {
-        if (DateTime.now().isAfter(end)) fail('timed out waiting: $what');
+        if (DateTime.now().isAfter(end)) {
+          final shown = [
+            for (final e in find.byType(Text).evaluate())
+              ?(e.widget as Text).data,
+          ];
+          fail('timed out waiting: $what\nOn screen: $shown');
+        }
         await tester.pump(const Duration(milliseconds: 100));
       }
     }
@@ -122,6 +195,19 @@ void main() {
     }
 
     Future<void> tapText(String text) => tap(find.text(text));
+
+    /// Scrolls the screen's list until [f] is built and visible.
+    Future<void> scrollTo(Finder f) async {
+      if (f.evaluate().isEmpty) {
+        await tester.scrollUntilVisible(
+          f,
+          300,
+          scrollable: find.byType(Scrollable).first,
+        );
+      }
+      await tap(f);
+    }
+
     final clock = Stopwatch()..start();
     void step(String name) {
       final line = '[${clock.elapsed.inSeconds}s] $name';
@@ -131,6 +217,7 @@ void main() {
     }
 
     // 1. Onboarding with goals, already signed in to ChatGPT.
+    step('start (AI: ${_scriptedAi ? 'scripted' : 'ChatGPT plan'})');
     final signedIn = await tester.runAsync(
       () => container.read(chatGptAccountProvider).isSignedIn(),
     );
@@ -164,6 +251,11 @@ void main() {
     for (final (i, a) in answers.indexed) {
       await waitFor(find.text('질문 ${i + 1} / 5'));
       await tester.enterText(find.byType(TextField), a);
+      await tester.pump();
+      step(
+        'answer ${i + 1} kept: '
+        '"${container.read(assessmentProvider).currentAnswer}"',
+      );
       await tapText(i == 4 ? '결과 보기' : '다음');
     }
     await waitFor(find.textContaining('추천 레벨: L'));
@@ -176,10 +268,15 @@ void main() {
     // 3. Setup preselected from the travel goal; pick a hotel scenario.
     step('setup');
     await tap(find.widgetWithText(FilledButton, '대화 시작'));
-    await tapText('호텔 체크인');
+    step(
+      'setup preselected: ${container.read(setupProvider).mode.name}, '
+      '${container.read(setupProvider).length.inMinutes} min',
+    );
+    expect(container.read(setupProvider).mode, SessionMode.roleplay);
+    await scrollTo(find.text('호텔 체크인'));
     // Hands-free (on by default) hears this once the AI has spoken.
     mic.queue.add('Hi I have a reservation for two nights under Kim');
-    await tap(find.widgetWithText(FilledButton, '대화 시작'));
+    await scrollTo(find.widgetWithText(FilledButton, '대화 시작'));
 
     // 4. Conversation: the AI opens, a hands-free voice answer, then typed.
     ConversationState conv() => container.read(conversationProvider);
@@ -265,14 +362,14 @@ void main() {
     await tap(find.byTooltip('성장 기록'));
     await waitFor(find.text('자주 고친 부분'));
     expect(find.text('1회'), findsWidgets);
-    await tester.pageBack();
+    await tap(find.byType(BackButton));
     await tester.pump(const Duration(milliseconds: 500));
 
     // 7. Review the corrections.
     if (home.stats.reviewsDue > 0) {
       await tapText('복습할 문장');
       await tapText('말해봤어요');
-      await tester.pageBack();
+      await tap(find.byType(BackButton));
       await tester.pump(const Duration(milliseconds: 500));
     }
 
@@ -281,12 +378,12 @@ void main() {
     await tester.enterText(find.byType(TextField), 'reservation');
     await tester.pump(const Duration(milliseconds: 800));
     expect(find.textContaining('상황 역할극'), findsWidgets);
-    await tester.pageBack();
+    await tap(find.byType(BackButton));
     await tester.pump(const Duration(milliseconds: 500));
 
     // 9. Export holds the transcript, never sign-in tokens.
     await tap(find.byIcon(Icons.settings_outlined));
-    await tapText('대화 기록 내보내기 (JSON·CSV)');
+    await scrollTo(find.text('대화 기록 내보내기 (JSON·CSV)'));
     await until(() => exporter.files != null, what: 'export');
     final all = exporter.files!.values.join();
     expect(all, contains('reservation'));
