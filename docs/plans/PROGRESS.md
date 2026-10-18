@@ -4,7 +4,7 @@
 
 **현재 Phase:** 2 (품질) — 사용자 결정(2026-10-18): Phase 1 기기 확인은 Mac 자동 E2E로 대신하고 진행. Windows/Galaxy/iPhone 확인은 미완
 **대상 플랫폼:** macOS·Windows 데스크톱 (Mac에서 개발), Galaxy는 APK 배포 후 확인 (ADR-009)
-**다음 태스크:** P2-3 발화 지표(소리 크기 VAD, 실기기 데이터 필요) / P2-10 Realtime 스파이크. P2-6·P2-8은 결정 필요. 사람 필요: 실제 목소리 인식 정확도, 블루투스 이어폰 연결·해제(Galaxy·iPhone)
+**다음 태스크:** P2-8 Claude 공급자(ADR-014) → P2-3 발화 지표(실기기 데이터 필요). P2-6·P2-7 보류(ADR-013)
 **과금 방향:** ADR-011 — ChatGPT 구독(추가 요금 없음) 기본, OpenAI API 키는 선택
 **Phase 0 순서:** T7 → T4 → T5 → T3 → T6(키·과금, 실행 전 확인). T2는 사용자 Windows 실행 확인 대기
 

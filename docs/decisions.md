@@ -59,3 +59,9 @@ Galaxy(Android)는 배포 빌드(APK)를 설치해 최종 확인만 한다(USB �
 
 ## ADR-012 iOS 빌드 추가 — 확정 (2026-10-18)
 사용자 요청으로 ADR-009의 "iOS는 MVP 이후"를 앞당겨 iOS 플랫폼을 추가한다(최소 iOS 15). 마이크·음성 인식 권한 문구, `speakingcoach://` URL 스킴(ChatGPT 로그인 후 앱 복귀)을 설정했다. 서명 인증서가 없어 서명 없는 빌드(`flutter build ios --no-codesign`)까지만 자동화한다. 설치용 서명 방식(무료 Apple ID 7일 / 유료 개발자 계정 TestFlight)은 사용자 결정 대기.
+
+## ADR-013 유료 OpenAI 음성 미도입 — 확정 (2026-10-18)
+사용자 결정. 음성 인식·합성은 무료 OS 음성만 사용한다. Phase 2의 P2-6(OpenAI 고품질 음성)·P2-7(비용 추적·한도)은 보류. 인식 정확도는 맥락 힌트(P1-B1a)·말한 뒤 확인(P2-2)으로 보완한다.
+
+## ADR-014 두 번째 AI 공급자: Claude (Anthropic) — 확정 (2026-10-18)
+사용자 결정. P2-8은 Anthropic Messages API 어댑터(`LlmProvider`)로 구현한다. 사용자 API 키(BYOK)는 CredentialVault에만 저장, 모델 ID는 provider catalog에서 라이브 목록과 대조해 고른다(규칙 4). 사용량만큼 과금되므로 실제 호출 테스트는 사용자 확인 후에만 한다. ChatGPT 구독이 기본 경로로 남는다(ADR-011).
