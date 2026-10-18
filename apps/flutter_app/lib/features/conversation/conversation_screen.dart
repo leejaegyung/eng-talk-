@@ -58,6 +58,13 @@ class _ConversationScreenState extends ConsumerState<ConversationScreen> {
       if (prev?.ended == false && next.ended && id != null) {
         context.pushReplacement(AppRoutes.result(id));
       }
+      // Recognized speech to check before sending (P2-2).
+      if (next.draft case final draft? when draft != prev?.draft) {
+        _input.value = TextEditingValue(
+          text: draft,
+          selection: TextSelection.collapsed(offset: draft.length),
+        );
+      }
     });
 
     final Widget body;
@@ -266,6 +273,10 @@ class _ConversationScreenState extends ConsumerState<ConversationScreen> {
                     enabled: canAct,
                     decoration: InputDecoration(
                       hintText: l10n.conversationInput,
+                      helperText: s.draft == null
+                          ? null
+                          : l10n.conversationDraftHelp,
+                      helperMaxLines: 2,
                     ),
                     onSubmitted: (_) => _send(),
                   ),

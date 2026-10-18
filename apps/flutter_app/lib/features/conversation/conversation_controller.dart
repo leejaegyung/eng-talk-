@@ -51,6 +51,7 @@ final class ConversationState {
     this.hintSuggested = false,
     this.subtitles = true,
     this.handsFree = false,
+    this.draft,
     this.failure,
   });
 
@@ -73,6 +74,9 @@ final class ConversationState {
 
   /// Listen again on its own once the AI has finished speaking (P2-1).
   final bool handsFree;
+
+  /// Recognized speech waiting in the input box to be checked (P2-2).
+  final String? draft;
   final ProviderFailure? failure;
 
   bool get active => switch (phase) {
@@ -113,6 +117,7 @@ final class ConversationState {
     bool? hintSuggested,
     bool? subtitles,
     bool? handsFree,
+    Object? draft = _unset,
     Object? failure = _unset,
   }) => ConversationState(
     signedIn: signedIn ?? this.signedIn,
@@ -129,6 +134,7 @@ final class ConversationState {
     hintSuggested: hintSuggested ?? this.hintSuggested,
     subtitles: subtitles ?? this.subtitles,
     handsFree: handsFree ?? this.handsFree,
+    draft: identical(draft, _unset) ? this.draft : draft as String?,
     failure: identical(failure, _unset)
         ? this.failure
         : failure as ProviderFailure?,
@@ -194,6 +200,11 @@ class ConversationController extends Notifier<ConversationState> {
   bool _discardSpeech = false;
   Future<void>? _listening;
 
+  /// Check recognized speech before sending; its estimated speaking time
+  /// goes with the text once sent.
+  bool _confirmSpeech = false;
+  int? _draftSpeechMs;
+
   @override
   ConversationState build() {
     _account = ref.watch(chatGptAccountProvider);
@@ -223,6 +234,7 @@ class ConversationController extends Notifier<ConversationState> {
     final signedIn = await _account.isSignedIn();
     _speakReplies = await _settings.read(SettingKeys.speakReplies) != 'false';
     final handsFree = await _settings.read(SettingKeys.handsFree) != 'false';
+    _confirmSpeech = await _settings.read(SettingKeys.confirmSpeech) == 'true';
     if (!ref.mounted) return;
     state = state.copyWith(signedIn: signedIn, handsFree: handsFree);
     if (!signedIn) return;
@@ -285,9 +297,12 @@ class ConversationController extends Notifier<ConversationState> {
   Future<void> send(String text) async {
     final message = text.trim();
     if (message.isEmpty || !state.learnerCanAct) return;
+    final speechMs = state.draft == null ? null : _draftSpeechMs;
+    state = state.copyWith(draft: null);
+    _draftSpeechMs = null;
     await _takeFloor();
     if (!_dispatch(const TextSubmitted())) return;
-    await _learnerTurn(message);
+    await _learnerTurn(message, speechMs: speechMs);
   }
 
   /// Quick action (hint, repeat, slower, correct, change topic).
@@ -352,12 +367,19 @@ class ConversationController extends Notifier<ConversationState> {
       _dispatch(const SpeechDiscarded());
       return false;
     }
-    _dispatch(const SpeechEnded());
     _misses = 0;
     // Recognizer timing approximates speaking time (an estimate, B2).
     final speechMs = first != null && last != null && last!.isAfter(first!)
         ? last!.difference(first!).inMilliseconds
         : null;
+    if (_confirmSpeech) {
+      // To the input box; sent when the learner taps send.
+      _dispatch(const SpeechDiscarded());
+      _draftSpeechMs = speechMs;
+      state = state.copyWith(draft: text);
+      return true;
+    }
+    _dispatch(const SpeechEnded());
     await _learnerTurn(text, speechMs: speechMs);
     return true;
   }

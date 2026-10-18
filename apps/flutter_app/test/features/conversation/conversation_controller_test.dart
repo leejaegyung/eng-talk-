@@ -330,6 +330,44 @@ void main() {
     });
   });
 
+  group('check speech before sending (P2-2)', () {
+    setUp(() async {
+      settings.values[SettingKeys.confirmSpeech] = 'true';
+      container = make();
+      await pumpEventQueue();
+    });
+
+    test('heard speech waits as a draft; nothing sent yet', () async {
+      final chats = ai.chats.length;
+      mic.queue.add('I like hiking a lot.');
+      await ctrl().talk();
+      expect(state().draft, 'I like hiking a lot.');
+      expect(state().phase, SessionPhase.listening);
+      expect(state().turns, hasLength(1));
+      expect(ai.chats, hasLength(chats));
+    });
+
+    test('the fixed text is what gets sent and saved', () async {
+      mic.queue.add('I like hike a lot.');
+      await ctrl().talk();
+      await ctrl().send('I like hiking a lot.');
+      expect(state().draft, isNull);
+      expect(state().turns[1].text, 'I like hiking a lot.');
+      expect(ai.chats.last.last.content, 'I like hiking a lot.');
+      final saved = (await repo.load(state().sessionId!))!;
+      expect(saved.turns[1].text, 'I like hiking a lot.');
+    });
+
+    test('hands-free waits for the learner to send the draft', () async {
+      settings.values[SettingKeys.handsFree] = 'true';
+      mic.queue.add('Hello there.');
+      container = make();
+      await pumpEventQueue();
+      expect(state().draft, 'Hello there.');
+      expect(mic.hints, hasLength(1), reason: 'no listening over the draft');
+    });
+  });
+
   group('lost connection (B3)', () {
     setUp(() async {
       ai.chatError = const ProviderException(ProviderFailure.network);

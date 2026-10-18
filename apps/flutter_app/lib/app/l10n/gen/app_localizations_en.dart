@@ -971,4 +971,15 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get settingsHandsFreeNote =>
       'Listens as soon as the AI finishes, without tapping 🎤. Stops after two silent tries.';
+
+  @override
+  String get conversationDraftHelp =>
+      'This is what was heard. Fix it if needed, then tap send.';
+
+  @override
+  String get settingsConfirmSpeech => 'Check speech before sending';
+
+  @override
+  String get settingsConfirmSpeechNote =>
+      'Recognized speech goes to the input box first so you can fix misheard words. Conversation gets a little slower.';
 }

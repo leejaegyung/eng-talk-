@@ -182,6 +182,38 @@ void main() {
     expect(h.settings.values[SettingKeys.handsFree], 'false');
   });
 
+  testWidgets('check speech: heard text lands in the box to fix', (
+    tester,
+  ) async {
+    final h = Harness(
+      settings: MemorySettings({
+        SettingKeys.onboardingDone: 'true',
+        SettingKeys.handsFree: 'false',
+        SettingKeys.confirmSpeech: 'true',
+      }),
+    );
+    await h.boot(tester);
+    await tapText(tester, '대화 시작');
+    final start = find.widgetWithText(FilledButton, '대화 시작');
+    await tester.ensureVisible(start);
+    await tester.tap(start);
+    await settle(tester);
+
+    h.mic.queue.add('I go to beach');
+    await tester.tap(find.byTooltip('말하기'));
+    await settle(tester);
+    expect(find.textContaining('들린 문장이에요'), findsOneWidget);
+    expect(
+      tester.widget<TextField>(find.byType(TextField)).controller!.text,
+      'I go to beach',
+    );
+    await tester.enterText(find.byType(TextField), 'I went to the beach');
+    await tester.tap(find.text('보내기'));
+    await settle(tester);
+    expect(find.text('I went to the beach'), findsOneWidget);
+    expect(find.text('I go to beach'), findsNothing);
+  });
+
   testWidgets('app to the background pauses the conversation', (tester) async {
     tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.resumed);
     final h = Harness();

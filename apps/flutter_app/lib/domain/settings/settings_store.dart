@@ -15,6 +15,10 @@ abstract final class SettingKeys {
   /// unset = true).
   static const handsFree = 'voice.hands_free';
 
+  /// Put recognized speech in the input box to fix before sending
+  /// ('true'/'false'; unset = false).
+  static const confirmSpeech = 'voice.confirm_speech';
+
   /// [LearnerLevel] name; unset until the placement assessment (slice D).
   static const learnerLevel = 'learner.level';
 

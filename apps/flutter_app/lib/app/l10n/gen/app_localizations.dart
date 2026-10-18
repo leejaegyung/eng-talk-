@@ -1783,6 +1783,24 @@ abstract class AppLocalizations {
   /// In ko, this message translates to:
   /// **'AI가 말을 마치면 🎤를 누르지 않아도 바로 들어요. 말이 없으면 두 번 뒤에 멈춰요.'**
   String get settingsHandsFreeNote;
+
+  /// No description provided for @conversationDraftHelp.
+  ///
+  /// In ko, this message translates to:
+  /// **'들린 문장이에요. 고칠 곳이 있으면 고친 뒤 보내기를 누르세요.'**
+  String get conversationDraftHelp;
+
+  /// No description provided for @settingsConfirmSpeech.
+  ///
+  /// In ko, this message translates to:
+  /// **'말한 뒤 확인하고 보내기'**
+  String get settingsConfirmSpeech;
+
+  /// No description provided for @settingsConfirmSpeechNote.
+  ///
+  /// In ko, this message translates to:
+  /// **'인식된 문장을 입력칸에 먼저 띄워요. 잘못 들린 단어를 고칠 수 있지만 대화가 조금 느려져요.'**
+  String get settingsConfirmSpeechNote;
 }
 
 class _AppLocalizationsDelegate

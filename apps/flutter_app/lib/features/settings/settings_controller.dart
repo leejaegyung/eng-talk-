@@ -17,6 +17,7 @@ final class SettingsState {
     this.failure,
     this.speakReplies = true,
     this.handsFree = true,
+    this.confirmSpeech = false,
     this.exportedTo,
     this.cleared = false,
   });
@@ -30,6 +31,7 @@ final class SettingsState {
   final ProviderFailure? failure;
   final bool speakReplies;
   final bool handsFree;
+  final bool confirmSpeech;
 
   /// Where the last export was saved.
   final String? exportedTo;
@@ -44,6 +46,7 @@ final class SettingsState {
     Object? failure = _unset,
     bool? speakReplies,
     bool? handsFree,
+    bool? confirmSpeech,
     String? exportedTo,
     bool? cleared,
   }) => SettingsState(
@@ -55,6 +58,7 @@ final class SettingsState {
         : failure as ProviderFailure?,
     speakReplies: speakReplies ?? this.speakReplies,
     handsFree: handsFree ?? this.handsFree,
+    confirmSpeech: confirmSpeech ?? this.confirmSpeech,
     exportedTo: exportedTo ?? this.exportedTo,
     cleared: cleared ?? this.cleared,
   );
@@ -85,12 +89,14 @@ class SettingsController extends Notifier<SettingsState> {
   Future<void> _load() async {
     final speak = await _store.read(SettingKeys.speakReplies) != 'false';
     final handsFree = await _store.read(SettingKeys.handsFree) != 'false';
+    final confirm = await _store.read(SettingKeys.confirmSpeech) == 'true';
     final signedIn = await _account.isSignedIn();
     if (!ref.mounted) return;
     state = state.copyWith(
       signedIn: signedIn,
       speakReplies: speak,
       handsFree: handsFree,
+      confirmSpeech: confirm,
     );
     if (signedIn) await checkConnection();
   }
@@ -152,6 +158,11 @@ class SettingsController extends Notifier<SettingsState> {
   Future<void> setHandsFree(bool on) async {
     state = state.copyWith(handsFree: on);
     await _store.write(SettingKeys.handsFree, '$on');
+  }
+
+  Future<void> setConfirmSpeech(bool on) async {
+    state = state.copyWith(confirmSpeech: on);
+    await _store.write(SettingKeys.confirmSpeech, '$on');
   }
 
   Future<void> setSpeakReplies(bool on) async {
