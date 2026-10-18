@@ -19,6 +19,10 @@ abstract final class SettingKeys {
   /// ('true'/'false'; unset = false).
   static const confirmSpeech = 'voice.confirm_speech';
 
+  /// Listen while the AI speaks and cut it off when the learner talks
+  /// (earphones only; 'true'/'false'; unset = false).
+  static const autoBargeIn = 'voice.auto_barge_in';
+
   /// [LearnerLevel] name; unset until the placement assessment (slice D).
   static const learnerLevel = 'learner.level';
 

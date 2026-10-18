@@ -1951,6 +1951,18 @@ abstract class AppLocalizations {
   /// In ko, this message translates to:
   /// **'Gemini를 고르셨지만 키가 없어요. 키를 넣기 전까지 대화를 시작할 수 없어요.'**
   String get geminiChosenNoKey;
+
+  /// No description provided for @settingsAutoBargeIn.
+  ///
+  /// In ko, this message translates to:
+  /// **'말하면 AI 말 끊기 (이어폰 사용 시)'**
+  String get settingsAutoBargeIn;
+
+  /// No description provided for @settingsAutoBargeInNote.
+  ///
+  /// In ko, this message translates to:
+  /// **'자동 듣기가 켜져 있을 때 AI가 말하는 동안에도 들어요. 스피커로 들으면 AI 목소리를 내 말로 알아들을 수 있어서 이어폰을 쓸 때만 켜세요.'**
+  String get settingsAutoBargeInNote;
 }
 
 class _AppLocalizationsDelegate

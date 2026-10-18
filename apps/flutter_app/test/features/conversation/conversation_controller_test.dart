@@ -360,6 +360,49 @@ void main() {
     });
   });
 
+  group('auto barge-in with earphones', () {
+    Future<void> open({bool bargeIn = true}) async {
+      settings.values[SettingKeys.handsFree] = 'true';
+      if (bargeIn) settings.values[SettingKeys.autoBargeIn] = 'true';
+      container = make();
+      await pumpEventQueue();
+    }
+
+    test('talking over the AI stops its voice and takes the turn', () async {
+      voice.hold = Completer<void>();
+      mic.queue.add('Wait, I have a question.');
+      await open();
+      expect(voice.hold!.isCompleted, isTrue, reason: 'voice was cut off');
+      expect(state().turns.map((t) => t.text), [
+        'Nice! Where do you hike?',
+        'Wait, I have a question.',
+        'Nice! Where do you hike?',
+      ]);
+      expect(state().phase, SessionPhase.listening);
+    });
+
+    test('silence during the AI voice leaves it speaking', () async {
+      voice.hold = Completer<void>();
+      mic.hold = Completer<void>();
+      await open();
+      expect(state().phase, SessionPhase.aiSpeaking);
+      expect(mic.hints, hasLength(1), reason: 'listening during speech');
+      voice.hold!.complete();
+      await pumpEventQueue();
+      expect(state().turns, hasLength(1));
+      expect(state().phase, SessionPhase.listening);
+    });
+
+    test('off by default: no listening while the AI speaks', () async {
+      voice.hold = Completer<void>();
+      await open(bargeIn: false);
+      expect(state().phase, SessionPhase.aiSpeaking);
+      expect(mic.hints, isEmpty);
+      voice.hold!.complete();
+      await pumpEventQueue();
+    });
+  });
+
   group('microphone and recognizer problems (P2-5)', () {
     test('network: shown, and hands-free stops retrying', () async {
       mic.issue = SpeechIssue.network;

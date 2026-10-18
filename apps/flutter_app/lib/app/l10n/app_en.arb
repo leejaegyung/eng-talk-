@@ -308,5 +308,7 @@
   "geminiNoKey": "No key yet. Paste a free API key from aistudio.google.com (no billing needed).",
   "geminiKeyStored": "The key stays in this device's secure storage. Checking only lists models.",
   "geminiFreeTier": "No charge within the free usage. On Google's free tier, conversations are used to improve Google's products and may be read by people, so don't share personal information. Heavy use can be paused for a while.",
-  "geminiChosenNoKey": "Gemini is selected but there's no key. Add one to start conversations."
+  "geminiChosenNoKey": "Gemini is selected but there's no key. Add one to start conversations.",
+  "settingsAutoBargeIn": "Talk over the AI to interrupt (earphones)",
+  "settingsAutoBargeInNote": "With auto-listen on, it also listens while the AI speaks. On speakers the AI's own voice can be heard as yours, so turn this on only with earphones."
 }

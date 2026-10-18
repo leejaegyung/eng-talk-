@@ -116,6 +116,13 @@ class SettingsScreen extends ConsumerWidget {
                 onChanged: ctrl.setHandsFree,
               ),
               SwitchListTile(
+                secondary: const Icon(Icons.headphones),
+                title: Text(l10n.settingsAutoBargeIn),
+                subtitle: Text(l10n.settingsAutoBargeInNote),
+                value: s.autoBargeIn,
+                onChanged: s.handsFree ? ctrl.setAutoBargeIn : null,
+              ),
+              SwitchListTile(
                 secondary: const Icon(Icons.edit_note),
                 title: Text(l10n.settingsConfirmSpeech),
                 subtitle: Text(l10n.settingsConfirmSpeechNote),

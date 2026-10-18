@@ -1073,4 +1073,11 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get geminiChosenNoKey =>
       'Gemini is selected but there\'s no key. Add one to start conversations.';
+
+  @override
+  String get settingsAutoBargeIn => 'Talk over the AI to interrupt (earphones)';
+
+  @override
+  String get settingsAutoBargeInNote =>
+      'With auto-listen on, it also listens while the AI speaks. On speakers the AI\'s own voice can be heard as yours, so turn this on only with earphones.';
 }

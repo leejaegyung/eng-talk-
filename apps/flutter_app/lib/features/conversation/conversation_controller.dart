@@ -216,6 +216,11 @@ class ConversationController extends Notifier<ConversationState> {
   bool _confirmSpeech = false;
   int? _draftSpeechMs;
 
+  /// Listen during the AI's speech and take the floor on the first words
+  /// (earphones only). [_cancelWatch] ends a watch that hasn't started.
+  bool _autoBargeIn = false;
+  bool _cancelWatch = false;
+
   /// From earlier sessions (P2-4): expressions to reuse and a mistake that
   /// keeps coming back.
   List<String> _reviewExpressions = const [];
@@ -251,6 +256,7 @@ class ConversationController extends Notifier<ConversationState> {
     _speakReplies = await _settings.read(SettingKeys.speakReplies) != 'false';
     final handsFree = await _settings.read(SettingKeys.handsFree) != 'false';
     _confirmSpeech = await _settings.read(SettingKeys.confirmSpeech) == 'true';
+    _autoBargeIn = await _settings.read(SettingKeys.autoBargeIn) == 'true';
     if (!ref.mounted) return;
     state = state.copyWith(signedIn: signedIn, handsFree: handsFree);
     if (!signedIn) return;
@@ -349,16 +355,26 @@ class ConversationController extends Notifier<ConversationState> {
     await _listen();
   }
 
-  /// One utterance; true when something was heard and sent.
-  Future<bool> _listen() async {
+  /// One utterance; true when something was heard and sent. With [watch]
+  /// it runs while the AI speaks and only takes the floor (barge-in) once
+  /// words are recognized; silence leaves the AI speaking.
+  Future<bool> _listen({bool watch = false}) async {
     if (!state.learnerCanAct || state.phase == SessionPhase.userSpeaking) {
       return false;
     }
     if (!await _mic.ensureAvailable()) {
-      if (ref.mounted) state = state.copyWith(speechUnavailable: true);
+      if (ref.mounted && !watch) {
+        state = state.copyWith(speechUnavailable: true);
+      }
       return false;
     }
-    if (!ref.mounted || !_dispatch(const SpeechStarted())) return false;
+    if (!ref.mounted) return false;
+    if (watch) {
+      if (_cancelWatch) return false;
+    } else if (!_dispatch(const SpeechStarted())) {
+      return false;
+    }
+    var bargedIn = false;
     state = state.copyWith(
       partial: '',
       speechUnavailable: false,
@@ -376,6 +392,14 @@ class ConversationController extends Notifier<ConversationState> {
       heard = await _mic.listenOnce(
         hints: _hints(),
         onPartial: (p) {
+          if (watch && !bargedIn) {
+            if (p.trim().isEmpty || state.phase != SessionPhase.aiSpeaking) {
+              return;
+            }
+            // The learner talks over the AI: its voice stops now.
+            bargedIn = _dispatch(const SpeechStarted());
+            if (!bargedIn) return;
+          }
           first ??= _now();
           last = _now();
           if (ref.mounted) state = state.copyWith(partial: p);
@@ -386,7 +410,7 @@ class ConversationController extends Notifier<ConversationState> {
       listened.complete();
       _listening = null;
     }
-    if (!ref.mounted) return false;
+    if (!ref.mounted || (watch && !bargedIn)) return false;
     state = state.copyWith(partial: '');
     final text = heard.trim();
     final discard = _discardSpeech;
@@ -784,9 +808,19 @@ class ConversationController extends Notifier<ConversationState> {
       if (reply.isNotEmpty) {
         int? spokenMs;
         if (_speakReplies && current()) {
+          _cancelWatch = false;
+          final watching = _autoBargeIn && state.handsFree && !_confirmSpeech
+              ? _listen(watch: true)
+              : null;
           final spokenAt = _now();
           await _voice.speak(reply, slow: _policy.slower);
           spokenMs = _now().difference(spokenAt).inMilliseconds;
+          if (watching != null && state.phase == SessionPhase.aiSpeaking) {
+            // Nobody spoke over it: end the watch before listening again.
+            _cancelWatch = true;
+            await _mic.stop();
+            await watching;
+          }
         }
         // Saved after speaking so the measured time goes with it.
         await _saveTurn(

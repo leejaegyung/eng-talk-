@@ -151,14 +151,21 @@ class FakeSpeechOutput implements SpeechOutput {
   final slow = <bool>[];
   int stops = 0;
 
+  /// When set, speaking lasts until [stop] or until it is completed.
+  Completer<void>? hold;
+
   @override
   Future<void> speak(String text, {bool slow = false}) async {
     spoken.add(text);
     this.slow.add(slow);
+    if (hold case final h? when !h.isCompleted) await h.future;
   }
 
   @override
-  Future<void> stop() async => stops++;
+  Future<void> stop() async {
+    stops++;
+    if (hold case final h? when !h.isCompleted) h.complete();
+  }
 }
 
 class FakeSpeechInput implements SpeechInput {

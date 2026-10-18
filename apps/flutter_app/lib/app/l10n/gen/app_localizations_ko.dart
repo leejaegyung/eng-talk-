@@ -1039,4 +1039,11 @@ class AppLocalizationsKo extends AppLocalizations {
   @override
   String get geminiChosenNoKey =>
       'Gemini를 고르셨지만 키가 없어요. 키를 넣기 전까지 대화를 시작할 수 없어요.';
+
+  @override
+  String get settingsAutoBargeIn => '말하면 AI 말 끊기 (이어폰 사용 시)';
+
+  @override
+  String get settingsAutoBargeInNote =>
+      '자동 듣기가 켜져 있을 때 AI가 말하는 동안에도 들어요. 스피커로 들으면 AI 목소리를 내 말로 알아들을 수 있어서 이어폰을 쓸 때만 켜세요.';
 }

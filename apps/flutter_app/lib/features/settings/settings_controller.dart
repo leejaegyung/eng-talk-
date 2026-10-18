@@ -18,6 +18,7 @@ final class SettingsState {
     this.speakReplies = true,
     this.handsFree = true,
     this.confirmSpeech = false,
+    this.autoBargeIn = false,
     this.exportedTo,
     this.cleared = false,
   });
@@ -32,6 +33,7 @@ final class SettingsState {
   final bool speakReplies;
   final bool handsFree;
   final bool confirmSpeech;
+  final bool autoBargeIn;
 
   /// Where the last export was saved.
   final String? exportedTo;
@@ -47,6 +49,7 @@ final class SettingsState {
     bool? speakReplies,
     bool? handsFree,
     bool? confirmSpeech,
+    bool? autoBargeIn,
     String? exportedTo,
     bool? cleared,
   }) => SettingsState(
@@ -59,6 +62,7 @@ final class SettingsState {
     speakReplies: speakReplies ?? this.speakReplies,
     handsFree: handsFree ?? this.handsFree,
     confirmSpeech: confirmSpeech ?? this.confirmSpeech,
+    autoBargeIn: autoBargeIn ?? this.autoBargeIn,
     exportedTo: exportedTo ?? this.exportedTo,
     cleared: cleared ?? this.cleared,
   );
@@ -90,6 +94,7 @@ class SettingsController extends Notifier<SettingsState> {
     final speak = await _store.read(SettingKeys.speakReplies) != 'false';
     final handsFree = await _store.read(SettingKeys.handsFree) != 'false';
     final confirm = await _store.read(SettingKeys.confirmSpeech) == 'true';
+    final bargeIn = await _store.read(SettingKeys.autoBargeIn) == 'true';
     final signedIn = await _account.isSignedIn();
     if (!ref.mounted) return;
     state = state.copyWith(
@@ -97,6 +102,7 @@ class SettingsController extends Notifier<SettingsState> {
       speakReplies: speak,
       handsFree: handsFree,
       confirmSpeech: confirm,
+      autoBargeIn: bargeIn,
     );
     if (signedIn) await checkConnection();
   }
@@ -158,6 +164,11 @@ class SettingsController extends Notifier<SettingsState> {
   Future<void> setHandsFree(bool on) async {
     state = state.copyWith(handsFree: on);
     await _store.write(SettingKeys.handsFree, '$on');
+  }
+
+  Future<void> setAutoBargeIn(bool on) async {
+    state = state.copyWith(autoBargeIn: on);
+    await _store.write(SettingKeys.autoBargeIn, '$on');
   }
 
   Future<void> setConfirmSpeech(bool on) async {
