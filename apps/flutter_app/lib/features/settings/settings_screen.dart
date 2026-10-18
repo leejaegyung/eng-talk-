@@ -106,6 +106,13 @@ class SettingsScreen extends ConsumerWidget {
                 value: s.speakReplies,
                 onChanged: ctrl.setSpeakReplies,
               ),
+              SwitchListTile(
+                secondary: const Icon(Icons.hearing),
+                title: Text(l10n.settingsHandsFree),
+                subtitle: Text(l10n.settingsHandsFreeNote),
+                value: s.handsFree,
+                onChanged: ctrl.setHandsFree,
+              ),
               section(l10n.settingsDataSection),
               ListTile(
                 leading: const Icon(Icons.download_outlined),

@@ -590,5 +590,9 @@
   "categoryGrammar": "문법 (시제·관사·전치사)",
   "categoryWordChoice": "단어 선택",
   "categoryStructure": "문장 구조·어순",
-  "categoryNaturalness": "자연스러운 표현"
+  "categoryNaturalness": "자연스러운 표현",
+  "handsFreeOn": "자동 듣기 켜짐 (끄기)",
+  "handsFreeOff": "자동 듣기 꺼짐 (켜기)",
+  "settingsHandsFree": "자동 듣기 (핸즈프리)",
+  "settingsHandsFreeNote": "AI가 말을 마치면 🎤를 누르지 않아도 바로 들어요. 말이 없으면 두 번 뒤에 멈춰요."
 }

@@ -160,6 +160,28 @@ void main() {
     expect(find.text('이 기간에 끝낸 대화가 없어요.'), findsOneWidget);
   });
 
+  testWidgets('hands-free: answers are heard without tapping the mic', (
+    tester,
+  ) async {
+    final h = Harness(
+      settings: MemorySettings({SettingKeys.onboardingDone: 'true'}),
+    );
+    h.mic.queue.add('I went to the beach.');
+    await h.boot(tester);
+    await tapText(tester, '대화 시작');
+    final start = find.widgetWithText(FilledButton, '대화 시작');
+    await tester.ensureVisible(start);
+    await tester.tap(start);
+    await settle(tester);
+    expect(find.text('I went to the beach.'), findsOneWidget);
+    expect(find.text('Nice! Where do you hike?'), findsNWidgets(2));
+
+    await tester.tap(find.byTooltip('자동 듣기 켜짐 (끄기)'));
+    await settle(tester);
+    expect(find.byTooltip('자동 듣기 꺼짐 (켜기)'), findsOneWidget);
+    expect(h.settings.values[SettingKeys.handsFree], 'false');
+  });
+
   testWidgets('app to the background pauses the conversation', (tester) async {
     tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.resumed);
     final h = Harness();

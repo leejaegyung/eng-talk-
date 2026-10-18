@@ -304,6 +304,13 @@ class _ConversationScreenState extends ConsumerState<ConversationScreen> {
             ),
             if (s.active) ...[
               IconButton(
+                tooltip: s.handsFree ? l10n.handsFreeOn : l10n.handsFreeOff,
+                onPressed: () => ctrl.setHandsFree(!s.handsFree),
+                icon: Icon(
+                  s.handsFree ? Icons.hearing : Icons.hearing_disabled,
+                ),
+              ),
+              IconButton(
                 tooltip: s.subtitles
                     ? l10n.conversationHideSubtitles
                     : l10n.conversationShowSubtitles,

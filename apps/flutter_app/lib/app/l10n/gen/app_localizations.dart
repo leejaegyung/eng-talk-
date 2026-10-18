@@ -1759,6 +1759,30 @@ abstract class AppLocalizations {
   /// In ko, this message translates to:
   /// **'자연스러운 표현'**
   String get categoryNaturalness;
+
+  /// No description provided for @handsFreeOn.
+  ///
+  /// In ko, this message translates to:
+  /// **'자동 듣기 켜짐 (끄기)'**
+  String get handsFreeOn;
+
+  /// No description provided for @handsFreeOff.
+  ///
+  /// In ko, this message translates to:
+  /// **'자동 듣기 꺼짐 (켜기)'**
+  String get handsFreeOff;
+
+  /// No description provided for @settingsHandsFree.
+  ///
+  /// In ko, this message translates to:
+  /// **'자동 듣기 (핸즈프리)'**
+  String get settingsHandsFree;
+
+  /// No description provided for @settingsHandsFreeNote.
+  ///
+  /// In ko, this message translates to:
+  /// **'AI가 말을 마치면 🎤를 누르지 않아도 바로 들어요. 말이 없으면 두 번 뒤에 멈춰요.'**
+  String get settingsHandsFreeNote;
 }
 
 class _AppLocalizationsDelegate

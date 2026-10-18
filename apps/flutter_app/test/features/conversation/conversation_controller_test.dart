@@ -61,7 +61,7 @@ void main() {
     ai = FakeAi();
     mic = FakeSpeechInput();
     voice = FakeSpeechOutput();
-    settings = MemorySettings();
+    settings = MemorySettings({SettingKeys.handsFree: 'false'});
     (db, repo) = memoryRepository();
     addTearDown(db.close);
     now = DateTime.utc(2026, 10, 17, 9);
@@ -240,6 +240,95 @@ void main() {
       );
     },
   );
+
+  group('hands-free (P2-1)', () {
+    Future<void> open() async {
+      settings.values[SettingKeys.handsFree] = 'true';
+      container = make();
+      await pumpEventQueue();
+    }
+
+    test('listens after the AI speaks and sends what was heard', () async {
+      mic.queue.add('I like hiking.');
+      await open();
+      expect(state().handsFree, isTrue);
+      expect(state().turns.map((t) => t.text), [
+        'Nice! Where do you hike?',
+        'I like hiking.',
+        'Nice! Where do you hike?',
+      ]);
+      // Then two empty listens, and the mic is left to the learner.
+      expect(mic.hints, hasLength(3));
+      expect(state().phase, SessionPhase.listening);
+    });
+
+    test('nothing heard twice: stops listening', () async {
+      await open();
+      expect(mic.hints, hasLength(2));
+      expect(state().turns, hasLength(1));
+    });
+
+    test(
+      'typing while it listens drops the listen and sends the text',
+      () async {
+        mic.hold = Completer<void>();
+        await open();
+        expect(state().phase, SessionPhase.userSpeaking);
+        expect(state().learnerCanAct, isTrue);
+        await ctrl().send('Typed instead.');
+        expect(state().turns[1].text, 'Typed instead.');
+        expect(state().turns.last.speaker, Speaker.assistant);
+      },
+    );
+
+    test('a quick action while it listens works too', () async {
+      mic.hold = Completer<void>();
+      await open();
+      await ctrl().act(CoachAction.hint);
+      expect(state().turns[1].isRequest, isTrue);
+      expect(state().turns.last.speaker, Speaker.assistant);
+    });
+
+    test('stop with nothing said: no retry until the next AI turn', () async {
+      mic.hold = Completer<void>();
+      await open();
+      await ctrl().stopListening();
+      await pumpEventQueue();
+      expect(mic.hints, hasLength(1));
+      expect(state().phase, SessionPhase.listening);
+    });
+
+    test('pause stops it; resume listens again', () async {
+      mic.hold = Completer<void>();
+      await open();
+      await ctrl().pause();
+      await pumpEventQueue();
+      expect(state().paused, isTrue);
+      expect(mic.hints, hasLength(1));
+      await ctrl().resume();
+      await pumpEventQueue();
+      expect(mic.hints, hasLength(3), reason: 'two empty listens again');
+    });
+
+    test('turned off: saved, and no listening on its own', () async {
+      await open();
+      await ctrl().setHandsFree(false);
+      expect(settings.values[SettingKeys.handsFree], 'false');
+      await ctrl().send('Hi');
+      expect(mic.hints, hasLength(2), reason: 'only the opening attempts');
+    });
+
+    test('continue as text turns it off for the session', () async {
+      await open();
+      ai.chatError = const ProviderException(ProviderFailure.network);
+      await ctrl().send('Hello');
+      ai.chatError = null;
+      final before = mic.hints.length;
+      await ctrl().continueAsText();
+      await pumpEventQueue();
+      expect(mic.hints, hasLength(before));
+    });
+  });
 
   group('lost connection (B3)', () {
     setUp(() async {

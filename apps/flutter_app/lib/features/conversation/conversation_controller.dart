@@ -50,6 +50,7 @@ final class ConversationState {
     this.speechUnavailable = false,
     this.hintSuggested = false,
     this.subtitles = true,
+    this.handsFree = false,
     this.failure,
   });
 
@@ -69,6 +70,9 @@ final class ConversationState {
   final bool speechUnavailable;
   final bool hintSuggested;
   final bool subtitles;
+
+  /// Listen again on its own once the AI has finished speaking (P2-1).
+  final bool handsFree;
   final ProviderFailure? failure;
 
   bool get active => switch (phase) {
@@ -84,8 +88,12 @@ final class ConversationState {
       paused && pauseReason == PauseReason.connectionLost;
 
   /// Learner can type, act or start talking.
+  /// Typing or a quick action is possible; while listening it ends the
+  /// listening first.
   bool get learnerCanAct =>
-      phase == SessionPhase.listening || phase == SessionPhase.aiSpeaking;
+      phase == SessionPhase.listening ||
+      phase == SessionPhase.aiSpeaking ||
+      phase == SessionPhase.userSpeaking;
 
   int get learnerAnswers =>
       turns.where((t) => t.speaker == Speaker.user && !t.isRequest).length;
@@ -104,6 +112,7 @@ final class ConversationState {
     bool? speechUnavailable,
     bool? hintSuggested,
     bool? subtitles,
+    bool? handsFree,
     Object? failure = _unset,
   }) => ConversationState(
     signedIn: signedIn ?? this.signedIn,
@@ -119,6 +128,7 @@ final class ConversationState {
     speechUnavailable: speechUnavailable ?? this.speechUnavailable,
     hintSuggested: hintSuggested ?? this.hintSuggested,
     subtitles: subtitles ?? this.subtitles,
+    handsFree: handsFree ?? this.handsFree,
     failure: identical(failure, _unset)
         ? this.failure
         : failure as ProviderFailure?,
@@ -175,6 +185,15 @@ class ConversationController extends Notifier<ConversationState> {
   List<String>? _streamingNotes;
   List<String>? _pendingNotes;
 
+  /// Hands-free: empty results in a row (stops after [_maxMisses]), a stop
+  /// by the learner (no retry until the next AI turn), and a listen being
+  /// cut short so the learner can type or act instead.
+  static const _maxMisses = 2;
+  int _misses = 0;
+  bool _holdAuto = false;
+  bool _discardSpeech = false;
+  Future<void>? _listening;
+
   @override
   ConversationState build() {
     _account = ref.watch(chatGptAccountProvider);
@@ -203,8 +222,9 @@ class ConversationController extends Notifier<ConversationState> {
   Future<void> _open(ConversationRequest request) async {
     final signedIn = await _account.isSignedIn();
     _speakReplies = await _settings.read(SettingKeys.speakReplies) != 'false';
+    final handsFree = await _settings.read(SettingKeys.handsFree) != 'false';
     if (!ref.mounted) return;
-    state = state.copyWith(signedIn: signedIn);
+    state = state.copyWith(signedIn: signedIn, handsFree: handsFree);
     if (!signedIn) return;
 
     _dispatch(const StartRequested());
@@ -285,12 +305,20 @@ class ConversationController extends Notifier<ConversationState> {
   /// Listens for one utterance with the on-device recognizer and sends it.
   /// While the AI speaks this is barge-in: its voice stops at once.
   Future<void> talk() async {
-    if (!state.learnerCanAct) return;
+    _misses = 0;
+    await _listen();
+  }
+
+  /// One utterance; true when something was heard and sent.
+  Future<bool> _listen() async {
+    if (!state.learnerCanAct || state.phase == SessionPhase.userSpeaking) {
+      return false;
+    }
     if (!await _mic.ensureAvailable()) {
       if (ref.mounted) state = state.copyWith(speechUnavailable: true);
-      return;
+      return false;
     }
-    if (!ref.mounted || !_dispatch(const SpeechStarted())) return;
+    if (!ref.mounted || !_dispatch(const SpeechStarted())) return false;
     state = state.copyWith(
       partial: '',
       speechUnavailable: false,
@@ -299,30 +327,79 @@ class ConversationController extends Notifier<ConversationState> {
     );
     DateTime? first;
     DateTime? last;
-    final heard = await _mic.listenOnce(
-      hints: _hints(),
-      onPartial: (p) {
-        first ??= _now();
-        last = _now();
-        if (ref.mounted) state = state.copyWith(partial: p);
-      },
-    );
-    if (!ref.mounted) return;
+    final listened = Completer<void>();
+    _listening = listened.future;
+    final String heard;
+    try {
+      heard = await _mic.listenOnce(
+        hints: _hints(),
+        onPartial: (p) {
+          first ??= _now();
+          last = _now();
+          if (ref.mounted) state = state.copyWith(partial: p);
+        },
+      );
+    } finally {
+      listened.complete();
+      _listening = null;
+    }
+    if (!ref.mounted) return false;
     state = state.copyWith(partial: '');
     final text = heard.trim();
-    if (text.isEmpty || state.phase != SessionPhase.userSpeaking) {
+    final discard = _discardSpeech;
+    _discardSpeech = false;
+    if (text.isEmpty || discard || state.phase != SessionPhase.userSpeaking) {
       _dispatch(const SpeechDiscarded());
-      return;
+      return false;
     }
     _dispatch(const SpeechEnded());
+    _misses = 0;
     // Recognizer timing approximates speaking time (an estimate, B2).
     final speechMs = first != null && last != null && last!.isAfter(first!)
         ? last!.difference(first!).inMilliseconds
         : null;
     await _learnerTurn(text, speechMs: speechMs);
+    return true;
   }
 
-  Future<void> stopListening() => _mic.stop();
+  /// The AI has finished its turn: hands-free listens again.
+  void _afterAssistantTurn() {
+    _misses = 0;
+    _holdAuto = false;
+    _autoListen();
+  }
+
+  void _autoListen() {
+    if (!ref.mounted ||
+        !state.handsFree ||
+        !_speakReplies ||
+        state.speechUnavailable ||
+        state.phase != SessionPhase.listening) {
+      return;
+    }
+    unawaited(() async {
+      if (await _listen() || _holdAuto) return;
+      // Nothing heard: try again, then leave the mic to the learner.
+      if (++_misses < _maxMisses) _autoListen();
+    }());
+  }
+
+  Future<void> setHandsFree(bool on) async {
+    state = state.copyWith(handsFree: on);
+    await _settings.write(SettingKeys.handsFree, '$on');
+    if (on) {
+      _misses = 0;
+      _holdAuto = false;
+      _autoListen();
+    }
+  }
+
+  /// Ends listening; what was heard is still sent. Hands-free waits for
+  /// the next AI turn instead of listening again.
+  Future<void> stopListening() {
+    _holdAuto = true;
+    return _mic.stop();
+  }
 
   /// The setup and the coach's latest lines, which answers tend to echo.
   List<String> _hints() {
@@ -364,6 +441,8 @@ class ConversationController extends Notifier<ConversationState> {
       _pendingNotes = null;
       if (pending != null && _dispatch(const AssistantTurnRequested())) {
         await _startReply(notes: pending);
+      } else {
+        _afterAssistantTurn();
       }
       return;
     }
@@ -455,6 +534,14 @@ class ConversationController extends Notifier<ConversationState> {
 
   /// Lets the learner take the turn while the AI is speaking.
   Future<void> _takeFloor() async {
+    if (state.phase == SessionPhase.userSpeaking) {
+      // Typing or a quick action while listening: drop the listen.
+      _discardSpeech = true;
+      _holdAuto = true;
+      await _mic.stop();
+      await _listening;
+      return;
+    }
     if (state.phase != SessionPhase.aiSpeaking) return;
     await _voice.stop();
     await _replying;
@@ -616,7 +703,7 @@ class ConversationController extends Notifier<ConversationState> {
         );
       }
       if (_policy.correctionDue(elapsed)) _policy.correctionGiven(elapsed);
-      _dispatch(ResponseEnded(turn: turn));
+      if (_dispatch(ResponseEnded(turn: turn))) _afterAssistantTurn();
     } on ProviderException catch (e) {
       _streamingNotes = null;
       if (ref.mounted) {

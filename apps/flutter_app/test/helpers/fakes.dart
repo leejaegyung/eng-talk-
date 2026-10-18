@@ -173,6 +173,9 @@ class FakeSpeechInput implements SpeechInput {
   final hints = <List<String>>[];
   int stops = 0;
 
+  /// When set, listening lasts until [stop] (a learner still talking).
+  Completer<void>? hold;
+
   @override
   Future<bool> ensureAvailable() async => available;
 
@@ -182,13 +185,17 @@ class FakeSpeechInput implements SpeechInput {
     List<String> hints = const [],
   }) async {
     this.hints.add(hints);
+    if (hold case final h? when !h.isCompleted) await h.future;
     final text = queue.isEmpty ? '' : queue.removeAt(0);
     if (text.isNotEmpty) onPartial?.call(text.split(' ').first);
     return text;
   }
 
   @override
-  Future<void> stop() async => stops++;
+  Future<void> stop() async {
+    stops++;
+    if (hold case final h? when !h.isCompleted) h.complete();
+  }
 }
 
 class MemorySettings implements SettingsStore {

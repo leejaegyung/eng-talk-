@@ -14,7 +14,11 @@ import 'fakes.dart';
 class Harness {
   Harness({MemorySettings? settings, FakeAccount? account})
     : settings =
-          settings ?? MemorySettings({SettingKeys.onboardingDone: 'true'}),
+          settings ??
+          MemorySettings({
+            SettingKeys.onboardingDone: 'true',
+            SettingKeys.handsFree: 'false',
+          }),
       account = account ?? (FakeAccount()..signedIn = true) {
     ai.responder = smartReplies;
     final (db, repo) = memoryRepository();

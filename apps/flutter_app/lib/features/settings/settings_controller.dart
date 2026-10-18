@@ -16,6 +16,7 @@ final class SettingsState {
     this.model,
     this.failure,
     this.speakReplies = true,
+    this.handsFree = true,
     this.exportedTo,
     this.cleared = false,
   });
@@ -28,6 +29,7 @@ final class SettingsState {
   final String? model;
   final ProviderFailure? failure;
   final bool speakReplies;
+  final bool handsFree;
 
   /// Where the last export was saved.
   final String? exportedTo;
@@ -41,6 +43,7 @@ final class SettingsState {
     Object? model = _unset,
     Object? failure = _unset,
     bool? speakReplies,
+    bool? handsFree,
     String? exportedTo,
     bool? cleared,
   }) => SettingsState(
@@ -51,6 +54,7 @@ final class SettingsState {
         ? this.failure
         : failure as ProviderFailure?,
     speakReplies: speakReplies ?? this.speakReplies,
+    handsFree: handsFree ?? this.handsFree,
     exportedTo: exportedTo ?? this.exportedTo,
     cleared: cleared ?? this.cleared,
   );
@@ -80,9 +84,14 @@ class SettingsController extends Notifier<SettingsState> {
 
   Future<void> _load() async {
     final speak = await _store.read(SettingKeys.speakReplies) != 'false';
+    final handsFree = await _store.read(SettingKeys.handsFree) != 'false';
     final signedIn = await _account.isSignedIn();
     if (!ref.mounted) return;
-    state = state.copyWith(signedIn: signedIn, speakReplies: speak);
+    state = state.copyWith(
+      signedIn: signedIn,
+      speakReplies: speak,
+      handsFree: handsFree,
+    );
     if (signedIn) await checkConnection();
   }
 
@@ -138,6 +147,11 @@ class SettingsController extends Notifier<SettingsState> {
   Future<void> deleteAllData() async {
     await ref.read(sessionRepositoryProvider).deleteAll();
     if (ref.mounted) state = state.copyWith(cleared: true);
+  }
+
+  Future<void> setHandsFree(bool on) async {
+    state = state.copyWith(handsFree: on);
+    await _store.write(SettingKeys.handsFree, '$on');
   }
 
   Future<void> setSpeakReplies(bool on) async {

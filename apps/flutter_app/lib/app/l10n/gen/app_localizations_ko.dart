@@ -930,4 +930,17 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get categoryNaturalness => '자연스러운 표현';
+
+  @override
+  String get handsFreeOn => '자동 듣기 켜짐 (끄기)';
+
+  @override
+  String get handsFreeOff => '자동 듣기 꺼짐 (켜기)';
+
+  @override
+  String get settingsHandsFree => '자동 듣기 (핸즈프리)';
+
+  @override
+  String get settingsHandsFreeNote =>
+      'AI가 말을 마치면 🎤를 누르지 않아도 바로 들어요. 말이 없으면 두 번 뒤에 멈춰요.';
 }

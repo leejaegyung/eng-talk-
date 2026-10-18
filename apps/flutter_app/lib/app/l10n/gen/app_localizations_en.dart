@@ -958,4 +958,17 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get categoryNaturalness => 'Natural phrasing';
+
+  @override
+  String get handsFreeOn => 'Auto-listen on (turn off)';
+
+  @override
+  String get handsFreeOff => 'Auto-listen off (turn on)';
+
+  @override
+  String get settingsHandsFree => 'Auto-listen (hands-free)';
+
+  @override
+  String get settingsHandsFreeNote =>
+      'Listens as soon as the AI finishes, without tapping 🎤. Stops after two silent tries.';
 }
