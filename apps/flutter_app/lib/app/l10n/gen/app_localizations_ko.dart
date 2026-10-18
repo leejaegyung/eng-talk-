@@ -982,4 +982,28 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get a11yStopListening => '듣기 멈추기';
+
+  @override
+  String get speechUnavailableTitle => '마이크나 음성 인식을 쓸 수 없어요';
+
+  @override
+  String get speechUnavailableBody =>
+      '설정에서 이 앱의 마이크·음성 인식 권한을 켜 주세요. 그동안은 입력해서 대화할 수 있어요.';
+
+  @override
+  String get speechOpenSettings => '설정 열기';
+
+  @override
+  String get speechIssueNetwork =>
+      '음성 인식 서버에 연결할 수 없어요. 인터넷을 확인하거나 입력해서 계속하세요.';
+
+  @override
+  String get speechIssueAudio =>
+      '마이크 소리를 받을 수 없어요. 이어폰·마이크 연결을 확인한 뒤 🎤를 눌러 주세요.';
+
+  @override
+  String get speechIssueBusy => '다른 앱이 음성 인식을 쓰고 있어요. 잠시 뒤 🎤를 눌러 주세요.';
+
+  @override
+  String get speechIssueOther => '음성 인식이 중간에 멈췄어요. 🎤를 다시 누르거나 입력해 주세요.';
 }

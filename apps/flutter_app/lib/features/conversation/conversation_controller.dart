@@ -50,6 +50,7 @@ final class ConversationState {
     this.turns = const [],
     this.partial = '',
     this.speechUnavailable = false,
+    this.speechIssue,
     this.hintSuggested = false,
     this.subtitles = true,
     this.handsFree = false,
@@ -71,6 +72,9 @@ final class ConversationState {
   final List<ConversationTurn> turns;
   final String partial;
   final bool speechUnavailable;
+
+  /// Why the last listen failed (network, mic, busy…); null when fine.
+  final SpeechIssue? speechIssue;
   final bool hintSuggested;
   final bool subtitles;
 
@@ -116,6 +120,7 @@ final class ConversationState {
     List<ConversationTurn>? turns,
     String? partial,
     bool? speechUnavailable,
+    Object? speechIssue = _unset,
     bool? hintSuggested,
     bool? subtitles,
     bool? handsFree,
@@ -133,6 +138,9 @@ final class ConversationState {
     turns: turns ?? this.turns,
     partial: partial ?? this.partial,
     speechUnavailable: speechUnavailable ?? this.speechUnavailable,
+    speechIssue: identical(speechIssue, _unset)
+        ? this.speechIssue
+        : speechIssue as SpeechIssue?,
     hintSuggested: hintSuggested ?? this.hintSuggested,
     subtitles: subtitles ?? this.subtitles,
     handsFree: handsFree ?? this.handsFree,
@@ -353,6 +361,7 @@ class ConversationController extends Notifier<ConversationState> {
     state = state.copyWith(
       partial: '',
       speechUnavailable: false,
+      speechIssue: null,
       hintSuggested: false,
       failure: null,
     );
@@ -381,6 +390,7 @@ class ConversationController extends Notifier<ConversationState> {
     _discardSpeech = false;
     if (text.isEmpty || discard || state.phase != SessionPhase.userSpeaking) {
       _dispatch(const SpeechDiscarded());
+      if (text.isEmpty && !discard) _onSpeechIssue(_mic.lastIssue);
       return false;
     }
     _misses = 0;
@@ -398,6 +408,20 @@ class ConversationController extends Notifier<ConversationState> {
     _dispatch(const SpeechEnded());
     await _learnerTurn(text, speechMs: speechMs);
     return true;
+  }
+
+  /// Permission problems switch the session to typing; device and network
+  /// problems are shown and stop hands-free from retrying into them.
+  void _onSpeechIssue(SpeechIssue? issue) {
+    switch (issue) {
+      case null || SpeechIssue.noSpeech:
+        return;
+      case SpeechIssue.permission:
+        state = state.copyWith(speechUnavailable: true);
+      default:
+        state = state.copyWith(speechIssue: issue);
+    }
+    _holdAuto = true;
   }
 
   /// The AI has finished its turn: hands-free listens again.

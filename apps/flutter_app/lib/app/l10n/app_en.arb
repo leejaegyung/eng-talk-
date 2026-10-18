@@ -291,5 +291,12 @@
   "reviewExpressionMissing": "Didn't hear the expression. Try again?",
   "a11yYouSaid": "You: {text}",
   "a11yCoachSaid": "Coach: {text}",
-  "a11yStopListening": "Stop listening"
+  "a11yStopListening": "Stop listening",
+  "speechUnavailableTitle": "Microphone or speech recognition isn't available",
+  "speechUnavailableBody": "Turn on microphone and speech recognition for this app in settings. Meanwhile you can type.",
+  "speechOpenSettings": "Open settings",
+  "speechIssueNetwork": "Can't reach the speech recognition service. Check the internet or keep going by typing.",
+  "speechIssueAudio": "No sound from the microphone. Check your earphones or mic, then tap 🎤.",
+  "speechIssueBusy": "Another app is using speech recognition. Tap 🎤 again in a moment.",
+  "speechIssueOther": "Speech recognition stopped. Tap 🎤 again or type."
 }

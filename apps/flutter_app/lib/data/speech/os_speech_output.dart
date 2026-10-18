@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter_tts/flutter_tts.dart';
 
 import '../../domain/audio/speech_io.dart';
@@ -10,6 +12,19 @@ class OsSpeechOutput implements SpeechOutput {
   Future<void> _ensureSetup() => _setup ??= () async {
     await _tts.setLanguage('en-US');
     await _tts.awaitSpeakCompletion(true);
+    if (Platform.isIOS) {
+      // Shared with the recognizer: without this, replies after listening
+      // play quietly through the earpiece, and Bluetooth is ignored.
+      await _tts.setSharedInstance(true);
+      await _tts.setIosAudioCategory(
+        IosTextToSpeechAudioCategory.playAndRecord,
+        [
+          IosTextToSpeechAudioCategoryOptions.defaultToSpeaker,
+          IosTextToSpeechAudioCategoryOptions.allowBluetooth,
+          IosTextToSpeechAudioCategoryOptions.allowBluetoothA2DP,
+        ],
+      );
+    }
   }();
 
   // flutter_tts treats 0.5 as the platform's normal rate.

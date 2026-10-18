@@ -106,6 +106,9 @@ class ScriptedMic implements SpeechInput {
 
   @override
   Future<void> stop() async {}
+
+  @override
+  SpeechIssue? get lastIssue => null;
 }
 
 class KeptExport implements DataExporter {

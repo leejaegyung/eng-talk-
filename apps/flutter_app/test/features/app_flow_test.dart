@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:speaking_coach/domain/audio/speech_io.dart';
 import 'package:speaking_coach/domain/conversation/session_enums.dart';
 import 'package:speaking_coach/domain/sessions/session_records.dart';
 import 'package:speaking_coach/domain/settings/settings_store.dart';
@@ -218,6 +219,33 @@ void main() {
     await settle(tester);
     expect(find.text('I went to the beach'), findsOneWidget);
     expect(find.text('I go to beach'), findsNothing);
+  });
+
+  testWidgets('mic problems are explained on the conversation screen', (
+    tester,
+  ) async {
+    final h = Harness();
+    await h.boot(tester);
+    await tapText(tester, '대화 시작');
+    final start = find.widgetWithText(FilledButton, '대화 시작');
+    await tester.ensureVisible(start);
+    await tester.tap(start);
+    await settle(tester);
+
+    h.mic.issue = SpeechIssue.audio;
+    await tester.tap(find.byTooltip('말하기'));
+    await settle(tester);
+    expect(find.textContaining('이어폰·마이크 연결을 확인'), findsOneWidget);
+
+    h.mic.issue = SpeechIssue.permission;
+    await tester.tap(find.byTooltip('말하기'));
+    await settle(tester);
+    expect(find.text('마이크나 음성 인식을 쓸 수 없어요'), findsOneWidget);
+    expect(
+      find.byType(TextField),
+      findsOneWidget,
+      reason: 'typing still works',
+    );
   });
 
   testWidgets('app to the background pauses the conversation', (tester) async {

@@ -7,6 +7,10 @@ abstract interface class SpeechOutput {
   Future<void> stop();
 }
 
+/// Why the last listen heard nothing (P2-5). [noSpeech] is the normal
+/// silent case; the others need the learner to fix something or type.
+enum SpeechIssue { noSpeech, permission, network, audio, busy, other }
+
 /// On-device recognition of one utterance at a time (free path, ADR-011).
 abstract interface class SpeechInput {
   /// Permission and recognizer availability. False means the UI should offer
@@ -23,4 +27,7 @@ abstract interface class SpeechInput {
 
   /// Ends listening early; [listenOnce] completes with what was heard.
   Future<void> stop();
+
+  /// Set when the last [listenOnce] ended on an error; null otherwise.
+  SpeechIssue? get lastIssue;
 }

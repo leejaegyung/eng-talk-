@@ -9,6 +9,7 @@ import '../../domain/conversation/session_enums.dart';
 import '../../domain/conversation/session_types.dart';
 import '../common/failure_text.dart';
 import '../common/mode_text.dart';
+import '../common/speech_problem.dart';
 import 'conversation_controller.dart';
 
 /// S06. No scores or mistake counters here (spec §3.3).
@@ -162,6 +163,11 @@ class _ConversationScreenState extends ConsumerState<ConversationScreen> {
                 leading: const Icon(Icons.error_outline),
                 title: Text(failureText(l10n, f)),
               ),
+            ),
+          if (s.speechUnavailable || s.speechIssue != null)
+            SpeechProblem(
+              unavailable: s.speechUnavailable,
+              issue: s.speechIssue,
             ),
           if (s.hintSuggested)
             Padding(

@@ -1012,4 +1012,31 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get a11yStopListening => 'Stop listening';
+
+  @override
+  String get speechUnavailableTitle =>
+      'Microphone or speech recognition isn\'t available';
+
+  @override
+  String get speechUnavailableBody =>
+      'Turn on microphone and speech recognition for this app in settings. Meanwhile you can type.';
+
+  @override
+  String get speechOpenSettings => 'Open settings';
+
+  @override
+  String get speechIssueNetwork =>
+      'Can\'t reach the speech recognition service. Check the internet or keep going by typing.';
+
+  @override
+  String get speechIssueAudio =>
+      'No sound from the microphone. Check your earphones or mic, then tap 🎤.';
+
+  @override
+  String get speechIssueBusy =>
+      'Another app is using speech recognition. Tap 🎤 again in a moment.';
+
+  @override
+  String get speechIssueOther =>
+      'Speech recognition stopped. Tap 🎤 again or type.';
 }

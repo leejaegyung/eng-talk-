@@ -5,6 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:speaking_coach/app/providers.dart';
 import 'package:speaking_coach/data/db/app_database.dart' show AppDatabase;
 import 'package:speaking_coach/data/sessions/drift_session_repository.dart';
+import 'package:speaking_coach/domain/audio/speech_io.dart';
 import 'package:speaking_coach/domain/conversation/conversation_policy.dart';
 import 'package:speaking_coach/domain/conversation/session_enums.dart';
 import 'package:speaking_coach/domain/conversation/session_types.dart';
@@ -357,6 +358,39 @@ void main() {
       await pumpEventQueue();
       expect(mic.hints, hasLength(before));
     });
+  });
+
+  group('microphone and recognizer problems (P2-5)', () {
+    test('network: shown, and hands-free stops retrying', () async {
+      mic.issue = SpeechIssue.network;
+      settings.values[SettingKeys.handsFree] = 'true';
+      container = make();
+      await pumpEventQueue();
+      expect(state().speechIssue, SpeechIssue.network);
+      expect(mic.hints, hasLength(1), reason: 'no retry into a broken mic');
+    });
+
+    test('permission lost: typing mode', () async {
+      mic.issue = SpeechIssue.permission;
+      await ctrl().talk();
+      expect(state().speechUnavailable, isTrue);
+      expect(state().phase, SessionPhase.listening);
+    });
+
+    test(
+      'silence is not a problem; a good listen clears the message',
+      () async {
+        mic.issue = SpeechIssue.noSpeech;
+        await ctrl().talk();
+        expect(state().speechIssue, isNull);
+        mic.issue = SpeechIssue.audio;
+        await ctrl().talk();
+        expect(state().speechIssue, SpeechIssue.audio);
+        mic.queue.add('Hello again.');
+        await ctrl().talk();
+        expect(state().speechIssue, isNull);
+      },
+    );
   });
 
   group('check speech before sending (P2-2)', () {

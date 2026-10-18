@@ -176,6 +176,12 @@ class FakeSpeechInput implements SpeechInput {
   /// When set, listening lasts until [stop] (a learner still talking).
   Completer<void>? hold;
 
+  /// Reported after an empty listen, as the platform would.
+  SpeechIssue? issue;
+
+  @override
+  SpeechIssue? lastIssue;
+
   @override
   Future<bool> ensureAvailable() async => available;
 
@@ -187,6 +193,7 @@ class FakeSpeechInput implements SpeechInput {
     this.hints.add(hints);
     if (hold case final h? when !h.isCompleted) await h.future;
     final text = queue.isEmpty ? '' : queue.removeAt(0);
+    lastIssue = text.isEmpty ? issue : null;
     if (text.isNotEmpty) onPartial?.call(text.split(' ').first);
     return text;
   }

@@ -1849,6 +1849,48 @@ abstract class AppLocalizations {
   /// In ko, this message translates to:
   /// **'듣기 멈추기'**
   String get a11yStopListening;
+
+  /// No description provided for @speechUnavailableTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'마이크나 음성 인식을 쓸 수 없어요'**
+  String get speechUnavailableTitle;
+
+  /// No description provided for @speechUnavailableBody.
+  ///
+  /// In ko, this message translates to:
+  /// **'설정에서 이 앱의 마이크·음성 인식 권한을 켜 주세요. 그동안은 입력해서 대화할 수 있어요.'**
+  String get speechUnavailableBody;
+
+  /// No description provided for @speechOpenSettings.
+  ///
+  /// In ko, this message translates to:
+  /// **'설정 열기'**
+  String get speechOpenSettings;
+
+  /// No description provided for @speechIssueNetwork.
+  ///
+  /// In ko, this message translates to:
+  /// **'음성 인식 서버에 연결할 수 없어요. 인터넷을 확인하거나 입력해서 계속하세요.'**
+  String get speechIssueNetwork;
+
+  /// No description provided for @speechIssueAudio.
+  ///
+  /// In ko, this message translates to:
+  /// **'마이크 소리를 받을 수 없어요. 이어폰·마이크 연결을 확인한 뒤 🎤를 눌러 주세요.'**
+  String get speechIssueAudio;
+
+  /// No description provided for @speechIssueBusy.
+  ///
+  /// In ko, this message translates to:
+  /// **'다른 앱이 음성 인식을 쓰고 있어요. 잠시 뒤 🎤를 눌러 주세요.'**
+  String get speechIssueBusy;
+
+  /// No description provided for @speechIssueOther.
+  ///
+  /// In ko, this message translates to:
+  /// **'음성 인식이 중간에 멈췄어요. 🎤를 다시 누르거나 입력해 주세요.'**
+  String get speechIssueOther;
 }
 
 class _AppLocalizationsDelegate
