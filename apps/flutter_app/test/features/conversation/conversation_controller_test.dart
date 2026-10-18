@@ -137,6 +137,17 @@ void main() {
     expect(state().phase, SessionPhase.listening);
   });
 
+  test('recognizer is biased toward the topic and the AI question', () async {
+    request = const NewSession(
+      SessionSetup(mode: SessionMode.roleplay, topic: 'Late check-in'),
+    );
+    container = make();
+    await pumpEventQueue();
+    mic.queue.add('Yes.');
+    await ctrl().talk();
+    expect(mic.hints.single, containsAll(['Late check-in', 'hike']));
+  });
+
   test('nothing recognized: back to listening, nothing sent', () async {
     await ctrl().talk();
     expect(ai.chats, hasLength(1));

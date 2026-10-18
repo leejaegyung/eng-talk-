@@ -161,13 +161,20 @@ class FakeSpeechInput implements SpeechInput {
 
   /// Transcripts returned by successive [listenOnce] calls.
   final queue = <String>[];
+
+  /// Recognition hints passed to each [listenOnce] call.
+  final hints = <List<String>>[];
   int stops = 0;
 
   @override
   Future<bool> ensureAvailable() async => available;
 
   @override
-  Future<String> listenOnce({void Function(String partial)? onPartial}) async {
+  Future<String> listenOnce({
+    void Function(String partial)? onPartial,
+    List<String> hints = const [],
+  }) async {
+    this.hints.add(hints);
     final text = queue.isEmpty ? '' : queue.removeAt(0);
     if (text.isNotEmpty) onPartial?.call(text.split(' ').first);
     return text;

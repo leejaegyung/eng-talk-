@@ -14,8 +14,12 @@ abstract interface class SpeechInput {
   Future<bool> ensureAvailable();
 
   /// Listens until the learner pauses and returns the final transcript, or
-  /// an empty string when nothing was recognized.
-  Future<String> listenOnce({void Function(String partial)? onPartial});
+  /// an empty string when nothing was recognized. [hints] are words the
+  /// learner is likely to say, used to bias recognition where supported.
+  Future<String> listenOnce({
+    void Function(String partial)? onPartial,
+    List<String> hints = const [],
+  });
 
   /// Ends listening early; [listenOnce] completes with what was heard.
   Future<void> stop();

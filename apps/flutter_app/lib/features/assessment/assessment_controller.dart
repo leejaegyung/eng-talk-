@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../app/providers.dart';
 import '../../core/logging/app_logger.dart';
+import '../../domain/audio/recognition_hints.dart';
 import '../../domain/conversation/session_enums.dart';
 import '../../domain/learning/learner_level.dart';
 import '../../domain/learning/placement.dart';
@@ -141,6 +142,9 @@ class AssessmentController extends Notifier<AssessmentState> {
     if (!ref.mounted) return;
     state = state.copyWith(listening: true, partial: '');
     final heard = await mic.listenOnce(
+      hints: state.onQuestion
+          ? recognitionHints(texts: [placementQuestions[state.step - 1]])
+          : const [],
       onPartial: (p) {
         if (ref.mounted) state = state.copyWith(partial: p);
       },

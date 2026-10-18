@@ -31,7 +31,10 @@ class OsSpeechInput implements SpeechInput {
   }
 
   @override
-  Future<String> listenOnce({void Function(String partial)? onPartial}) async {
+  Future<String> listenOnce({
+    void Function(String partial)? onPartial,
+    List<String> hints = const [],
+  }) async {
     if (!await ensureAvailable()) return '';
     final done = _done = Completer<String>();
     _last = '';
@@ -48,6 +51,9 @@ class OsSpeechInput implements SpeechInput {
         cancelOnError: true,
         pauseFor: _pauseFor,
         listenFor: _listenFor,
+        // Apple: contextualStrings; Android 13+: biasing strings.
+        contextualPhrases: hints.isEmpty ? null : hints,
+        autoPunctuation: true,
       ),
     );
     return done.future;

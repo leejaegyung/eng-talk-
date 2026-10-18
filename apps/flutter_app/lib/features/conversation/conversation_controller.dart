@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../app/providers.dart';
 import '../../core/logging/app_logger.dart';
+import '../../domain/audio/recognition_hints.dart';
 import '../../domain/audio/speech_io.dart';
 import '../../domain/conversation/conversation_policy.dart';
 import '../../domain/conversation/conversation_session_controller.dart';
@@ -294,6 +295,7 @@ class ConversationController extends Notifier<ConversationState> {
     DateTime? first;
     DateTime? last;
     final heard = await _mic.listenOnce(
+      hints: _hints(),
       onPartial: (p) {
         first ??= _now();
         last = _now();
@@ -316,6 +318,19 @@ class ConversationController extends Notifier<ConversationState> {
   }
 
   Future<void> stopListening() => _mic.stop();
+
+  /// The setup and the coach's latest lines, which answers tend to echo.
+  List<String> _hints() {
+    final setup = state.setup;
+    final coach = [
+      for (final t in state.turns.reversed)
+        if (t.speaker == Speaker.assistant) t.text,
+    ];
+    return recognitionHints(
+      phrases: [?setup.topic, ?setup.role, ?setup.goal],
+      texts: coach.take(3),
+    );
+  }
 
   void toggleSubtitles() => state = state.copyWith(subtitles: !state.subtitles);
 
