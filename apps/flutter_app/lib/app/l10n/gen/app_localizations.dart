@@ -347,7 +347,7 @@ abstract class AppLocalizations {
   /// No description provided for @failureInsufficientQuota.
   ///
   /// In ko, this message translates to:
-  /// **'API 계정에 남은 크레딧이 없어요. Claude는 console.anthropic.com의 Billing에서 결제 수단이나 크레딧을 확인해 주세요.'**
+  /// **'API 계정에 남은 크레딧이 없어요. 무료 사용량을 넘었는지 확인해 주세요.'**
   String get failureInsufficientQuota;
 
   /// No description provided for @failureRateLimited.
@@ -521,7 +521,7 @@ abstract class AppLocalizations {
   /// No description provided for @onboardingPrivacyText.
   ///
   /// In ko, this message translates to:
-  /// **'대화 내용(글자)은 연결한 AI(ChatGPT 등)로 보내져 답변을 만들어요.'**
+  /// **'대화 내용(글자)은 고른 AI로 보내져 답변을 만들어요. ChatGPT 구독은 OpenAI 정책을 따르고, Gemini 무료 키는 Google이 대화 내용을 서비스 개선에 쓸 수 있어요.'**
   String get onboardingPrivacyText;
 
   /// No description provided for @onboardingPrivacyVoice.
@@ -641,7 +641,7 @@ abstract class AppLocalizations {
   /// No description provided for @settingsApiKeyNote.
   ///
   /// In ko, this message translates to:
-  /// **'ChatGPT 구독은 추가 요금이 없어요. Claude는 본인의 Anthropic API 키로 쓰며, 사용한 만큼 Anthropic에서 요금이 청구돼요.'**
+  /// **'ChatGPT 구독은 추가 요금이 없어요. Gemini는 Google AI Studio의 무료 API 키로 쓸 수 있어요.'**
   String get settingsApiKeyNote;
 
   /// No description provided for @settingsVoiceSection.
@@ -1898,59 +1898,59 @@ abstract class AppLocalizations {
   /// **'ChatGPT'**
   String get aiChoiceChatGpt;
 
-  /// No description provided for @aiChoiceClaude.
-  ///
-  /// In ko, this message translates to:
-  /// **'Claude (API 키)'**
-  String get aiChoiceClaude;
-
   /// No description provided for @aiChoiceLabel.
   ///
   /// In ko, this message translates to:
   /// **'대화에 쓸 AI'**
   String get aiChoiceLabel;
 
-  /// No description provided for @claudeKeyLabel.
+  /// No description provided for @aiChoiceGemini.
   ///
   /// In ko, this message translates to:
-  /// **'Anthropic API 키'**
-  String get claudeKeyLabel;
+  /// **'Gemini (무료 키)'**
+  String get aiChoiceGemini;
 
-  /// No description provided for @claudeKeySave.
+  /// No description provided for @geminiKeyLabel.
+  ///
+  /// In ko, this message translates to:
+  /// **'Gemini API 키'**
+  String get geminiKeyLabel;
+
+  /// No description provided for @geminiKeySave.
   ///
   /// In ko, this message translates to:
   /// **'저장하고 확인'**
-  String get claudeKeySave;
+  String get geminiKeySave;
 
-  /// No description provided for @claudeKeyRemove.
+  /// No description provided for @geminiKeyRemove.
   ///
   /// In ko, this message translates to:
   /// **'키 삭제'**
-  String get claudeKeyRemove;
+  String get geminiKeyRemove;
 
-  /// No description provided for @claudeNoKey.
+  /// No description provided for @geminiNoKey.
   ///
   /// In ko, this message translates to:
-  /// **'키가 없어요. console.anthropic.com에서 만든 키를 넣어 주세요.'**
-  String get claudeNoKey;
+  /// **'키가 없어요. aistudio.google.com에서 무료로 만든 API 키를 넣어 주세요(결제 등록 없이).'**
+  String get geminiNoKey;
 
-  /// No description provided for @claudeKeyStored.
+  /// No description provided for @geminiKeyStored.
   ///
   /// In ko, this message translates to:
-  /// **'키는 기기의 보안 저장소에만 보관돼요. 연결 확인은 모델 목록만 조회해서 요금이 나오지 않아요.'**
-  String get claudeKeyStored;
+  /// **'키는 기기의 보안 저장소에만 보관돼요. 연결 확인은 모델 목록만 조회해요.'**
+  String get geminiKeyStored;
 
-  /// No description provided for @claudeBilling.
+  /// No description provided for @geminiFreeTier.
   ///
   /// In ko, this message translates to:
-  /// **'Claude로 대화하면 사용한 만큼 Anthropic에 요금이 청구돼요.'**
-  String get claudeBilling;
+  /// **'무료 사용량 안에서는 요금이 없어요. 대신 Google 무료 등급에서는 대화 내용이 Google 서비스 개선에 쓰이고 사람이 검토할 수 있어요. 개인정보는 말하지 마세요. 사용량이 많으면 잠시 막힐 수 있어요.'**
+  String get geminiFreeTier;
 
-  /// No description provided for @claudeChosenNoKey.
+  /// No description provided for @geminiChosenNoKey.
   ///
   /// In ko, this message translates to:
-  /// **'Claude를 고르셨지만 키가 없어요. 키를 넣기 전까지 대화를 시작할 수 없어요.'**
-  String get claudeChosenNoKey;
+  /// **'Gemini를 고르셨지만 키가 없어요. 키를 넣기 전까지 대화를 시작할 수 없어요.'**
+  String get geminiChosenNoKey;
 }
 
 class _AppLocalizationsDelegate

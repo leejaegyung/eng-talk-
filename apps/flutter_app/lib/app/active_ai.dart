@@ -33,14 +33,14 @@ class ApiKeyAccount implements ProviderAccount {
 /// The AI the learner picked, resolved on every call so a change in
 /// settings applies to the next request without rebuilding anything.
 final class ActiveAi {
-  ActiveAi({required this.choice, required this.chatGpt, required this.claude});
+  ActiveAi({required this.choice, required this.chatGpt, required this.gemini});
 
   final Future<AiChoice> Function() choice;
   final AiBackend chatGpt;
-  final AiBackend claude;
+  final AiBackend gemini;
 
   Future<AiBackend> current() async =>
-      await choice() == AiChoice.claude ? claude : chatGpt;
+      await choice() == AiChoice.gemini ? gemini : chatGpt;
 
   late final ProviderAccount account = _ActiveAccount(this);
   late final LlmProvider llm = _ActiveLlm(this);

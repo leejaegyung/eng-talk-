@@ -248,7 +248,7 @@ void main() {
     );
   });
 
-  testWidgets('Claude: key in settings, then conversations use it', (
+  testWidgets('Gemini: free key in settings, then conversations use it', (
     tester,
   ) async {
     final h = Harness();
@@ -256,22 +256,22 @@ void main() {
     await tester.tap(find.byIcon(Icons.settings_outlined));
     await settle(tester);
 
-    await tapText(tester, 'Claude (API 키)');
-    expect(find.textContaining('Anthropic에 요금이 청구돼요'), findsWidgets);
+    await tapText(tester, 'Gemini (무료 키)');
+    expect(find.textContaining('Google 서비스 개선에 쓰이고'), findsWidgets);
     expect(find.textContaining('키가 없어요'), findsWidgets);
-    final keyField = find.widgetWithText(TextField, 'Anthropic API 키');
+    final keyField = find.widgetWithText(TextField, 'Gemini API 키');
     await tester.ensureVisible(keyField);
-    await tester.enterText(keyField, 'sk-FAKE-anthropic-test-key');
+    await tester.enterText(keyField, 'FAKE-gemini-test-key');
     await tapText(tester, '저장하고 확인');
-    expect(h.vault.values['provider.anthropic'], 'sk-FAKE-anthropic-test-key');
-    expect(h.settings.values[SettingKeys.aiProvider], 'claude');
-    expect(find.text('연결됨 · 모델 claude-test (자동 선택)'), findsOneWidget);
+    expect(h.vault.values['provider.gemini'], 'FAKE-gemini-test-key');
+    expect(h.settings.values[SettingKeys.aiProvider], 'gemini');
+    expect(find.text('연결됨 · 모델 gemini-test (자동 선택)'), findsOneWidget);
     expect(
       tester.widget<TextField>(keyField).controller!.text,
       isEmpty,
       reason: 'the key is not left on screen',
     );
-    expect(find.textContaining('sk-FAKE'), findsNothing);
+    expect(find.textContaining('FAKE-gemini'), findsNothing);
 
     await tester.tap(find.byType(BackButton));
     await settle(tester);
@@ -280,19 +280,19 @@ void main() {
     await tester.ensureVisible(start);
     await tester.tap(start);
     await settle(tester);
-    expect(find.text('Hello from Claude. How are you?'), findsOneWidget);
-    expect(h.claudeAi.chats, isNotEmpty);
+    expect(find.text('Hello from Gemini. How are you?'), findsOneWidget);
+    expect(h.geminiAi.chats, isNotEmpty);
     expect(h.ai.chats, isEmpty, reason: 'ChatGPT not used');
   });
 
-  testWidgets('Claude chosen without a key: conversation asks to connect', (
+  testWidgets('Gemini chosen without a key: conversation asks to connect', (
     tester,
   ) async {
     final h = Harness(
       settings: MemorySettings({
         SettingKeys.onboardingDone: 'true',
         SettingKeys.handsFree: 'false',
-        SettingKeys.aiProvider: 'claude',
+        SettingKeys.aiProvider: 'gemini',
       }),
     );
     await h.boot(tester);
@@ -302,7 +302,7 @@ void main() {
     await tester.tap(start);
     await settle(tester);
     expect(find.text('설정에서 연결하기'), findsOneWidget);
-    expect(h.claudeAi.chats, isEmpty);
+    expect(h.geminiAi.chats, isEmpty);
   });
 
   testWidgets('app to the background pauses the conversation', (tester) async {

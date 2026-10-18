@@ -63,5 +63,12 @@ Galaxy(Android)는 배포 빌드(APK)를 설치해 최종 확인만 한다(USB �
 ## ADR-013 유료 OpenAI 음성 미도입 — 확정 (2026-10-18)
 사용자 결정. 음성 인식·합성은 무료 OS 음성만 사용한다. Phase 2의 P2-6(OpenAI 고품질 음성)·P2-7(비용 추적·한도)은 보류. 인식 정확도는 맥락 힌트(P1-B1a)·말한 뒤 확인(P2-2)으로 보완한다.
 
-## ADR-014 두 번째 AI 공급자: Claude (Anthropic) — 확정 (2026-10-18)
+## ADR-014 두 번째 AI 공급자: Claude (Anthropic) — 대체됨 → ADR-015 (2026-10-18)
 사용자 결정. P2-8은 Anthropic Messages API 어댑터(`LlmProvider`)로 구현한다. 사용자 API 키(BYOK)는 CredentialVault에만 저장, 모델 ID는 provider catalog에서 라이브 목록과 대조해 고른다(규칙 4). 사용량만큼 과금되므로 실제 호출 테스트는 사용자 확인 후에만 한다. ChatGPT 구독이 기본 경로로 남는다(ADR-011).
+
+## ADR-015 두 번째 AI 공급자: Gemini 무료 키 (ADR-014 대체) — 확정 (2026-10-18)
+사용자 결정: "클로드도 추가비용 안나오는 방향으로" → Anthropic은 제3자 앱이 Claude.ai 로그인이나 Free/Pro/Max 구독으로 요청을 보내는 것을 허용하지 않음(code.claude.com/docs/en/legal-and-compliance, 확인 2026-10-18). API 키는 사용량 과금이라 요구를 만족할 수 없어 Claude는 제거하고 Gemini로 대체.
+- Gemini Developer API 무료 등급 키(Google AI Studio, 결제 등록 없음). 모델은 무료 등급 Flash-Lite만(`gemini-3.5-flash-lite` → `3.1` → `2.5`), catalog에서 라이브 목록과 대조.
+- 키는 vault(`provider.gemini`)에만, 요청 헤더(`x-goog-api-key`)로만 보냄(URL 쿼리 금지).
+- 무료 등급은 대화 내용이 Google 제품 개선에 쓰이고 사람이 검토할 수 있음 → 설정·데이터 처리 안내에 고지, 개인정보를 말하지 말라고 안내.
+- 사용량 제한(RESOURCE_EXHAUSTED)은 rateLimited로 안내. ChatGPT 구독이 기본 경로로 남는다(ADR-011).

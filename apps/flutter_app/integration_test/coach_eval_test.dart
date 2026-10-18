@@ -3,6 +3,7 @@
 // answer; session feedback comes back as valid, transcript-backed JSON.
 // Uses the signed-in ChatGPT plan (no API charges):
 //   flutter test integration_test/coach_eval_test.dart -d macos
+//   flutter test integration_test/coach_eval_test.dart -d macos --dart-define=AI=gemini
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
@@ -18,6 +19,10 @@ import 'package:speaking_coach/domain/providers/ai_provider.dart';
 import 'package:speaking_coach/domain/sessions/session_records.dart';
 
 const _log = AppLogger('eval');
+
+/// --dart-define=AI=gemini runs the same set against the free Gemini key
+/// (ADR-015) instead of the ChatGPT plan.
+const _gemini = String.fromEnvironment('AI') == 'gemini';
 
 final _answers = {
   SessionMode.daily: 'I went to the park yesterday.',
@@ -77,12 +82,18 @@ void main() {
   setUpAll(() async {
     c = ProviderContainer();
     expect(
-      await c.read(chatGptAccountProvider).isSignedIn(),
+      await c
+          .read(_gemini ? geminiAccountProvider : chatGptAccountProvider)
+          .isSignedIn(),
       isTrue,
-      reason: 'sign in with ChatGPT in the app first',
+      reason: _gemini
+          ? 'save a Gemini key in the app settings first'
+          : 'sign in with ChatGPT in the app first',
     );
-    llm = c.read(chatGptLlmProvider);
-    model = await c.read(chatGptModelSelectorProvider)();
+    llm = c.read(_gemini ? geminiLlmProvider : chatGptLlmProvider);
+    model = await c.read(
+      _gemini ? geminiModelSelectorProvider : chatGptModelSelectorProvider,
+    )();
   });
   tearDownAll(() => c.dispose());
 

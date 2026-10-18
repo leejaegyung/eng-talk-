@@ -9,11 +9,11 @@ import '../data/audio/record_audio_input.dart';
 import '../data/audio/temp_file_audio_output.dart';
 import '../data/db/app_database.dart' show AppDatabase;
 import '../data/export/file_exporter.dart';
-import '../data/providers/anthropic/anthropic_client.dart';
-import '../data/providers/anthropic/provider_catalog.dart' as claude;
 import '../data/providers/chatgpt/chatgpt_auth.dart';
 import '../data/providers/chatgpt/chatgpt_plan_client.dart';
 import '../data/providers/chatgpt/provider_catalog.dart' as chatgpt;
+import '../data/providers/gemini/gemini_client.dart';
+import '../data/providers/gemini/provider_catalog.dart' as gemini;
 import '../data/providers/openai/openai_client.dart';
 import '../data/providers/openai/provider_catalog.dart';
 import '../data/sessions/drift_session_repository.dart';
@@ -167,30 +167,30 @@ final chatGptModelSelectorProvider = Provider<Future<String> Function()>((ref) {
   return () async => chatgpt.selectChatGptPlanModel(await client.planModels());
 });
 
-// Claude with the user's Anthropic key (ADR-014).
+// Gemini with the user's free-tier key (ADR-015).
 
-const claudeKeyRef = 'provider.anthropic';
+const geminiKeyRef = 'provider.gemini';
 
-final _anthropicClientProvider = Provider<AnthropicClient>((ref) {
-  final client = AnthropicClient(
+final _geminiClientProvider = Provider<GeminiClient>((ref) {
+  final client = GeminiClient(
     vault: ref.watch(credentialVaultProvider),
-    keyRef: claudeKeyRef,
+    keyRef: geminiKeyRef,
   );
   ref.onDispose(client.close);
   return client;
 });
 
-final claudeAccountProvider = Provider<ProviderAccount>(
-  (ref) => ApiKeyAccount(ref.watch(credentialVaultProvider), claudeKeyRef),
+final geminiAccountProvider = Provider<ProviderAccount>(
+  (ref) => ApiKeyAccount(ref.watch(credentialVaultProvider), geminiKeyRef),
 );
 
-final claudeLlmProvider = Provider<LlmProvider>(
-  (ref) => ref.watch(_anthropicClientProvider),
+final geminiLlmProvider = Provider<LlmProvider>(
+  (ref) => ref.watch(_geminiClientProvider),
 );
 
-final claudeModelSelectorProvider = Provider<Future<String> Function()>((ref) {
-  final llm = ref.watch(claudeLlmProvider);
-  return () async => claude.selectClaudeModel(await llm.listModels());
+final geminiModelSelectorProvider = Provider<Future<String> Function()>((ref) {
+  final llm = ref.watch(geminiLlmProvider);
+  return () async => gemini.selectGeminiModel(await llm.listModels());
 });
 
 // The AI the learner picked in settings; coaching goes through these.
@@ -208,10 +208,10 @@ final _activeAiProvider = Provider<ActiveAi>((ref) {
       llm: ref.watch(chatGptLlmProvider),
       selectModel: ref.watch(chatGptModelSelectorProvider),
     ),
-    claude: AiBackend(
-      account: ref.watch(claudeAccountProvider),
-      llm: ref.watch(claudeLlmProvider),
-      selectModel: ref.watch(claudeModelSelectorProvider),
+    gemini: AiBackend(
+      account: ref.watch(geminiAccountProvider),
+      llm: ref.watch(geminiLlmProvider),
+      selectModel: ref.watch(geminiModelSelectorProvider),
     ),
   );
 });

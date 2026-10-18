@@ -4,7 +4,7 @@
 
 **현재 Phase:** 2 (품질) — 사용자 결정(2026-10-18): Phase 1 기기 확인은 Mac 자동 E2E로 대신하고 진행. Windows/Galaxy/iPhone 확인은 미완
 **대상 플랫폼:** macOS·Windows 데스크톱 (Mac에서 개발), Galaxy는 APK 배포 후 확인 (ADR-009)
-**다음 태스크:** 사용자 확인 대기: v0.5.0 기기 확인, Claude 실제 호출(키·과금 동의 필요). 이후 P2-3 발화 지표(실기기 데이터) / P2-10 Realtime 검토
+**다음 태스크:** Gemini 실제 평가(사용자 무료 키 필요) → v0.5.0 기기 확인 → P2-3 발화 지표(실기기 데이터) / P2-10 Realtime 검토
 **과금 방향:** ADR-011 — ChatGPT 구독(추가 요금 없음) 기본, OpenAI API 키는 선택
 **Phase 0 순서:** T7 → T4 → T5 → T3 → T6(키·과금, 실행 전 확인). T2는 사용자 Windows 실행 확인 대기
 
@@ -41,7 +41,7 @@
 | P2-9 접근성 | ✅ | `test/a11y`: 주요 화면 9곳에 Flutter 접근성 지침(라벨 있는 터치 영역, 48dp 터치 크기, 텍스트 대비 4.5:1) + 다크 모드 + 글자 2배·폰 폭(390) 넘침 없음. 발견·수정: 회색 보조 글자 대비 3.4 → 4.6(`inkMuted` #66717F), 빠른 동작 줄 색. 스크린리더: 말풍선에 '나:/코치:' 라벨, 상태 문구 live region, 듣는 중 🎤 툴팁 '듣기 멈추기'. 키보드: 기본 Tab/Space 조작(별도 단축키는 macOS 시스템 단축키와 충돌해 보류) |
 | 실제 마이크 권한 | ✅ | 사용자 허용 후 앱이 음성 인식에 접근(`available: true`, 크래시 없음). 정확도는 Mac 스피커→내장 마이크 재생으로는 측정 불가(자기 출력 억제로 보임) → 사람 목소리 필요 |
 | P2-5 오디오 환경 | ✅ (코드) | 인식 오류를 종류별로 구분(`SpeechIssue`: 무음/권한/네트워크/마이크/사용 중/기타, speech_to_text 오류 코드 매핑): 권한 → 입력 모드 + 설정 열기(macOS 개인정보 패널·iOS 앱 설정), 네트워크·마이크·사용 중 → 원인별 안내, 핸즈프리는 오류 시 재시도 안 함. **버그 수정:** 대화 화면에 마이크 사용 불가 안내가 아예 안 나오던 문제. iOS: TTS와 인식기가 오디오 세션 공유(playAndRecord + 스피커 기본 + 블루투스 허용) — 인식 후 답변이 수화기로 작게 나오는 문제 예방. iOS 빌드 확인. **남음: 블루투스 연결·해제 실기기 확인** |
-| P2-8 Claude 공급자 | ✅ (코드) | ADR-014. `data/providers/anthropic`: Messages API 스트리밍(SSE text_delta, usage 실측), 키는 요청마다 vault(`provider.anthropic`)에서 읽음, 첫 메시지 user·역할 교대 보정, 오류 매핑(인증/권한→invalidKey, 404→modelUnavailable, 429·529→rateLimited, 크레딧 부족→insufficientQuota, 응답 본문·키 미보관). 모델은 catalog(haiku-5-5 → sonnet-5-5 → 계열 최신)에서 라이브 목록과 대조. `app/active_ai.dart`: 설정의 AI 선택을 매 호출마다 확인해 ChatGPT/Claude로 전달(대화·피드백·진단 공통). 설정: AI 선택 + 키 입력(가림, 저장 즉시 입력칸 비움, 연결 확인은 모델 목록만 조회 → 과금 없음) + 키 삭제 + 과금 안내. 테스트: 클라이언트 10 + 화면 흐름 2. **남음: 실제 Claude 호출(사용자 키·과금 동의 필요)** |
+| P2-8 두 번째 AI: Gemini 무료 | ✅ (코드) | ADR-015(Claude는 Anthropic 정책상 구독 무료 경로가 없어 제거). `data/providers/gemini`: streamGenerateContent SSE(생각 조각 제외, usage 실측: 출력+생각 토큰), 키는 vault·헤더만, 첫 턴 user·역할 교대 보정, 오류 매핑(API_KEY_INVALID/권한→invalidKey, 404→modelUnavailable, RESOURCE_EXHAUSTED·429·503→rateLimited). 모델은 무료 Flash-Lite만. `app/active_ai.dart`가 설정의 AI 선택을 매 호출마다 확인(대화·피드백·진단). 설정: AI 선택 + 키 입력(가림, 저장 즉시 비움, 확인은 모델 목록만) + 무료 등급 데이터 사용 고지. 테스트: 클라이언트 8 + 화면 흐름 2. 평가 세트 `--dart-define=AI=gemini`. **남음: 사용자 무료 키로 실제 평가** |
 | P1-B2 발화 지표 | ✅ | AI 발화 = TTS 실측, 사용자 발화 = 인식기 첫/마지막 부분결과 간격(추정, confidence 0.5). 양쪽 다 있을 때만 비율 표시, 결과·홈에 '추정' 표기 |
 | P1-B3 연결 끊김 | ✅ | network 실패 → paused(connectionLost) → 다시 연결(실패 요청 재시도) / 읽어주기 없이 계속 / 저장하고 끝내기 |
 | P1-C1 모드 정책 | ✅ | 6모드 규칙(PromptComposer). **실제 모델 평가 세트 통과**(모드별 질문 1개·후속 질문·3문장 이하·마크다운 없음). 첫 실행에서 질문 2개 연달아 묻는 문제 발견 → 프롬프트 coach-v2로 수정 후 통과 |

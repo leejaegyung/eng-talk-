@@ -8,8 +8,8 @@ import '../../domain/providers/ai_choice.dart';
 import '../../domain/providers/provider_failure.dart';
 import '../../domain/settings/settings_store.dart';
 
-final class ClaudeSettingsState {
-  const ClaudeSettingsState({
+final class AiChoiceState {
+  const AiChoiceState({
     this.choice = AiChoice.chatGpt,
     this.hasKey,
     this.model,
@@ -28,29 +28,29 @@ final class ClaudeSettingsState {
   final ProviderFailure? failure;
 }
 
-final claudeSettingsProvider =
-    NotifierProvider.autoDispose<ClaudeSettingsController, ClaudeSettingsState>(
-      ClaudeSettingsController.new,
+final aiChoiceProvider =
+    NotifierProvider.autoDispose<AiChoiceController, AiChoiceState>(
+      AiChoiceController.new,
     );
 
-/// Which AI coaches, and the Anthropic key for Claude (ADR-014). The key
+/// Which AI coaches, and the Gemini key (ADR-015). The key
 /// goes straight to the vault; it is never kept in state or shown again.
-class ClaudeSettingsController extends Notifier<ClaudeSettingsState> {
-  static const _log = AppLogger('settings.claude');
+class AiChoiceController extends Notifier<AiChoiceState> {
+  static const _log = AppLogger('settings.ai');
 
   @override
-  ClaudeSettingsState build() {
+  AiChoiceState build() {
     unawaited(_load());
-    return const ClaudeSettingsState();
+    return const AiChoiceState();
   }
 
   Future<void> _load() async {
     final saved = await ref
         .read(settingsStoreProvider)
         .read(SettingKeys.aiProvider);
-    final hasKey = await ref.read(claudeAccountProvider).isSignedIn();
+    final hasKey = await ref.read(geminiAccountProvider).isSignedIn();
     if (!ref.mounted) return;
-    state = ClaudeSettingsState(
+    state = AiChoiceState(
       choice: AiChoice.values.asNameMap()[saved] ?? AiChoice.chatGpt,
       hasKey: hasKey,
     );
@@ -67,7 +67,7 @@ class ClaudeSettingsController extends Notifier<ClaudeSettingsState> {
   Future<void> saveKey(String key) async {
     final trimmed = key.trim();
     if (trimmed.isEmpty || state.busy) return;
-    await ref.read(credentialVaultProvider).write(claudeKeyRef, trimmed);
+    await ref.read(credentialVaultProvider).write(geminiKeyRef, trimmed);
     if (!ref.mounted) return;
     state = _copy(hasKey: true);
     await check();
@@ -78,10 +78,10 @@ class ClaudeSettingsController extends Notifier<ClaudeSettingsState> {
   Future<void> check() async {
     state = _copy(busy: true, clearFailure: true);
     try {
-      final model = await ref.read(claudeModelSelectorProvider)();
+      final model = await ref.read(geminiModelSelectorProvider)();
       if (ref.mounted) state = _copy(model: model, busy: false);
     } on ProviderException catch (e) {
-      _log.warning('claude check failed: $e');
+      _log.warning('gemini check failed: $e');
       if (ref.mounted) {
         state = _copy(busy: false, failure: e.failure, clearModel: true);
       }
@@ -89,12 +89,12 @@ class ClaudeSettingsController extends Notifier<ClaudeSettingsState> {
   }
 
   Future<void> removeKey() async {
-    await ref.read(claudeAccountProvider).signOut();
+    await ref.read(geminiAccountProvider).signOut();
     if (!ref.mounted) return;
     state = _copy(hasKey: false, clearModel: true, clearFailure: true);
   }
 
-  ClaudeSettingsState _copy({
+  AiChoiceState _copy({
     AiChoice? choice,
     bool? hasKey,
     String? model,
@@ -102,7 +102,7 @@ class ClaudeSettingsController extends Notifier<ClaudeSettingsState> {
     ProviderFailure? failure,
     bool clearModel = false,
     bool clearFailure = false,
-  }) => ClaudeSettingsState(
+  }) => AiChoiceState(
     choice: choice ?? state.choice,
     hasKey: hasKey ?? state.hasKey,
     model: clearModel ? null : model ?? state.model,

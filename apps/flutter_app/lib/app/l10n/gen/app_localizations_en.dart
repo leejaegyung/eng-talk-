@@ -161,7 +161,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get failureInsufficientQuota =>
-      'Your API account is out of credit. For Claude, check billing at console.anthropic.com.';
+      'Your API account is out of credit. Check whether you went over the free usage.';
 
   @override
   String get failureRateLimited =>
@@ -264,7 +264,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get onboardingPrivacyText =>
-      'What you say (as text) is sent to the AI you connect (such as ChatGPT) to make replies.';
+      'What you say (as text) is sent to the AI you choose to generate replies. The ChatGPT plan follows OpenAI\'s policies; with a free Gemini key, Google may use conversations to improve its products.';
 
   @override
   String get onboardingPrivacyVoice =>
@@ -333,7 +333,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settingsApiKeyNote =>
-      'The ChatGPT plan has no extra charge. Claude uses your own Anthropic API key and is billed by Anthropic per use.';
+      'The ChatGPT plan has no extra charge. Gemini works with a free API key from Google AI Studio.';
 
   @override
   String get settingsVoiceSection => 'Voice';
@@ -1044,33 +1044,33 @@ class AppLocalizationsEn extends AppLocalizations {
   String get aiChoiceChatGpt => 'ChatGPT';
 
   @override
-  String get aiChoiceClaude => 'Claude (API key)';
-
-  @override
   String get aiChoiceLabel => 'AI for coaching';
 
   @override
-  String get claudeKeyLabel => 'Anthropic API key';
+  String get aiChoiceGemini => 'Gemini (free key)';
 
   @override
-  String get claudeKeySave => 'Save and check';
+  String get geminiKeyLabel => 'Gemini API key';
 
   @override
-  String get claudeKeyRemove => 'Remove key';
+  String get geminiKeySave => 'Save and check';
 
   @override
-  String get claudeNoKey =>
-      'No key yet. Paste a key from console.anthropic.com.';
+  String get geminiKeyRemove => 'Remove key';
 
   @override
-  String get claudeKeyStored =>
-      'The key stays in this device\'s secure storage. Checking only lists models, so it isn\'t billed.';
+  String get geminiNoKey =>
+      'No key yet. Paste a free API key from aistudio.google.com (no billing needed).';
 
   @override
-  String get claudeBilling =>
-      'Conversations with Claude are billed by Anthropic per use.';
+  String get geminiKeyStored =>
+      'The key stays in this device\'s secure storage. Checking only lists models.';
 
   @override
-  String get claudeChosenNoKey =>
-      'Claude is selected but there\'s no key. Add one to start conversations.';
+  String get geminiFreeTier =>
+      'No charge within the free usage. On Google\'s free tier, conversations are used to improve Google\'s products and may be read by people, so don\'t share personal information. Heavy use can be paused for a while.';
+
+  @override
+  String get geminiChosenNoKey =>
+      'Gemini is selected but there\'s no key. Add one to start conversations.';
 }

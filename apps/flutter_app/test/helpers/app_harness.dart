@@ -22,9 +22,9 @@ class Harness {
           }),
       account = account ?? (FakeAccount()..signedIn = true) {
     ai.responder = smartReplies;
-    claudeAi
+    geminiAi
       ..responder = smartReplies
-      ..reply = const [TextDelta('Hello from Claude. How are you?')];
+      ..reply = const [TextDelta('Hello from Gemini. How are you?')];
     final (db, repo) = memoryRepository();
     this.repo = repo;
     addTearDown(db.close);
@@ -34,8 +34,8 @@ class Harness {
   final FakeAccount account;
   final ai = FakeAi();
 
-  /// Claude, when the learner picks it in settings (ADR-014).
-  final claudeAi = FakeAi();
+  /// Gemini, when the learner picks it in settings (ADR-015).
+  final geminiAi = FakeAi();
   final mic = FakeSpeechInput();
   final voice = FakeSpeechOutput();
   final vault = MemoryVault();
@@ -48,8 +48,8 @@ class Harness {
     settingsStoreProvider.overrideWithValue(settings),
     chatGptAccountProvider.overrideWithValue(account),
     chatGptLlmProvider.overrideWithValue(ai),
-    claudeLlmProvider.overrideWithValue(claudeAi),
-    claudeModelSelectorProvider.overrideWithValue(() async => 'claude-test'),
+    geminiLlmProvider.overrideWithValue(geminiAi),
+    geminiModelSelectorProvider.overrideWithValue(() async => 'gemini-test'),
     chatGptModelSelectorProvider.overrideWith(
       (ref) =>
           () => selectModel(),
