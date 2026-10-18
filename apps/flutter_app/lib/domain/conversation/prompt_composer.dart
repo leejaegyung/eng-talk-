@@ -162,17 +162,35 @@ BEHAVIOR:
     ErrorCategory.naturalness: 'Focus area: natural phrasing. If the learner\'s last message sounds unnatural, begin your reply by echoing it with more natural phrasing, then ask your question. Example: learner "I am boring at home" -> you "Oh, you were bored at home! ..." Never explain or name the mistake.',
   };
 
+  // A seed alone barely changes what a model picks; a starting letter and
+  // an angle push it off its usual first ideas while the topic itself is
+  // still the model's choice (no list of topics).
+  static const _letters = 'ABCDEFGHIJKLMNOPRSTUVW';
+  static const _angles = [
+    'a personal experience',
+    'an opinion or preference',
+    'a what-if situation',
+    'how something works or is done',
+    'a memory from childhood',
+    'a plan for the future',
+    'a problem and how to solve it',
+    'a comparison between two things',
+  ];
+
   static String _aiTopicRule(PromptContext c) {
+    final seed = c.topicSeed.abs();
+    final letter = _letters[seed % _letters.length];
+    final angle = _angles[(seed ~/ _letters.length) % _angles.length];
     final avoid = [
       for (final t in c.avoidTopics.take(_maxReviewExpressions + 3))
         if (_oneLine(t, maxFieldLength) case final v when v.isNotEmpty) '"$v"',
     ];
     final variety =
-        'Variety seed ${c.topicSeed}: let it steer you away from your usual first ideas'
+        'For variety this session, pick something whose key word starts with the letter $letter, approached as $angle'
         '${avoid.isEmpty ? '' : '; avoid these recent topics: ${avoid.join(', ')}'}.';
     return c.mode == SessionMode.roleplay
         ? 'The learner asked you to choose. Invent a realistic, specific everyday scenario, choose your role in it, and set the scene in one short sentence before your question. Keep the role for the whole session. $variety'
-        : 'The learner asked you to choose the topic. Pick one specific, interesting topic suited to the mode and level (not a generic one like hobbies or the weather), name it in your first turn, and keep the conversation on it. $variety';
+        : 'The learner asked you to choose the topic. Pick one specific, interesting topic suited to the mode and level (not a generic one like hobbies, food or the weather), name it in your first turn, and keep the conversation on it. $variety';
   }
 
   static const _modeRules = {

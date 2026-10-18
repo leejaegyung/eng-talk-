@@ -49,7 +49,8 @@ void main() {
       ),
     );
     expect(picked, contains('choose the topic'));
-    expect(picked, contains('Variety seed 4242'));
+    expect(picked, contains('starts with the letter'));
+    expect(picked, contains('approached as'));
     expect(picked, contains('"Weekend plans"'));
     expect(
       picked,
