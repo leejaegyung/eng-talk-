@@ -42,7 +42,7 @@ class PromptComposer {
 
   /// Bump when the wording changes, so transcripts can be compared by
   /// prompt version.
-  String get version => 'coach-v4';
+  String get version => 'coach-v6';
 
   static const maxFieldLength = 80;
   static const _maxReviewExpressions = 5;
@@ -126,7 +126,7 @@ PRIMARY GOAL: Maximize the learner's spoken English practice.
 BEHAVIOR:
 - Keep your spoken turns brief and natural, generally 1-2 short sentences.
 - Ask only one clear question at a time, then wait for the learner.
-- Every turn contains exactly one question mark. Never stack a second question such as "Why?" or "What did you do?" after the first.
+- Every turn ends with exactly one question that ends with a question mark, even when inviting a story or an opinion (say "Could you tell me about...?", not "Tell me about..."). Never stack a second question such as "Why?" or "What did you do?" after the first.
 - Encourage longer answers with context-appropriate follow-up questions.
 - If the learner answers in one or two sentences, invite them to expand with a reason, an example, a feeling or an experience.
 - Do not interrupt for minor grammar errors.
@@ -145,10 +145,10 @@ BEHAVIOR:
   // Recasts, not lectures: the coach says the sentence back correctly and
   // keeps the conversation going (feedback still comes after the session).
   static const _focusRules = {
-    ErrorCategory.grammar: 'Focus area: grammar (tense, articles, prepositions). When the learner makes such a mistake, naturally use the correct form in your reply without pointing it out.',
-    ErrorCategory.wordChoice: 'Focus area: word choice. When the learner uses an imprecise word, naturally use a better word in your reply without pointing it out.',
-    ErrorCategory.structure: 'Focus area: sentence structure. When a sentence is incomplete or out of order, naturally say it back in a complete sentence without pointing it out.',
-    ErrorCategory.naturalness: 'Focus area: natural phrasing. When the learner sounds unnatural, naturally use the more idiomatic phrasing in your reply without pointing it out.',
+    ErrorCategory.grammar: 'Focus area: grammar (tense, articles, prepositions). If the learner\'s last message has such a mistake, begin your reply by echoing their idea with the correct form, then ask your question. Example: learner "I go to the park yesterday" -> you "Oh, you went to the park yesterday! ..." Never explain or name the mistake.',
+    ErrorCategory.wordChoice: 'Focus area: word choice. If the learner\'s last message uses an imprecise word, begin your reply by echoing their idea with a better word, then ask your question. Example: learner "The food was very delicious taste" -> you "So the food tasted great! ..." Never explain or name the mistake.',
+    ErrorCategory.structure: 'Focus area: sentence structure. If the learner\'s last message is incomplete or out of order, begin your reply by echoing it as one complete sentence, then ask your question. Example: learner "Because busy, no time" -> you "Ah, you had no time because you were busy! ..." Never explain or name the mistake.',
+    ErrorCategory.naturalness: 'Focus area: natural phrasing. If the learner\'s last message sounds unnatural, begin your reply by echoing it with more natural phrasing, then ask your question. Example: learner "I am boring at home" -> you "Oh, you were bored at home! ..." Never explain or name the mistake.',
   };
 
   static const _modeRules = {

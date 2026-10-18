@@ -10,6 +10,7 @@ import 'package:speaking_coach/app/providers.dart';
 import 'package:speaking_coach/core/logging/app_logger.dart';
 import 'package:speaking_coach/domain/conversation/prompt_composer.dart';
 import 'package:speaking_coach/domain/conversation/session_enums.dart';
+import 'package:speaking_coach/domain/feedback/feedback.dart';
 import 'package:speaking_coach/domain/feedback/feedback_service.dart';
 import 'package:speaking_coach/domain/learning/learner_level.dart';
 import 'package:speaking_coach/domain/learning/placement.dart';
@@ -129,6 +130,34 @@ void main() {
       expect(reply, isNot(contains('*')), reason: 'no markdown: $reply');
     }, timeout: const Timeout(Duration(minutes: 2)));
   }
+
+  test('focus area: the mistake is recast, not lectured (P2-4)', () async {
+    const ctx = PromptContext(
+      mode: SessionMode.daily,
+      level: LearnerLevel.l2,
+      focusArea: ErrorCategory.grammar,
+      reviewExpressions: ['That reminds me of'],
+    );
+    const answer = 'Yesterday I go to the park and I eat sandwich.';
+    final reply = await ask(
+      composer.compose(ctx, const [
+        ChatMessage(ChatRole.assistant, 'What did you do yesterday?'),
+        ChatMessage(ChatRole.user, answer),
+      ]),
+    );
+    _log.info('[focus] learner: $answer | AI: $reply');
+    expect(_questions(reply), 1, reason: 'follow-up: $reply');
+    expect(_sentences(reply), lessThanOrEqualTo(3), reason: 'short: $reply');
+    final lower = reply.toLowerCase();
+    expect(
+      lower.contains('went') || lower.contains('ate'),
+      isTrue,
+      reason: 'recasts the past tense: $reply',
+    );
+    for (final lecture in ['should be', 'correct form', 'mistake', 'grammar']) {
+      expect(lower, isNot(contains(lecture)), reason: 'no lecture: $reply');
+    }
+  }, timeout: const Timeout(Duration(minutes: 2)));
 
   test('feedback: valid JSON, corrections quote the learner', () async {
     final t0 = DateTime.now();
