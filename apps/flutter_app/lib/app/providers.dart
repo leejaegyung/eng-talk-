@@ -13,6 +13,7 @@ import '../data/db/app_database.dart' show AppDatabase;
 import '../data/diagnostics/file_error_journal.dart';
 import '../data/export/file_backup_picker.dart';
 import '../data/export/file_exporter.dart';
+import '../data/export/web_exporter.dart';
 import '../data/providers/chatgpt/chatgpt_auth.dart';
 import '../data/providers/chatgpt/chatgpt_plan_client.dart';
 import '../data/providers/chatgpt/provider_catalog.dart' as chatgpt;
@@ -59,7 +60,9 @@ final settingsStoreProvider = Provider<SettingsStore>(
   (ref) => DriftSettingsStore(ref.watch(appDatabaseProvider)),
 );
 
-final dataExporterProvider = Provider<DataExporter>((ref) => FileExporter());
+final dataExporterProvider = Provider<DataExporter>(
+  (ref) => PlatformInfo.isWeb ? WebExporter() : FileExporter(),
+);
 
 final backupPickerProvider = Provider<BackupPicker>(
   (ref) => FileBackupPicker(),

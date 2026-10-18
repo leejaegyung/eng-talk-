@@ -5,6 +5,8 @@ import 'package:speech_to_text/speech_recognition_result.dart';
 import 'package:speech_to_text/speech_to_text.dart';
 
 import '../../core/logging/app_logger.dart';
+import '../../core/platform/platform_info.dart';
+import '../../domain/audio/alternate_choice.dart';
 import '../../domain/audio/speech_io.dart';
 
 /// [SpeechInput] through the platform recognizer (free). Recognition may run
@@ -19,11 +21,27 @@ class OsSpeechInput implements SpeechInput {
   /// Android reports "not listening" before the final result arrives; the
   /// final one is more accurate (and has the last words), so wait for it.
   static const _finalGrace = Duration(milliseconds: 1500);
-  Timer? _grace;
+
+  /// Android ends recognition after a second or two of silence, whatever
+  /// was asked, which cuts learners off mid-thought. After such a stop the
+  /// recognizer is started again; the turn ends only if no new words come
+  /// within this window.
+  static const _resumeWindow = Duration(milliseconds: 1800);
 
   final SpeechToText _stt = SpeechToText();
-  Completer<String>? _done;
+
+  /// SpeechToText is a singleton that keeps the status and error handlers
+  /// from its first initialize; they forward to whichever instance listens.
+  static OsSpeechInput? _active;
+  static void _status(String status) => _active?._onStatus(status);
+  static void _error(SpeechRecognitionError error) => _active?._onError(error);
+  Completer<String>? _segment;
   String _last = '';
+
+  /// Context for choosing among alternates in the current segment.
+  List<String> _hints = const [];
+  Timer? _grace;
+  bool _stopRequested = false;
 
   @override
   SpeechIssue? lastIssue;
@@ -31,7 +49,7 @@ class OsSpeechInput implements SpeechInput {
   @override
   Future<bool> ensureAvailable() async {
     try {
-      return await _stt.initialize(onError: _onError, onStatus: _onStatus);
+      return await _stt.initialize(onError: _error, onStatus: _status);
     } on Exception catch (e) {
       _log.warning('speech recognizer unavailable: ${e.runtimeType}');
       return false;
@@ -45,14 +63,63 @@ class OsSpeechInput implements SpeechInput {
     List<String> hints = const [],
   }) async {
     if (!await ensureAvailable()) return '';
-    final done = _done = Completer<String>();
-    _last = '';
+    _active = this;
+    _stopRequested = false;
     lastIssue = null;
+    final parts = <String>[];
+    String joined([String current = '']) =>
+        [...parts, if (current.isNotEmpty) current].join(' ');
+
+    var resuming = false;
+    while (true) {
+      Timer? watchdog;
+      if (resuming) {
+        // Nothing new within the window: the learner has finished.
+        watchdog = Timer(_resumeWindow, () => unawaited(_stt.stop()));
+      }
+      final text = await _listenSegment(
+        onPartial: (p) {
+          if (p.isNotEmpty) watchdog?.cancel();
+          onPartial?.call(joined(p));
+        },
+        onLevel: onLevel,
+        hints: [...hints, ...parts],
+      );
+      watchdog?.cancel();
+      if (text.isNotEmpty) parts.add(text);
+      final keepGoing =
+          PlatformInfo.isAndroid &&
+          text.isNotEmpty &&
+          !_stopRequested &&
+          (lastIssue == null || lastIssue == SpeechIssue.noSpeech);
+      if (!keepGoing) break;
+      // A silence after real words is not a problem to report.
+      lastIssue = null;
+      resuming = true;
+    }
+    if (parts.isNotEmpty && lastIssue == SpeechIssue.noSpeech) {
+      lastIssue = null;
+    }
+    return joined().trim();
+  }
+
+  Future<String> _listenSegment({
+    required void Function(String partial) onPartial,
+    void Function(double level)? onLevel,
+    required List<String> hints,
+  }) async {
+    final done = _segment = Completer<String>();
+    _last = '';
+    _hints = hints;
     _grace?.cancel();
     await _stt.listen(
       onResult: (SpeechRecognitionResult r) {
-        _last = r.recognizedWords;
-        onPartial?.call(_last);
+        _last = r.finalResult
+            ? chooseAlternate([
+                for (final a in r.alternates) (a.recognizedWords, a.confidence),
+              ], _hints)
+            : r.recognizedWords;
+        onPartial(_last);
         if (r.finalResult) _finish();
       },
       onSoundLevelChange: onLevel,
@@ -73,6 +140,7 @@ class OsSpeechInput implements SpeechInput {
 
   @override
   Future<void> stop() async {
+    _stopRequested = true;
     await _stt.stop();
   }
 
@@ -111,7 +179,7 @@ class OsSpeechInput implements SpeechInput {
 
   void _finish() {
     _grace?.cancel();
-    final done = _done;
+    final done = _segment;
     if (done != null && !done.isCompleted) done.complete(_last.trim());
   }
 }

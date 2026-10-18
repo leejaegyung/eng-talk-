@@ -7,6 +7,7 @@ import 'package:crypto/crypto.dart';
 import 'package:http/http.dart' as http;
 
 import '../../../core/logging/app_logger.dart';
+import '../../../core/net/http_client.dart';
 import '../../../domain/credentials/credential_vault.dart';
 import '../../../domain/credentials/provider_account.dart';
 import '../../../domain/providers/provider_failure.dart';
@@ -25,7 +26,8 @@ class ChatGptAuth implements ProviderAccount {
     this._callbackTimeout = const Duration(minutes: 5),
     Future<void> Function()? whenForeground,
     String? returnLink,
-  }) : _client = client ?? http.Client(),
+    this._pastedCallback,
+  }) : _client = client ?? newHttpClient(),
        _now = now ?? DateTime.now,
        _whenForeground = whenForeground ?? _immediately,
        _donePage = _page(returnLink);
@@ -63,6 +65,11 @@ class ChatGptAuth implements ProviderAccount {
   /// access for background apps, and the browser is in front at callback.
   final Future<void> Function() _whenForeground;
   final String _donePage;
+
+  /// Web: no loopback server can run in a browser, so after consent the
+  /// learner pastes the address the browser ended on
+  /// (http://127.0.0.1:…/auth/callback?code=…); this returns its query.
+  final Future<Map<String, String>> Function()? _pastedCallback;
   final _random = Random.secure();
   Future<String>? _refreshing;
 
@@ -80,11 +87,15 @@ class ChatGptAuth implements ProviderAccount {
     final state = _randomString(32);
     final nonce = _randomString(32);
 
-    final server = await _bindLoopback();
+    final pasted = _pastedCallback;
+    final server = pasted == null ? await _bindLoopback() : null;
     try {
-      final redirectUri = 'http://127.0.0.1:${server.port}/auth/callback';
+      final redirectUri =
+          'http://127.0.0.1:${server?.port ?? _preferredPort}/auth/callback';
       // Listen before opening the browser so the callback can't be missed.
-      final callback = _awaitCallback(server, _donePage);
+      final callback = server != null
+          ? _awaitCallback(server, _donePage)
+          : null;
       await _openBrowser(
         _authorizeUrl.replace(
           queryParameters: {
@@ -102,8 +113,9 @@ class ChatGptAuth implements ProviderAccount {
           },
         ),
       );
-      final q = await callback.timeout(
-        _callbackTimeout,
+      final q = await (callback ?? pasted!()).timeout(
+        // Pasting takes the learner longer than a redirect.
+        server == null ? _callbackTimeout * 2 : _callbackTimeout,
         onTimeout: () => _fail('callback timed out'),
       );
 
@@ -143,8 +155,20 @@ class ChatGptAuth implements ProviderAccount {
       );
       await _saveSession(tokens, previous: null);
     } finally {
-      await server.close(force: true);
+      await server?.close(force: true);
     }
+  }
+
+  /// The query of a pasted callback address, or null if it isn't one.
+  static Map<String, String>? parseCallback(String pasted) {
+    final uri = Uri.tryParse(pasted.trim());
+    if (uri == null ||
+        uri.host != '127.0.0.1' ||
+        uri.path != '/auth/callback' ||
+        uri.queryParameters.isEmpty) {
+      return null;
+    }
+    return uri.queryParameters;
   }
 
   /// A valid access token, refreshed when close to expiry. Concurrent callers

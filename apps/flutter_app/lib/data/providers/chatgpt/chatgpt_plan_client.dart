@@ -4,6 +4,8 @@ import 'dart:io';
 
 import 'package:http/http.dart' as http;
 
+import '../../../core/net/http_client.dart';
+
 import '../../../domain/providers/ai_provider.dart';
 import '../../../domain/providers/provider_failure.dart';
 import 'provider_catalog.dart';
@@ -14,7 +16,7 @@ import 'provider_catalog.dart';
 /// output-token limits.
 class ChatGptPlanClient implements LlmProvider {
   ChatGptPlanClient({required this._accessToken, http.Client? client})
-    : _client = client ?? http.Client();
+    : _client = client ?? newHttpClient();
 
   static final _base = Uri.parse('https://api.openai.com/v1/');
   static const _timeout = Duration(seconds: 30);

@@ -4,6 +4,8 @@ import 'dart:io';
 
 import 'package:http/http.dart' as http;
 
+import '../../../core/net/http_client.dart';
+
 import '../../../domain/credentials/credential_vault.dart';
 import '../../../domain/providers/ai_provider.dart';
 import '../../../domain/providers/provider_failure.dart';
@@ -17,7 +19,7 @@ class GeminiClient implements LlmProvider {
     required this._keyRef,
     http.Client? client,
     Uri? baseUrl,
-  }) : _client = client ?? http.Client(),
+  }) : _client = client ?? newHttpClient(),
        _base =
            baseUrl ??
            Uri.parse('https://generativelanguage.googleapis.com/v1beta/');
