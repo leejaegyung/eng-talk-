@@ -1801,6 +1801,36 @@ abstract class AppLocalizations {
   /// In ko, this message translates to:
   /// **'인식된 문장을 입력칸에 먼저 띄워요. 잘못 들린 단어를 고칠 수 있지만 대화가 조금 느려져요.'**
   String get settingsConfirmSpeechNote;
+
+  /// No description provided for @reviewExpressions.
+  ///
+  /// In ko, this message translates to:
+  /// **'최근 배운 표현'**
+  String get reviewExpressions;
+
+  /// No description provided for @reviewExpressionsIntro.
+  ///
+  /// In ko, this message translates to:
+  /// **'표현을 넣어 한 문장으로 말해보세요. 다음 대화에서도 코치가 써볼 기회를 만들어 줘요.'**
+  String get reviewExpressionsIntro;
+
+  /// No description provided for @reviewUseExpression.
+  ///
+  /// In ko, this message translates to:
+  /// **'넣어서 말하기'**
+  String get reviewUseExpression;
+
+  /// No description provided for @reviewExpressionUsed.
+  ///
+  /// In ko, this message translates to:
+  /// **'표현을 넣어 말했어요'**
+  String get reviewExpressionUsed;
+
+  /// No description provided for @reviewExpressionMissing.
+  ///
+  /// In ko, this message translates to:
+  /// **'표현이 들리지 않았어요. 다시 해볼까요?'**
+  String get reviewExpressionMissing;
 }
 
 class _AppLocalizationsDelegate

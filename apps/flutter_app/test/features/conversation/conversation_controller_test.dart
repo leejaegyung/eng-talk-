@@ -8,6 +8,7 @@ import 'package:speaking_coach/data/sessions/drift_session_repository.dart';
 import 'package:speaking_coach/domain/conversation/conversation_policy.dart';
 import 'package:speaking_coach/domain/conversation/session_enums.dart';
 import 'package:speaking_coach/domain/conversation/session_types.dart';
+import 'package:speaking_coach/domain/feedback/feedback.dart';
 import 'package:speaking_coach/domain/learning/learner_level.dart';
 import 'package:speaking_coach/domain/providers/ai_provider.dart';
 import 'package:speaking_coach/domain/providers/provider_failure.dart';
@@ -80,6 +81,34 @@ void main() {
     final saved = (await repo.load(state().sessionId!))!;
     expect(saved.turns.single.text, 'Nice! Where do you hike?');
     expect(saved.turns.single.speechMs, isNotNull, reason: 'TTS timed');
+  });
+
+  test('earlier sessions shape the prompt: expressions and focus', () async {
+    final id = await repo.start(const SessionSetup(), now);
+    final turn = await repo.addTurn(
+      id,
+      TurnRecord(speaker: Speaker.user, text: 'I go there', startedAt: now),
+    );
+    await repo.saveFeedback(
+      id,
+      FeedbackResult(
+        corrections: [
+          for (var i = 0; i < 3; i++)
+            Correction(
+              turnId: turn,
+              original: 'I go there',
+              suggested: 'I went there',
+              category: ErrorCategory.grammar,
+            ),
+        ],
+        expressions: const [Expression('That reminds me of')],
+      ),
+      now,
+    );
+    container = make();
+    await pumpEventQueue();
+    expect(lastSystem(), contains('Focus area: grammar'));
+    expect(lastSystem(), contains('reuse_naturally: "That reminds me of"'));
   });
 
   test('prompt uses the setup: mode, level, topic, role', () async {

@@ -12,6 +12,8 @@ import '../../domain/conversation/prompt_composer.dart';
 import '../../domain/conversation/session_enums.dart';
 import '../../domain/conversation/session_types.dart';
 import '../../domain/credentials/provider_account.dart';
+import '../../domain/feedback/feedback.dart';
+import '../../domain/learning/focus.dart';
 import '../../domain/providers/ai_provider.dart';
 import '../../domain/providers/provider_failure.dart';
 import '../../domain/sessions/session_records.dart';
@@ -205,6 +207,11 @@ class ConversationController extends Notifier<ConversationState> {
   bool _confirmSpeech = false;
   int? _draftSpeechMs;
 
+  /// From earlier sessions (P2-4): expressions to reuse and a mistake that
+  /// keeps coming back.
+  List<String> _reviewExpressions = const [];
+  ErrorCategory? _focus;
+
   @override
   ConversationState build() {
     _account = ref.watch(chatGptAccountProvider);
@@ -246,6 +253,15 @@ class ConversationController extends Notifier<ConversationState> {
       _onFailure(e, notes: const []);
       return;
     }
+    if (!ref.mounted) return;
+    final now = _now();
+    _reviewExpressions = [
+      for (final e in await _sessions.recentExpressions(limit: 5)) e.phrase,
+    ];
+    _focus = focusArea(
+      await _sessions.correctionStats(since: now.subtract(focusWindow)),
+      now,
+    );
     if (!ref.mounted) return;
 
     final String note;
@@ -647,6 +663,8 @@ class ConversationController extends Notifier<ConversationState> {
         topic: setup.topic,
         goal: setup.goal,
         role: setup.role,
+        reviewExpressions: _reviewExpressions,
+        focusArea: _focus,
       ),
       [
         ...history,

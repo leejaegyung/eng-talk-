@@ -953,4 +953,20 @@ class AppLocalizationsKo extends AppLocalizations {
   @override
   String get settingsConfirmSpeechNote =>
       '인식된 문장을 입력칸에 먼저 띄워요. 잘못 들린 단어를 고칠 수 있지만 대화가 조금 느려져요.';
+
+  @override
+  String get reviewExpressions => '최근 배운 표현';
+
+  @override
+  String get reviewExpressionsIntro =>
+      '표현을 넣어 한 문장으로 말해보세요. 다음 대화에서도 코치가 써볼 기회를 만들어 줘요.';
+
+  @override
+  String get reviewUseExpression => '넣어서 말하기';
+
+  @override
+  String get reviewExpressionUsed => '표현을 넣어 말했어요';
+
+  @override
+  String get reviewExpressionMissing => '표현이 들리지 않았어요. 다시 해볼까요?';
 }

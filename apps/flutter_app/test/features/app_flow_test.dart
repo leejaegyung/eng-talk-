@@ -91,6 +91,12 @@ void main() {
       expect(find.text('Fixed sentence.'), findsOneWidget);
       await tapText(tester, '말해봤어요');
       expect(find.textContaining('지금 복습할 문장이 없어요'), findsOneWidget);
+
+      // Expressions from the feedback, said in a sentence.
+      expect(find.text('최근 배운 표현'), findsOneWidget);
+      h.mic.queue.add('That reminds me of my trip to Busan');
+      await tapText(tester, '넣어서 말하기');
+      expect(find.text('표현을 넣어 말했어요'), findsOneWidget);
     },
   );
 

@@ -283,5 +283,10 @@
   "settingsHandsFreeNote": "Listens as soon as the AI finishes, without tapping 🎤. Stops after two silent tries.",
   "conversationDraftHelp": "This is what was heard. Fix it if needed, then tap send.",
   "settingsConfirmSpeech": "Check speech before sending",
-  "settingsConfirmSpeechNote": "Recognized speech goes to the input box first so you can fix misheard words. Conversation gets a little slower."
+  "settingsConfirmSpeechNote": "Recognized speech goes to the input box first so you can fix misheard words. Conversation gets a little slower.",
+  "reviewExpressions": "Recent expressions",
+  "reviewExpressionsIntro": "Say a sentence using each one. Your coach will also give you chances to use them in your next conversation.",
+  "reviewUseExpression": "Use it",
+  "reviewExpressionUsed": "You used it",
+  "reviewExpressionMissing": "Didn't hear the expression. Try again?"
 }

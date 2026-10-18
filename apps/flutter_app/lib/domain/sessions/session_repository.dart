@@ -50,6 +50,9 @@ abstract interface class SessionRepository {
   /// Corrections from sessions started at or after [since] (S10).
   Future<List<CorrectionStat>> correctionStats({required DateTime since});
 
+  /// Suggested expressions from feedback, newest first, one per phrase.
+  Future<List<Expression>> recentExpressions({int limit = 10});
+
   /// Assessed levels, oldest first (S10).
   Future<List<LevelPoint>> levelHistory();
 

@@ -324,6 +324,19 @@ class DriftSessionRepository implements SessionRepository {
   }
 
   @override
+  Future<List<fb.Expression>> recentExpressions({int limit = 10}) async {
+    final rows = await (_db.select(
+      _db.expressions,
+    )..orderBy([(e) => OrderingTerm.desc(e.id)])).get();
+    final seen = <String>{};
+    return [
+      for (final r in rows)
+        if (seen.add(r.phrase.trim().toLowerCase()))
+          fb.Expression(r.phrase, meaningKo: r.meaningKo),
+    ].take(limit).toList();
+  }
+
+  @override
   Future<List<LevelPoint>> levelHistory() async {
     final rows = await (_db.select(
       _db.assessments,

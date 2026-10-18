@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:speaking_coach/domain/conversation/prompt_composer.dart';
 import 'package:speaking_coach/domain/conversation/session_enums.dart';
+import 'package:speaking_coach/domain/feedback/feedback.dart';
 import 'package:speaking_coach/domain/learning/learner_level.dart';
 import 'package:speaking_coach/domain/providers/ai_provider.dart';
 
@@ -32,6 +33,26 @@ void main() {
     expect(role, greaterThanOrEqualTo(0));
     expect(rules, greaterThan(role));
     expect(context, greaterThan(rules));
+  });
+
+  test('a recurring mistake adds a recast-only focus rule', () {
+    final plain = composer.compose(daily, const []).first.content;
+    expect(plain, isNot(contains('Focus area')));
+    final focused = composer
+        .compose(
+          const PromptContext(
+            mode: SessionMode.daily,
+            level: LearnerLevel.l2,
+            focusArea: ErrorCategory.grammar,
+            reviewExpressions: ['That reminds me of'],
+          ),
+          const [],
+        )
+        .first
+        .content;
+    expect(focused, contains('Focus area: grammar'));
+    expect(focused, contains('without pointing it out'));
+    expect(focused, contains('reuse_naturally: "That reminds me of"'));
   });
 
   test('master prompt keeps the speaking-first contract', () {

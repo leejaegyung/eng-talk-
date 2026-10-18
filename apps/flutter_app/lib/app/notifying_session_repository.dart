@@ -82,6 +82,10 @@ class NotifyingSessionRepository implements SessionRepository {
   Future<List<LevelPoint>> levelHistory() => _inner.levelHistory();
 
   @override
+  Future<List<Expression>> recentExpressions({int limit = 10}) =>
+      _inner.recentExpressions(limit: limit);
+
+  @override
   Future<void> saveReview(ReviewItem updated) =>
       _write(_inner.saveReview(updated));
 

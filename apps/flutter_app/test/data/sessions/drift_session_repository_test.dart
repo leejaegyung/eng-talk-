@@ -174,6 +174,31 @@ void main() {
     },
   );
 
+  test('recent expressions: newest first, one per phrase', () async {
+    final (a, _) = await sessionWithTurns();
+    await repo.saveFeedback(
+      a,
+      const FeedbackResult(
+        expressions: [
+          Expression('That reminds me of'),
+          Expression('By the way'),
+        ],
+      ),
+      t0,
+    );
+    final (b, _) = await sessionWithTurns();
+    await repo.saveFeedback(
+      b,
+      const FeedbackResult(
+        expressions: [Expression('that reminds me of', meaningKo: '그러고 보니')],
+      ),
+      t0,
+    );
+    final recent = await repo.recentExpressions();
+    expect(recent.map((e) => e.phrase), ['that reminds me of', 'By the way']);
+    expect(await repo.recentExpressions(limit: 1), hasLength(1));
+  });
+
   test('search matches topic or transcript; newest first', () async {
     await sessionWithTurns(topic: 'Travel');
     final (second, _) = await sessionWithTurns(topic: 'Food');

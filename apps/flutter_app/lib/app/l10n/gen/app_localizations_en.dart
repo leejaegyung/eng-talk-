@@ -982,4 +982,21 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get settingsConfirmSpeechNote =>
       'Recognized speech goes to the input box first so you can fix misheard words. Conversation gets a little slower.';
+
+  @override
+  String get reviewExpressions => 'Recent expressions';
+
+  @override
+  String get reviewExpressionsIntro =>
+      'Say a sentence using each one. Your coach will also give you chances to use them in your next conversation.';
+
+  @override
+  String get reviewUseExpression => 'Use it';
+
+  @override
+  String get reviewExpressionUsed => 'You used it';
+
+  @override
+  String get reviewExpressionMissing =>
+      'Didn\'t hear the expression. Try again?';
 }

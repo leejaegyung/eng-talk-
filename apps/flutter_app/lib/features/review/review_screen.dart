@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../app/l10n/gen/app_localizations.dart';
+import '../../domain/learning/focus.dart';
 import 'review_controller.dart';
 
 class ReviewScreen extends ConsumerWidget {
@@ -19,7 +20,7 @@ class ReviewScreen extends ConsumerWidget {
       appBar: AppBar(title: Text(l10n.reviewTitle)),
       body: items == null
           ? const Center(child: CircularProgressIndicator())
-          : items.isEmpty
+          : items.isEmpty && s.expressions.isEmpty
           ? Center(
               child: Padding(
                 padding: const EdgeInsets.all(24),
@@ -32,8 +33,11 @@ class ReviewScreen extends ConsumerWidget {
                 child: ListView(
                   padding: const EdgeInsets.all(24),
                   children: [
-                    Text(l10n.reviewIntro),
-                    const SizedBox(height: 12),
+                    if (items.isNotEmpty) ...[
+                      Text(l10n.reviewIntro),
+                      const SizedBox(height: 12),
+                    ] else
+                      Text(l10n.reviewEmpty),
                     for (final item in items)
                       Card(
                         child: Padding(
@@ -63,7 +67,7 @@ class ReviewScreen extends ConsumerWidget {
                                 spacing: 8,
                                 children: [
                                   OutlinedButton.icon(
-                                    onPressed: s.listeningTo == null
+                                    onPressed: !s.busy
                                         ? () => ctrl.practice(item.id)
                                         : null,
                                     icon: const Icon(Icons.mic),
@@ -87,6 +91,74 @@ class ReviewScreen extends ConsumerWidget {
                           ),
                         ),
                       ),
+                    if (s.expressions.isNotEmpty) ...[
+                      const SizedBox(height: 24),
+                      Text(
+                        l10n.reviewExpressions,
+                        style: theme.textTheme.titleMedium,
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        l10n.reviewExpressionsIntro,
+                        style: theme.textTheme.bodySmall,
+                      ),
+                      const SizedBox(height: 8),
+                      for (final (i, e) in s.expressions.indexed)
+                        Card(
+                          child: Padding(
+                            padding: const EdgeInsets.all(16),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              spacing: 8,
+                              children: [
+                                Text(
+                                  e.phrase,
+                                  style: theme.textTheme.titleMedium?.copyWith(
+                                    color: theme.colorScheme.primary,
+                                  ),
+                                ),
+                                if (e.meaningKo case final m?) Text(m),
+                                if (s.expressionHeard[i] case final h?
+                                    when h.isNotEmpty) ...[
+                                  Text(l10n.resultYouSaid(h)),
+                                  Row(
+                                    spacing: 6,
+                                    children: [
+                                      Icon(
+                                        usedExpression(h, e.phrase)
+                                            ? Icons.check_circle
+                                            : Icons.info_outline,
+                                        size: 18,
+                                        color: usedExpression(h, e.phrase)
+                                            ? theme.colorScheme.primary
+                                            : theme.colorScheme.outline,
+                                      ),
+                                      Expanded(
+                                        child: Text(
+                                          usedExpression(h, e.phrase)
+                                              ? l10n.reviewExpressionUsed
+                                              : l10n.reviewExpressionMissing,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                                OutlinedButton.icon(
+                                  onPressed: s.busy
+                                      ? null
+                                      : () => ctrl.useExpression(i),
+                                  icon: const Icon(Icons.mic),
+                                  label: Text(
+                                    s.listeningToExpression == i
+                                        ? l10n.resultListening
+                                        : l10n.reviewUseExpression,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                    ],
                   ],
                 ),
               ),
