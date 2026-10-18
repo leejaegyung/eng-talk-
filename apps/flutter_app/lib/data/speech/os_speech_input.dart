@@ -35,11 +35,9 @@ class OsSpeechInput implements SpeechInput {
   static OsSpeechInput? _active;
   static void _status(String status) => _active?._onStatus(status);
   static void _error(SpeechRecognitionError error) => _active?._onError(error);
-  Completer<String>? _segment;
-  String _last = '';
-
-  /// Context for choosing among alternates in the current segment.
-  List<String> _hints = const [];
+  _Segment? _current;
+  int _segments = 0;
+  DateTime _lastStatusAt = DateTime.fromMillisecondsSinceEpoch(0);
   Timer? _grace;
   bool _stopRequested = false;
 
@@ -77,7 +75,7 @@ class OsSpeechInput implements SpeechInput {
         // Nothing new within the window: the learner has finished.
         watchdog = Timer(_resumeWindow, () => unawaited(_stt.stop()));
       }
-      final text = await _listenSegment(
+      final segment = await _listenSegment(
         onPartial: (p) {
           if (p.isNotEmpty) watchdog?.cancel();
           onPartial?.call(joined(p));
@@ -86,9 +84,14 @@ class OsSpeechInput implements SpeechInput {
         hints: [...hints, ...parts],
       );
       watchdog?.cancel();
+      // Let the recognizer wind down before listening again: a late final
+      // result still updates this part, and a late "done" can't end the
+      // next one.
+      await _settle();
+      final text = segment.text;
       if (text.isNotEmpty) parts.add(text);
       final keepGoing =
-          PlatformInfo.isAndroid &&
+          (PlatformInfo.isAndroid || PlatformInfo.isWeb) &&
           text.isNotEmpty &&
           !_stopRequested &&
           (lastIssue == null || lastIssue == SpeechIssue.noSpeech);
@@ -103,23 +106,27 @@ class OsSpeechInput implements SpeechInput {
     return joined().trim();
   }
 
-  Future<String> _listenSegment({
+  /// One recognizer session. Results are tied to it, so a result arriving
+  /// after the next session started can't overwrite or end that one.
+  Future<_Segment> _listenSegment({
     required void Function(String partial) onPartial,
     void Function(double level)? onLevel,
     required List<String> hints,
   }) async {
-    final done = _segment = Completer<String>();
-    _last = '';
-    _hints = hints;
+    final segment = _current = _Segment(++_segments, hints);
     _grace?.cancel();
     await _stt.listen(
       onResult: (SpeechRecognitionResult r) {
-        _last = r.finalResult
-            ? chooseAlternate([
-                for (final a in r.alternates) (a.recognizedWords, a.confidence),
-              ], _hints)
-            : r.recognizedWords;
-        onPartial(_last);
+        segment.update(
+          r.finalResult
+              ? chooseAlternate([
+                  for (final a in r.alternates)
+                    (a.recognizedWords, a.confidence),
+                ], segment.hints)
+              : r.recognizedWords,
+        );
+        if (!identical(segment, _current)) return;
+        onPartial(segment.text);
         if (r.finalResult) _finish();
       },
       onSoundLevelChange: onLevel,
@@ -135,7 +142,20 @@ class OsSpeechInput implements SpeechInput {
         autoPunctuation: true,
       ),
     );
-    return done.future;
+    await segment.done.future;
+    return segment;
+  }
+
+  /// Waits until the recognizer has stopped and gone quiet (at most 2 s).
+  Future<void> _settle() async {
+    final until = DateTime.now().add(const Duration(seconds: 2));
+    while (DateTime.now().isBefore(until)) {
+      final quiet =
+          DateTime.now().difference(_lastStatusAt) >
+          const Duration(milliseconds: 250);
+      if (!_stt.isListening && quiet) return;
+      await Future<void>.delayed(const Duration(milliseconds: 50));
+    }
   }
 
   @override
@@ -145,6 +165,7 @@ class OsSpeechInput implements SpeechInput {
   }
 
   void _onStatus(String status) {
+    _lastStatusAt = DateTime.now();
     if (status == SpeechToText.doneStatus) {
       _finish();
     } else if (status == SpeechToText.notListeningStatus) {
@@ -179,7 +200,45 @@ class OsSpeechInput implements SpeechInput {
 
   void _finish() {
     _grace?.cancel();
-    final done = _segment;
-    if (done != null && !done.isCompleted) done.complete(_last.trim());
+    final done = _current?.done;
+    if (done != null && !done.isCompleted) done.complete();
+  }
+}
+
+/// Text of one recognizer session. Some recognizers (Safari) restart their
+/// result list after a pause within a session; the earlier words are kept
+/// instead of being replaced by the new sentence.
+class _Segment {
+  _Segment(this.id, this.hints);
+
+  final int id;
+  final List<String> hints;
+  final done = Completer<void>();
+  String _committed = '';
+  String _current = '';
+
+  String get text =>
+      [_committed, _current].where((t) => t.isNotEmpty).join(' ').trim();
+
+  void update(String words) {
+    final next = words.trim();
+    if (_restarted(_current, next)) {
+      _committed = [_committed, _current].where((t) => t.isNotEmpty).join(' ');
+    }
+    _current = next;
+  }
+
+  /// A result that starts differently and shares few words with the
+  /// previous one is a new list; a revision keeps most of the words.
+  static bool _restarted(String previous, String next) {
+    List<String> words(String t) => [
+      for (final w in t.toLowerCase().split(RegExp(r"[^a-z0-9']+")))
+        if (w.isNotEmpty) w,
+    ];
+    final a = words(previous);
+    final b = words(next);
+    if (a.length < 3 || b.isEmpty || a.first == b.first) return false;
+    final shared = b.where(a.toSet().contains).length;
+    return shared / b.length < 0.5;
   }
 }

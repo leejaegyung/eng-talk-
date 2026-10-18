@@ -11,6 +11,10 @@ import 'package:speech_to_text_platform_interface/speech_to_text_platform_interf
 /// (text, confidence) alternates, or nothing until stopped.
 typedef Segment = ({List<String> partials, List<(String, double)>? finals});
 
+/// A final result that only arrives after the session said "done", by
+/// listen number.
+final lateFinals = <int, List<(String, double)>>{};
+
 class FakePlatform extends SpeechToTextPlatform
     with MockPlatformInterfaceMixin {
   final segments = <Segment>[];
@@ -56,6 +60,15 @@ class FakePlatform extends SpeechToTextPlatform
           await Future<void>.delayed(Duration.zero);
         }
         final finals = segment.finals;
+        final late = lateFinals.remove(listens);
+        if (late != null) {
+          _listening = false;
+          onStatus?.call('notListening');
+          onStatus?.call('done');
+          await Future<void>.delayed(const Duration(milliseconds: 100));
+          _result(late, last: true);
+          return;
+        }
         if (finals != null) {
           // Android order: "not listening" first, the final result later.
           _listening = false;
@@ -92,6 +105,7 @@ void main() {
 
   setUpAll(() => SpeechToTextPlatform.instance = platform);
   setUp(() {
+    lateFinals.clear();
     platform
       ..segments.clear()
       ..listens = 0;
@@ -161,4 +175,39 @@ void main() {
       expect(platform.listens, 1);
     },
   );
+
+  test(
+    'Android: a late final updates its own part, not the next one',
+    () async {
+      debugDefaultTargetPlatformOverride = TargetPlatform.android;
+      platform.segments.addAll([
+        (partials: ['I went to', 'I went to the'], finals: null),
+        (partials: ['and we'], finals: [('and we had lunch', 0.8)]),
+      ]);
+      lateFinals[1] = [('I went to the park yesterday', 0.9)];
+      expect(
+        await mic.listenOnce(),
+        'I went to the park yesterday and we had lunch',
+      );
+    },
+  );
+
+  test(
+    'a result list that restarts mid-session keeps the earlier words',
+    () async {
+      platform.segments.add((
+        partials: ['I went to the park', 'and we played soccer'],
+        finals: [('and we played soccer', 0.8)],
+      ));
+      expect(await mic.listenOnce(), 'I went to the park and we played soccer');
+    },
+  );
+
+  test('an ordinary revision is not mistaken for a restart', () async {
+    platform.segments.add((
+      partials: ['I went to the', 'Hi went to the park'],
+      finals: [('Hi, I went to the park', 0.8)],
+    ));
+    expect(await mic.listenOnce(), 'Hi, I went to the park');
+  });
 }
