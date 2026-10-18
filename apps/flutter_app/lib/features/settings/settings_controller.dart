@@ -199,7 +199,10 @@ class SettingsController extends Notifier<SettingsState> {
     final text = await ref.read(backupPickerProvider).pick();
     if (text == null || !ref.mounted) return;
     try {
-      final json = jsonDecode(text);
+      // The JSON backup, or the turns CSV (conversations only).
+      final json = text.replaceFirst('\uFEFF', '').trimLeft().startsWith('{')
+          ? jsonDecode(text.replaceFirst('\uFEFF', ''))
+          : backupFromTurnsCsv(text);
       if (json is! Map<String, Object?>) throw const FormatException();
       final result = await ref
           .read(sessionRepositoryProvider)

@@ -1333,4 +1333,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String settingsUpdateUnknown(String version) {
     return '$version · Couldn\'t check. Check your internet connection.';
   }
+
+  @override
+  String get homePlacementPick =>
+      'Know your level? Pick it. You can take the test any time later.';
 }

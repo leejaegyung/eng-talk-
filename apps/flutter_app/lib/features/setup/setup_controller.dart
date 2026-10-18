@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../app/notifying_session_repository.dart';
 import '../../app/providers.dart';
 import '../../domain/conversation/session_enums.dart';
 import '../../domain/learning/learner_level.dart';
@@ -55,6 +56,8 @@ class SetupController extends Notifier<SessionSetup> {
     await ref
         .read(settingsStoreProvider)
         .write(SettingKeys.learnerLevel, level.name);
+    // Home drops its placement suggestion once a level is set.
+    if (ref.mounted) ref.read(dataVersionProvider.notifier).bump();
   }
 
   void setTopic(String? topic) => state = state.copyWith(

@@ -5,6 +5,7 @@ import 'package:drift/drift.dart';
 import '../../domain/conversation/session_enums.dart';
 import '../../domain/feedback/feedback.dart' as fb;
 import '../../domain/learning/learner_level.dart';
+import '../../domain/sessions/export.dart' show backupFormat;
 import '../../domain/sessions/session_records.dart' show ReviewKind;
 import '../../domain/sessions/session_repository.dart';
 import '../db/app_database.dart';
@@ -17,7 +18,7 @@ import 'drift_session_repository.dart'
 class Backup {
   Backup(this._db);
 
-  static const format = 'speaking-coach-export';
+  static const format = backupFormat;
   static const version = 2;
 
   final AppDatabase _db;

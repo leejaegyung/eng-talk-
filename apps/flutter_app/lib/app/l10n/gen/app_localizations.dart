@@ -2389,6 +2389,12 @@ abstract class AppLocalizations {
   /// In ko, this message translates to:
   /// **'{version} · 확인하지 못했어요. 인터넷 연결을 확인해 주세요.'**
   String settingsUpdateUnknown(String version);
+
+  /// No description provided for @homePlacementPick.
+  ///
+  /// In ko, this message translates to:
+  /// **'레벨을 알고 있다면 직접 고르세요. 진단은 나중에도 할 수 있어요.'**
+  String get homePlacementPick;
 }
 
 class _AppLocalizationsDelegate

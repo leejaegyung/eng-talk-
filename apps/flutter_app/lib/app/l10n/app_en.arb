@@ -381,5 +381,6 @@
   "settingsVersionLocal": "Development build (no update check)",
   "settingsCheckUpdate": "Check for updates",
   "settingsUpToDate": "{version} · Up to date",
-  "settingsUpdateUnknown": "{version} · Couldn't check. Check your internet connection."
+  "settingsUpdateUnknown": "{version} · Couldn't check. Check your internet connection.",
+  "homePlacementPick": "Know your level? Pick it. You can take the test any time later."
 }

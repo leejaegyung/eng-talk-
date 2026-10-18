@@ -622,6 +622,22 @@ void main() {
     fresh.backupPicker.content = '{"not": "a backup"}';
     await tapText(tester, '백업 파일에서 복원');
     expect(find.textContaining('백업 파일이 아니에요'), findsOneWidget);
+
+    // The CSV restores the conversations too.
+    final csv = old.exporter.exports.single['speaking-coach-turns.csv']!;
+    await tester.pumpWidget(const SizedBox());
+    final fromCsv = Harness()..backupPicker.content = csv;
+    await fromCsv.boot(tester);
+    await tester.tap(find.byIcon(Icons.settings_outlined));
+    await settle(tester);
+    await tapText(tester, '백업 파일에서 복원');
+    expect(find.text('대화 1개를 복원했어요 (이미 있던 0개는 건너뜀)'), findsOneWidget);
+    final restored = (await fromCsv.repo.list()).single;
+    expect(restored.setup.topic, 'Mars');
+    expect(
+      (await fromCsv.repo.load(restored.id))!.turns.single.text,
+      'I like rockets.',
+    );
   });
 
   testWidgets('review: repeat each sentence N times with check boxes', (

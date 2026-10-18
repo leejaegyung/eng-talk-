@@ -1290,4 +1290,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String settingsUpdateUnknown(String version) {
     return '$version · 확인하지 못했어요. 인터넷 연결을 확인해 주세요.';
   }
+
+  @override
+  String get homePlacementPick => '레벨을 알고 있다면 직접 고르세요. 진단은 나중에도 할 수 있어요.';
 }

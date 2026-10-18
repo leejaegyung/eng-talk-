@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -7,6 +8,7 @@ import '../../app/router.dart';
 import '../../app/theme.dart';
 import '../../core/platform/platform_info.dart';
 import '../../domain/conversation/session_enums.dart';
+import '../../domain/learning/learner_level.dart';
 import '../common/goal_picker.dart';
 import '../common/mode_text.dart';
 import '../common/update_banner.dart';
@@ -202,24 +204,64 @@ class HomeScreen extends ConsumerWidget {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(kRadius),
                   ),
-                  child: ListTile(
-                    contentPadding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 8,
-                    ),
-                    leading: const _Badge(
-                      icon: Icons.assignment_outlined,
-                      color: AppColors.yellow,
-                    ),
-                    title: Text(
-                      l10n.homePlacementTitle,
-                      style: theme.textTheme.titleMedium,
-                    ),
-                    subtitle: Text(l10n.homePlacementBody),
-                    trailing: FilledButton(
-                      onPressed: () => context.push(AppRoutes.assessment),
-                      child: Text(l10n.homePlacementStart),
-                    ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      ListTile(
+                        contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 8,
+                        ),
+                        leading: const _Badge(
+                          icon: Icons.assignment_outlined,
+                          color: AppColors.yellow,
+                        ),
+                        title: Text(
+                          l10n.homePlacementTitle,
+                          style: theme.textTheme.titleMedium,
+                        ),
+                        subtitle: Text(l10n.homePlacementBody),
+                        trailing: FilledButton(
+                          onPressed: () => context.push(AppRoutes.assessment),
+                          child: Text(l10n.homePlacementStart),
+                        ),
+                      ),
+                      // Picking a level by hand also settles it (the test
+                      // stays on home as "test my level again").
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          spacing: 8,
+                          children: [
+                            Text(
+                              l10n.homePlacementPick,
+                              style: theme.textTheme.bodySmall,
+                            ),
+                            Wrap(
+                              spacing: 8,
+                              runSpacing: 8,
+                              children: [
+                                for (final l in LearnerLevel.values)
+                                  OutlinedButton(
+                                    style: OutlinedButton.styleFrom(
+                                      foregroundColor:
+                                          theme.colorScheme.onTertiaryContainer,
+                                      side: BorderSide(
+                                        color: theme.colorScheme.outline,
+                                      ),
+                                    ),
+                                    onPressed: () => ref
+                                        .read(setupProvider.notifier)
+                                        .setLevel(l),
+                                    child: Text(l.label),
+                                  ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               const SizedBox(height: 8),
@@ -338,8 +380,9 @@ class HomeScreen extends ConsumerWidget {
                   icon: const Icon(Icons.assignment_outlined),
                   label: Text(l10n.homePlacementAgain),
                 ),
-              // Recording/API-key labs need native audio and files.
-              if (!PlatformInfo.isWeb)
+              // Developer labs: debug builds only, and they need native
+              // audio and files.
+              if (!kReleaseMode && !PlatformInfo.isWeb)
                 ExpansionTile(
                   title: Text(l10n.homeDevTools),
                   children: [
