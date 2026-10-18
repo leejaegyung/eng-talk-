@@ -4,7 +4,7 @@
 
 **현재 Phase:** 1 (MVP) — Phase 0은 Windows 실행 확인만 남음
 **대상 플랫폼:** macOS·Windows 데스크톱 (Mac에서 개발), Galaxy는 APK 배포 후 확인 (ADR-009)
-**다음 태스크:** Phase 1 사용자 실사용 확인(macOS 30분 세션 → 피드백 → 복습) → v0.3.0 릴리스(Windows/Galaxy) → Phase 1 종료
+**다음 태스크:** 사용자 기기 확인(`docs/qa/phase-1-checklist.md`, v0.4.0) → Phase 1 종료 → Phase 2(`phase-2-quality.md` 초안, 결정 필요 항목 확인)
 **과금 방향:** ADR-011 — ChatGPT 구독(추가 요금 없음) 기본, OpenAI API 키는 선택
 **Phase 0 순서:** T7 → T4 → T5 → T3 → T6(키·과금, 실행 전 확인). T2는 사용자 Windows 실행 확인 대기
 

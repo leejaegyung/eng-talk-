@@ -33,4 +33,4 @@
 | P1-D2 | S03 홈 KPI, S09 기록(검색·삭제), 복습 큐(간격 반복) | 집계·간격 계산 테스트 |
 | P1-D3 | 데이터 내보내기(JSON/CSV, 키 미포함)·전체 삭제 | 내보내기 파일에 키 없음 테스트 |
 
-**Phase 1 종료 기준:** 30분 세션 시작 → 종료 → 피드백 → 복습을 macOS·Windows에서 오류 없이 수행, Galaxy는 APK로 확인 (spec §15, ADR-009). iOS는 MVP 후.
+**Phase 1 종료 기준:** 30분 세션 시작 → 종료 → 피드백 → 복습을 macOS·Windows에서 오류 없이 수행, Galaxy는 APK로 확인 (spec §15, ADR-009). iOS는 ADR-012로 설치본 확인 추가. 확인 항목: `docs/qa/phase-1-checklist.md`.
