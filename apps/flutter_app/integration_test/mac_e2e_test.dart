@@ -94,6 +94,7 @@ class ScriptedMic implements SpeechInput {
     void Function(String partial)? onPartial,
     void Function(double level)? onLevel,
     List<String> hints = const [],
+    Duration startTimeout = const Duration(seconds: 8),
   }) async {
     this.hints.add(hints);
     final text = queue.isEmpty ? '' : queue.removeAt(0);

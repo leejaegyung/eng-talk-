@@ -210,4 +210,47 @@ void main() {
     ));
     expect(await mic.listenOnce(), 'Hi, I went to the park');
   });
+
+  test(
+    'thinking time: no words yet does not stop before the timeout',
+    () async {
+      // Nothing is said: the session stays open until the start timeout.
+      platform.segments.add((partials: <String>[], finals: null));
+      final clock = Stopwatch()..start();
+      final text = await mic.listenOnce(
+        startTimeout: const Duration(milliseconds: 600),
+      );
+      expect(text, isEmpty);
+      expect(clock.elapsedMilliseconds, greaterThanOrEqualTo(550));
+    },
+  );
+
+  test(
+    'after words, a 2.5 s silence ends the turn (Apple keeps the session open)',
+    () async {
+      debugDefaultTargetPlatformOverride = TargetPlatform.iOS;
+      // Words, then the session never ends by itself.
+      platform.segments.add((partials: ['I like hiking'], finals: null));
+      final clock = Stopwatch()..start();
+      expect(await mic.listenOnce(), 'I like hiking');
+      expect(clock.elapsedMilliseconds, inInclusiveRange(2300, 5000));
+    },
+  );
+
+  test(
+    'recognizer gives up early on silence: restarted within the thinking time',
+    () async {
+      // First session ends by itself with nothing (like Chrome's no-speech),
+      // the learner starts talking in the second.
+      platform.segments.addAll([
+        (partials: <String>[], finals: <(String, double)>[]),
+        (partials: ['I am ready'], finals: [('I am ready now', 0.9)]),
+      ]);
+      final text = await mic.listenOnce(
+        startTimeout: const Duration(seconds: 5),
+      );
+      expect(text, 'I am ready now');
+      expect(platform.listens, greaterThanOrEqualTo(2), reason: 'restarted');
+    },
+  );
 }

@@ -23,10 +23,14 @@ abstract interface class SpeechInput {
   ///
   /// [onLevel] gets the input level as the platform reports it (scale
   /// differs by platform; see VoicedTimeMeter).
+  ///
+  /// [startTimeout] is how long to wait for the first words (thinking time)
+  /// before giving up with nothing heard.
   Future<String> listenOnce({
     void Function(String partial)? onPartial,
     void Function(double level)? onLevel,
     List<String> hints = const [],
+    Duration startTimeout = const Duration(seconds: 8),
   });
 
   /// Ends listening early; [listenOnce] completes with what was heard.

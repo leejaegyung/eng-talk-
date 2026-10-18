@@ -18,5 +18,10 @@ void main() {
     expect(OsSpeechInput.issueFor('error_audio_error'), SpeechIssue.audio);
     expect(OsSpeechInput.issueFor('error_busy'), SpeechIssue.busy);
     expect(OsSpeechInput.issueFor('error_something_new'), SpeechIssue.other);
+    // Browser (Web Speech API) codes.
+    expect(OsSpeechInput.issueFor('no-speech'), SpeechIssue.noSpeech);
+    expect(OsSpeechInput.issueFor('not-allowed'), SpeechIssue.permission);
+    expect(OsSpeechInput.issueFor('audio-capture'), SpeechIssue.audio);
+    expect(OsSpeechInput.issueFor('network'), SpeechIssue.network);
   });
 }

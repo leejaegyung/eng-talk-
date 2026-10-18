@@ -155,6 +155,10 @@ class AssessmentController extends Notifier<AssessmentState> {
     do {
       final before = state.currentAnswer.trim();
       final heard = (await mic.listenOnce(
+        // Answers need thinking time before the first word.
+        startTimeout: question
+            ? const Duration(seconds: 15)
+            : const Duration(seconds: 8),
         hints: question
             ? recognitionHints(
                 texts: [placementQuestions[state.step - 1], before],

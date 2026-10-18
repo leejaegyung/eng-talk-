@@ -178,6 +178,9 @@ class FakeSpeechInput implements SpeechInput {
 
   /// Recognition hints passed to each [listenOnce] call.
   final hints = <List<String>>[];
+
+  /// Start timeouts asked for, per call.
+  final startTimeouts = <Duration>[];
   int stops = 0;
 
   /// When set, listening lasts until [stop] (a learner still talking).
@@ -203,6 +206,7 @@ class FakeSpeechInput implements SpeechInput {
     void Function(String partial)? onPartial,
     void Function(double level)? onLevel,
     List<String> hints = const [],
+    Duration startTimeout = const Duration(seconds: 8),
   }) async {
     for (final level in levels) {
       advanceClock?.call(levelStep);
@@ -210,6 +214,7 @@ class FakeSpeechInput implements SpeechInput {
     }
     levels = const [];
     this.hints.add(hints);
+    startTimeouts.add(startTimeout);
     if (hold case final h? when !h.isCompleted) await h.future;
     final text = queue.isEmpty ? '' : queue.removeAt(0);
     lastIssue = text.isEmpty ? issue : null;

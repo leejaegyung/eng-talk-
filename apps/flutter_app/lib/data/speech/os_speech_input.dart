@@ -14,8 +14,11 @@ import '../../domain/audio/speech_io.dart';
 class OsSpeechInput implements SpeechInput {
   static const _log = AppLogger('speech.input');
 
-  /// Learners pause mid-sentence; end the turn only after a longer silence.
-  static const _pauseFor = Duration(seconds: 3);
+  /// After the first words, this much silence ends the turn. The plugin's
+  /// own pause timer isn't used: it also counts the thinking time before the
+  /// first word, so the mic went off before learners started (user report
+  /// 2026-10-18).
+  static const _endSilence = Duration(milliseconds: 2500);
   static const _listenFor = Duration(seconds: 60);
 
   /// Android reports "not listening" before the final result arrives; the
@@ -59,6 +62,7 @@ class OsSpeechInput implements SpeechInput {
     void Function(String partial)? onPartial,
     void Function(double level)? onLevel,
     List<String> hints = const [],
+    Duration startTimeout = const Duration(seconds: 8),
   }) async {
     if (!await ensureAvailable()) return '';
     _active = this;
@@ -69,31 +73,41 @@ class OsSpeechInput implements SpeechInput {
         [...parts, if (current.isNotEmpty) current].join(' ');
 
     var resuming = false;
+    // Thinking time is ours to give: recognizers give up on silence sooner
+    // (Chrome ~8 s, Android ~5 s), so they are restarted until it's used up.
+    final waitUntil = DateTime.now().add(startTimeout);
     while (true) {
-      Timer? watchdog;
-      if (resuming) {
-        // Nothing new within the window: the learner has finished.
-        watchdog = Timer(_resumeWindow, () => unawaited(_stt.stop()));
-      }
+      final remaining = waitUntil.difference(DateTime.now());
       final segment = await _listenSegment(
-        onPartial: (p) {
-          if (p.isNotEmpty) watchdog?.cancel();
-          onPartial?.call(joined(p));
-        },
+        onPartial: (p) => onPartial?.call(joined(p)),
         onLevel: onLevel,
         hints: [...hints, ...parts],
+        // Resuming after a stop the recognizer made itself: nothing new
+        // within the window means the learner has finished.
+        startWithin: resuming ? _resumeWindow : remaining,
       );
-      watchdog?.cancel();
       // Let the recognizer wind down before listening again: a late final
       // result still updates this part, and a late "done" can't end the
       // next one.
       await _settle();
       final text = segment.text;
       if (text.isNotEmpty) parts.add(text);
+      final stillWaiting =
+          parts.isEmpty &&
+          !_stopRequested &&
+          (lastIssue == null || lastIssue == SpeechIssue.noSpeech) &&
+          waitUntil.difference(DateTime.now()) >
+              const Duration(milliseconds: 500);
+      if (stillWaiting) {
+        lastIssue = null;
+        continue;
+      }
       final keepGoing =
           (PlatformInfo.isAndroid || PlatformInfo.isWeb) &&
           text.isNotEmpty &&
           !_stopRequested &&
+          // Our own silence timer already waited out the learner.
+          !segment.endedBySilence &&
           (lastIssue == null || lastIssue == SpeechIssue.noSpeech);
       if (!keepGoing) break;
       // A silence after real words is not a problem to report.
@@ -112,11 +126,21 @@ class OsSpeechInput implements SpeechInput {
     required void Function(String partial) onPartial,
     void Function(double level)? onLevel,
     required List<String> hints,
+    required Duration startWithin,
   }) async {
     final segment = _current = _Segment(++_segments, hints);
     _grace?.cancel();
+    // Waiting for the first words, then for the end of a silence.
+    var timer = Timer(startWithin, () => unawaited(_stt.stop()));
     await _stt.listen(
       onResult: (SpeechRecognitionResult r) {
+        if (identical(segment, _current) && r.recognizedWords.isNotEmpty) {
+          timer.cancel();
+          timer = Timer(_endSilence, () {
+            segment.endedBySilence = true;
+            unawaited(_stt.stop());
+          });
+        }
         segment.update(
           r.finalResult
               ? chooseAlternate([
@@ -135,7 +159,6 @@ class OsSpeechInput implements SpeechInput {
         listenMode: ListenMode.dictation,
         partialResults: true,
         cancelOnError: true,
-        pauseFor: _pauseFor,
         listenFor: _listenFor,
         // Apple: contextualStrings; Android 13+: biasing strings.
         contextualPhrases: hints.isEmpty ? null : hints,
@@ -143,6 +166,7 @@ class OsSpeechInput implements SpeechInput {
       ),
     );
     await segment.done.future;
+    timer.cancel();
     return segment;
   }
 
@@ -184,16 +208,25 @@ class OsSpeechInput implements SpeechInput {
     _finish();
   }
 
-  /// Platform error codes (speech_to_text docs) to what the learner can do.
+  /// Platform error codes to what the learner can do: native codes from
+  /// the speech_to_text docs, and the browser's Web Speech codes.
   static SpeechIssue issueFor(String code) => switch (code) {
-    'error_no_match' || 'error_speech_timeout' => SpeechIssue.noSpeech,
+    'error_no_match' ||
+    'error_speech_timeout' ||
+    'no-speech' ||
+    'aborted' => SpeechIssue.noSpeech,
     'error_permission' ||
-    'error_insufficient_permissions' => SpeechIssue.permission,
+    'error_insufficient_permissions' ||
+    'not-allowed' ||
+    'service-not-allowed' => SpeechIssue.permission,
     'error_network' ||
     'error_network_timeout' ||
     'error_server' ||
-    'error_server_disconnected' => SpeechIssue.network,
-    'error_audio_error' || 'error_audio' => SpeechIssue.audio,
+    'error_server_disconnected' ||
+    'network' => SpeechIssue.network,
+    'error_audio_error' ||
+    'error_audio' ||
+    'audio-capture' => SpeechIssue.audio,
     'error_busy' || 'error_recognizer_busy' => SpeechIssue.busy,
     _ => SpeechIssue.other,
   };
@@ -214,6 +247,9 @@ class _Segment {
   final int id;
   final List<String> hints;
   final done = Completer<void>();
+
+  /// Ended by our silence timer (the learner stopped), not the recognizer.
+  bool endedBySilence = false;
   String _committed = '';
   String _current = '';
 
