@@ -239,7 +239,7 @@
   "homePlacementAgain": "Retake placement",
   "settingsDataSection": "Data",
   "settingsExport": "Export history (JSON, CSV)",
-  "settingsExportNote": "Sign-in and API keys are never included.",
+  "settingsExportNote": "Also works as a backup (JSON). Sign-in details and API keys are not included.",
   "settingsExportedTo": "Saved to: {path}",
   "settingsDeleteAll": "Delete all history",
   "settingsDeleteAllConfirm": "Delete all conversations, corrections, reviews and placements? This can't be undone. (Sign-in and settings are kept.)",
@@ -317,5 +317,9 @@
   "languageLabel": "Language",
   "languageSystem": "Device",
   "languageKo": "한국어",
-  "languageEn": "English"
+  "languageEn": "English",
+  "settingsRestore": "Restore from a backup",
+  "settingsRestoreNote": "Pick an exported speaking-coach.json to bring back history, reviews and goals. Conversations already here are skipped.",
+  "settingsRestored": "Restored {added} conversations ({skipped} already here were skipped)",
+  "settingsRestoreFailed": "That isn't a Speaking Coach backup. Pick the speaking-coach.json made by export."
 }

@@ -58,4 +58,17 @@ abstract interface class SessionRepository {
 
   /// Everything except credentials, for export (spec §9.2).
   Future<Map<String, Object?>> exportAll();
+
+  /// Restores a backup from [exportAll], merging: sessions already here are
+  /// skipped. Throws `FormatException` for anything else.
+  Future<ImportResult> importAll(Map<String, Object?> data, DateTime now);
+}
+
+final class ImportResult {
+  const ImportResult({required this.added, required this.skipped});
+
+  final int added;
+
+  /// Already present (same start time and mode).
+  final int skipped;
 }

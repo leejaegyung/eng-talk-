@@ -147,6 +147,20 @@ class SettingsScreen extends ConsumerWidget {
                 onTap: ctrl.exportData,
               ),
               ListTile(
+                leading: const Icon(Icons.restore),
+                title: Text(l10n.settingsRestore),
+                subtitle: Text(switch (s) {
+                  SettingsState(restoreFailed: true) =>
+                    l10n.settingsRestoreFailed,
+                  SettingsState(restored: final r?) => l10n.settingsRestored(
+                    r.added,
+                    r.skipped,
+                  ),
+                  _ => l10n.settingsRestoreNote,
+                }),
+                onTap: ctrl.restoreBackup,
+              ),
+              ListTile(
                 leading: Icon(
                   Icons.delete_forever_outlined,
                   color: theme.colorScheme.error,

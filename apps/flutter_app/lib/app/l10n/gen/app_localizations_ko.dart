@@ -804,7 +804,8 @@ class AppLocalizationsKo extends AppLocalizations {
   String get settingsExport => '대화 기록 내보내기 (JSON·CSV)';
 
   @override
-  String get settingsExportNote => '로그인 정보와 API 키는 포함되지 않아요.';
+  String get settingsExportNote =>
+      '백업으로도 쓸 수 있어요(JSON). 로그인 정보와 API 키는 포함되지 않아요.';
 
   @override
   String settingsExportedTo(String path) {
@@ -1069,4 +1070,20 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get languageEn => 'English';
+
+  @override
+  String get settingsRestore => '백업 파일에서 복원';
+
+  @override
+  String get settingsRestoreNote =>
+      '내보낸 speaking-coach.json을 고르면 기록·복습·목표를 불러와요. 이미 있는 대화는 건너뛰어요.';
+
+  @override
+  String settingsRestored(int added, int skipped) {
+    return '대화 $added개를 복원했어요 (이미 있던 $skipped개는 건너뜀)';
+  }
+
+  @override
+  String get settingsRestoreFailed =>
+      'Speaking Coach 백업 파일이 아니에요. 내보내기로 만든 speaking-coach.json을 골라 주세요.';
 }

@@ -1,14 +1,19 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../app/app_language.dart';
 import '../../app/providers.dart';
 import '../../core/logging/app_logger.dart';
 import '../../domain/credentials/provider_account.dart';
 import '../../domain/providers/provider_failure.dart';
 import '../../domain/sessions/export.dart';
+import '../../domain/sessions/session_repository.dart';
 import '../../domain/settings/settings_store.dart';
+import '../common/goals_controller.dart';
+import '../setup/setup_controller.dart';
 
 final class SettingsState {
   const SettingsState({
@@ -23,6 +28,8 @@ final class SettingsState {
     this.exportedTo,
     this.cleared = false,
     this.errorCount = 0,
+    this.restored,
+    this.restoreFailed = false,
   });
 
   /// Null until the stored session has been checked.
@@ -44,6 +51,10 @@ final class SettingsState {
   /// Entries in the local error journal.
   final int errorCount;
 
+  /// Result of the last restore, if any.
+  final ImportResult? restored;
+  final bool restoreFailed;
+
   static const _unset = Object();
 
   SettingsState copyWith({
@@ -58,6 +69,8 @@ final class SettingsState {
     String? exportedTo,
     bool? cleared,
     int? errorCount,
+    ImportResult? restored,
+    bool? restoreFailed,
   }) => SettingsState(
     signedIn: signedIn ?? this.signedIn,
     busy: busy ?? this.busy,
@@ -72,6 +85,8 @@ final class SettingsState {
     exportedTo: exportedTo ?? this.exportedTo,
     cleared: cleared ?? this.cleared,
     errorCount: errorCount ?? this.errorCount,
+    restored: restored ?? this.restored,
+    restoreFailed: restoreFailed ?? this.restoreFailed,
   );
 }
 
@@ -158,9 +173,44 @@ class SettingsController extends Notifier<SettingsState> {
 
   /// JSON + CSV of all sessions; credentials are never included (S1).
   Future<void> exportData() async {
-    final data = await ref.read(sessionRepositoryProvider).exportAll();
+    final data = {
+      ...await ref.read(sessionRepositoryProvider).exportAll(),
+      'settings': {
+        for (final key in backupSettingKeys) key: ?await _store.read(key),
+      },
+    };
     final at = await ref.read(dataExporterProvider).export(exportFiles(data));
     if (ref.mounted) state = state.copyWith(exportedTo: at);
+  }
+
+  /// Restores a backup made by [exportData] (merging; nothing is
+  /// overwritten except the listed preferences).
+  Future<void> restoreBackup() async {
+    final text = await ref.read(backupPickerProvider).pick();
+    if (text == null || !ref.mounted) return;
+    try {
+      final json = jsonDecode(text);
+      if (json is! Map<String, Object?>) throw const FormatException();
+      final result = await ref
+          .read(sessionRepositoryProvider)
+          .importAll(json, ref.read(clockProvider)());
+      if (json['settings'] case final Map<Object?, Object?> saved) {
+        for (final key in backupSettingKeys) {
+          if (saved[key] case final String value) {
+            await _store.write(key, value);
+          }
+        }
+        ref
+          ..invalidate(goalsProvider)
+          ..invalidate(appLanguageProvider)
+          ..invalidate(setupProvider);
+      }
+      if (ref.mounted) {
+        state = state.copyWith(restored: result, restoreFailed: false);
+      }
+    } on FormatException {
+      if (ref.mounted) state = state.copyWith(restoreFailed: true);
+    }
   }
 
   /// The local error journal as a text file (no conversations or keys).

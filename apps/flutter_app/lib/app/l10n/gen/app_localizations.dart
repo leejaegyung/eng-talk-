@@ -1535,7 +1535,7 @@ abstract class AppLocalizations {
   /// No description provided for @settingsExportNote.
   ///
   /// In ko, this message translates to:
-  /// **'로그인 정보와 API 키는 포함되지 않아요.'**
+  /// **'백업으로도 쓸 수 있어요(JSON). 로그인 정보와 API 키는 포함되지 않아요.'**
   String get settingsExportNote;
 
   /// No description provided for @settingsExportedTo.
@@ -2005,6 +2005,30 @@ abstract class AppLocalizations {
   /// In ko, this message translates to:
   /// **'English'**
   String get languageEn;
+
+  /// No description provided for @settingsRestore.
+  ///
+  /// In ko, this message translates to:
+  /// **'백업 파일에서 복원'**
+  String get settingsRestore;
+
+  /// No description provided for @settingsRestoreNote.
+  ///
+  /// In ko, this message translates to:
+  /// **'내보낸 speaking-coach.json을 고르면 기록·복습·목표를 불러와요. 이미 있는 대화는 건너뛰어요.'**
+  String get settingsRestoreNote;
+
+  /// No description provided for @settingsRestored.
+  ///
+  /// In ko, this message translates to:
+  /// **'대화 {added}개를 복원했어요 (이미 있던 {skipped}개는 건너뜀)'**
+  String settingsRestored(int added, int skipped);
+
+  /// No description provided for @settingsRestoreFailed.
+  ///
+  /// In ko, this message translates to:
+  /// **'Speaking Coach 백업 파일이 아니에요. 내보내기로 만든 speaking-coach.json을 골라 주세요.'**
+  String get settingsRestoreFailed;
 }
 
 class _AppLocalizationsDelegate

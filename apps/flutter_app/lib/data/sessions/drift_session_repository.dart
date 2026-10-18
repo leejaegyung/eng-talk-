@@ -9,6 +9,7 @@ import '../../domain/sessions/growth_stats.dart';
 import '../../domain/sessions/session_records.dart';
 import '../../domain/sessions/session_repository.dart';
 import '../db/app_database.dart';
+import 'backup.dart';
 
 class DriftSessionRepository implements SessionRepository {
   DriftSessionRepository(this._db);
@@ -349,53 +350,11 @@ class DriftSessionRepository implements SessionRepository {
   }
 
   @override
-  Future<Map<String, Object?>> exportAll() async {
-    final sessions = <Object?>[];
-    for (final s in await list()) {
-      final d = (await load(s.id))!;
-      final f = d.feedback;
-      sessions.add({
-        'id': s.id,
-        'mode': s.setup.mode.name,
-        'level': s.setup.level.label,
-        'topic': s.setup.topic,
-        'started_at': s.startedAt.toIso8601String(),
-        'ended_at': s.endedAt?.toIso8601String(),
-        'status': s.status.name,
-        if (s.stats case final m?)
-          'speech_metrics': {
-            'user_ms': m.userMs,
-            'assistant_ms': m.assistantMs,
-            'turn_count': m.turnCount,
-            'confidence': m.confidence,
-          },
-        'turns': [
-          for (final t in d.turns)
-            {
-              'speaker': t.speaker.name,
-              'text': t.text,
-              'at': t.startedAt.toIso8601String(),
-              if (t.isRequest) 'quick_action': true,
-            },
-        ],
-        if (f != null) 'feedback': jsonDecode(encodeFeedback(f)),
-      });
-    }
-    final assessments = await _db.select(_db.assessments).get();
-    return {
-      'format': 'speaking-coach-export',
-      'version': 1,
-      'sessions': sessions,
-      'assessments': [
-        for (final a in assessments)
-          {
-            'level': a.level,
-            'assessed_at': a.assessedAt.toIso8601String(),
-            'rubric': jsonDecode(a.rubricJson),
-          },
-      ],
-    };
-  }
+  Future<Map<String, Object?>> exportAll() => Backup(_db).export();
+
+  @override
+  Future<ImportResult> importAll(Map<String, Object?> data, DateTime now) =>
+      Backup(_db).import(data, now);
 }
 
 String encodeFeedback(fb.FeedbackResult f) => jsonEncode({

@@ -82,6 +82,10 @@ class NotifyingSessionRepository implements SessionRepository {
   Future<List<LevelPoint>> levelHistory() => _inner.levelHistory();
 
   @override
+  Future<ImportResult> importAll(Map<String, Object?> data, DateTime now) =>
+      _write(_inner.importAll(data, now));
+
+  @override
   Future<List<Expression>> recentExpressions({int limit = 10}) =>
       _inner.recentExpressions(limit: limit);
 

@@ -829,7 +829,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsExport => 'Export history (JSON, CSV)';
 
   @override
-  String get settingsExportNote => 'Sign-in and API keys are never included.';
+  String get settingsExportNote =>
+      'Also works as a backup (JSON). Sign-in details and API keys are not included.';
 
   @override
   String settingsExportedTo(String path) {
@@ -1103,4 +1104,20 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get languageEn => 'English';
+
+  @override
+  String get settingsRestore => 'Restore from a backup';
+
+  @override
+  String get settingsRestoreNote =>
+      'Pick an exported speaking-coach.json to bring back history, reviews and goals. Conversations already here are skipped.';
+
+  @override
+  String settingsRestored(int added, int skipped) {
+    return 'Restored $added conversations ($skipped already here were skipped)';
+  }
+
+  @override
+  String get settingsRestoreFailed =>
+      'That isn\'t a Speaking Coach backup. Pick the speaking-coach.json made by export.';
 }

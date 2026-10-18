@@ -486,6 +486,56 @@ void main() {
     expect(h.settings.values[SettingKeys.appLanguage], 'system');
   });
 
+  testWidgets('backup: export, then restore into a fresh install', (
+    tester,
+  ) async {
+    final old = Harness(
+      settings: MemorySettings({
+        SettingKeys.onboardingDone: 'true',
+        SettingKeys.learningGoal: 'work',
+        SettingKeys.dailyGoalMinutes: '45',
+      }),
+    );
+    final id = await old.repo.start(const SessionSetup(topic: 'Mars'), old.now);
+    await old.repo.addTurn(
+      id,
+      TurnRecord(
+        speaker: Speaker.user,
+        text: 'I like rockets.',
+        startedAt: old.now,
+      ),
+    );
+    await old.repo.finish(
+      id,
+      status: SessionStatus.completed,
+      endedAt: old.now.add(const Duration(minutes: 3)),
+    );
+    await old.boot(tester);
+    await tester.tap(find.byIcon(Icons.settings_outlined));
+    await settle(tester);
+    await tapText(tester, '대화 기록 내보내기 (JSON·CSV)');
+    final backup = old.exporter.exports.single['speaking-coach.json']!;
+    expect(backup, contains('"learner.goal": "work"'));
+
+    // A new install: the old app (and its database) is gone.
+    await tester.pumpWidget(const SizedBox());
+    final fresh = Harness()..backupPicker.content = backup;
+    await fresh.boot(tester);
+    await tester.tap(find.byIcon(Icons.settings_outlined));
+    await settle(tester);
+    await tapText(tester, '백업 파일에서 복원');
+    expect(find.text('대화 1개를 복원했어요 (이미 있던 0개는 건너뜀)'), findsOneWidget);
+    expect((await fresh.repo.list()).single.setup.topic, 'Mars');
+    expect(fresh.settings.values[SettingKeys.learningGoal], 'work');
+
+    await tapText(tester, '백업 파일에서 복원');
+    expect(find.text('대화 0개를 복원했어요 (이미 있던 1개는 건너뜀)'), findsOneWidget);
+
+    fresh.backupPicker.content = '{"not": "a backup"}';
+    await tapText(tester, '백업 파일에서 복원');
+    expect(find.textContaining('백업 파일이 아니에요'), findsOneWidget);
+  });
+
   testWidgets('settings: export has no credentials; delete all', (
     tester,
   ) async {

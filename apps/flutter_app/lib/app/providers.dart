@@ -10,6 +10,7 @@ import '../data/audio/record_audio_input.dart';
 import '../data/audio/temp_file_audio_output.dart';
 import '../data/db/app_database.dart' show AppDatabase;
 import '../data/diagnostics/file_error_journal.dart';
+import '../data/export/file_backup_picker.dart';
 import '../data/export/file_exporter.dart';
 import '../data/providers/chatgpt/chatgpt_auth.dart';
 import '../data/providers/chatgpt/chatgpt_plan_client.dart';
@@ -58,6 +59,10 @@ final settingsStoreProvider = Provider<SettingsStore>(
 );
 
 final dataExporterProvider = Provider<DataExporter>((ref) => FileExporter());
+
+final backupPickerProvider = Provider<BackupPicker>(
+  (ref) => FileBackupPicker(),
+);
 
 /// Uncaught errors, on the device only. main() overrides this with the
 /// file journal opened at startup.

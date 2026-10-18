@@ -502,7 +502,7 @@
   "homePlacementAgain": "레벨 다시 진단",
   "settingsDataSection": "데이터",
   "settingsExport": "대화 기록 내보내기 (JSON·CSV)",
-  "settingsExportNote": "로그인 정보와 API 키는 포함되지 않아요.",
+  "settingsExportNote": "백업으로도 쓸 수 있어요(JSON). 로그인 정보와 API 키는 포함되지 않아요.",
   "settingsExportedTo": "저장 위치: {path}",
   "@settingsExportedTo": {
     "placeholders": {
@@ -652,5 +652,19 @@
   "languageLabel": "언어",
   "languageSystem": "기기 설정",
   "languageKo": "한국어",
-  "languageEn": "English"
+  "languageEn": "English",
+  "settingsRestore": "백업 파일에서 복원",
+  "settingsRestoreNote": "내보낸 speaking-coach.json을 고르면 기록·복습·목표를 불러와요. 이미 있는 대화는 건너뛰어요.",
+  "settingsRestored": "대화 {added}개를 복원했어요 (이미 있던 {skipped}개는 건너뜀)",
+  "@settingsRestored": {
+    "placeholders": {
+      "added": {
+        "type": "int"
+      },
+      "skipped": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsRestoreFailed": "Speaking Coach 백업 파일이 아니에요. 내보내기로 만든 speaking-coach.json을 골라 주세요."
 }

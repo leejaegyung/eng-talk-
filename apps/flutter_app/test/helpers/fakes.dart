@@ -306,3 +306,11 @@ class CapturingExporter implements DataExporter {
     return '/tmp/export';
   }
 }
+
+class FakeBackupPicker implements BackupPicker {
+  /// Returned by the next [pick]; null = cancelled.
+  String? content;
+
+  @override
+  Future<String?> pick() async => content;
+}

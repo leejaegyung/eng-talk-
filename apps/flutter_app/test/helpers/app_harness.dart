@@ -42,6 +42,7 @@ class Harness {
   final vault = MemoryVault();
   final exporter = CapturingExporter();
   final journal = MemoryErrorJournal();
+  final backupPicker = FakeBackupPicker();
   late final DriftSessionRepository repo;
   DateTime now = DateTime(2026, 10, 17, 9);
   Future<String> Function() selectModel = () async => 'plan-model';
@@ -61,6 +62,7 @@ class Harness {
     credentialVaultProvider.overrideWithValue(vault),
     dataExporterProvider.overrideWithValue(exporter),
     errorJournalProvider.overrideWithValue(journal),
+    backupPickerProvider.overrideWithValue(backupPicker),
     clockProvider.overrideWithValue(() => now),
     sessionRepositoryProvider.overrideWith(
       (ref) => NotifyingSessionRepository(
