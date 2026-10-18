@@ -1114,4 +1114,16 @@ class AppLocalizationsKo extends AppLocalizations {
   @override
   String get speechUnavailableWeb =>
       '이 브라우저에서는 음성 인식을 쓸 수 없어요. 아이폰·아이패드는 Safari, 그 외에는 Chrome 최신 버전에서 열고 마이크를 허용해 주세요. 그동안은 입력해서 대화할 수 있어요.';
+
+  @override
+  String get setupAiTopic => '🎲 랜덤 (AI가 정해요)';
+
+  @override
+  String get setupAiScenario => '🎲 랜덤 상황 (AI가 정해요)';
+
+  @override
+  String get setupAiTopicNote => '대화를 시작하면 AI가 매번 다른 주제를 골라 첫마디에 알려줘요.';
+
+  @override
+  String get setupAiScenarioNote => 'AI가 상황과 자기 역할을 정해서 첫마디에 알려줘요.';
 }

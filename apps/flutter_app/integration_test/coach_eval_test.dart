@@ -170,6 +170,40 @@ void main() {
     }
   }, timeout: const Timeout(Duration(minutes: 2)));
 
+  test('random topic: one question, a named topic, varied', () async {
+    final openings = <String>[];
+    for (final (mode, seed) in [
+      (SessionMode.daily, 1111),
+      (SessionMode.theme, 52817),
+      (SessionMode.roleplay, 90210),
+    ]) {
+      final opening = await ask(
+        composer.compose(
+          PromptContext(
+            mode: mode,
+            level: LearnerLevel.l3,
+            aiTopic: true,
+            topicSeed: seed,
+            avoidTopics: const ['Travel', 'Hobbies'],
+          ),
+          const [
+            ChatMessage(ChatRole.user, '[The learner has joined the session.]'),
+          ],
+          policyNotes: const [
+            'The session is starting: greet the learner in a few words and '
+                'ask your first question.',
+          ],
+        ),
+      );
+      openings.add(opening);
+      _log.info('[random ${mode.name}] $opening');
+      // ignore: avoid_print
+      print('RANDOM ${mode.name}: $opening');
+      expect(_questions(opening), 1, reason: opening);
+    }
+    expect(openings.toSet(), hasLength(3));
+  }, timeout: const Timeout(Duration(minutes: 3)));
+
   test('feedback: valid JSON, corrections quote the learner', () async {
     final t0 = DateTime.now();
     final turns = [

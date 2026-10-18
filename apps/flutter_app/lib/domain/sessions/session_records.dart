@@ -11,6 +11,7 @@ final class SessionSetup {
     this.goal,
     this.role,
     this.length = const Duration(minutes: 30),
+    this.aiTopic = false,
   });
 
   final SessionMode mode;
@@ -22,6 +23,10 @@ final class SessionSetup {
   final String? role;
   final Duration length;
 
+  /// The AI picks the topic (or, in roleplay, the whole scenario) itself
+  /// when the session starts; nothing is chosen from the app's lists.
+  final bool aiTopic;
+
   SessionSetup copyWith({
     SessionMode? mode,
     LearnerLevel? level,
@@ -29,6 +34,7 @@ final class SessionSetup {
     String? goal,
     String? role,
     Duration? length,
+    bool? aiTopic,
     bool clearScenario = false,
   }) => SessionSetup(
     mode: mode ?? this.mode,
@@ -37,6 +43,7 @@ final class SessionSetup {
     goal: clearScenario ? goal : goal ?? this.goal,
     role: clearScenario ? role : role ?? this.role,
     length: length ?? this.length,
+    aiTopic: aiTopic ?? this.aiTopic,
   );
 }
 

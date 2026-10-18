@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -226,6 +227,10 @@ class ConversationController extends Notifier<ConversationState> {
   List<String> _reviewExpressions = const [];
   ErrorCategory? _focus;
 
+  /// "Random" topic: a per-session seed and recent topics to avoid.
+  final int _topicSeed = Random().nextInt(100000);
+  List<String> _recentTopics = const [];
+
   @override
   ConversationState build() {
     _account = ref.watch(aiAccountProvider);
@@ -277,6 +282,14 @@ class ConversationController extends Notifier<ConversationState> {
       await _sessions.correctionStats(since: now.subtract(focusWindow)),
       now,
     );
+    if (state.setup.aiTopic) {
+      _recentTopics = {
+        for (final s in (await _sessions.list()).take(10)) ...[
+          ?s.setup.topic,
+          ?s.nextTopic,
+        ],
+      }.toList();
+    }
     if (!ref.mounted) return;
 
     final String note;
@@ -742,6 +755,9 @@ class ConversationController extends Notifier<ConversationState> {
         role: setup.role,
         reviewExpressions: _reviewExpressions,
         focusArea: _focus,
+        aiTopic: setup.aiTopic,
+        topicSeed: _topicSeed,
+        avoidTopics: _recentTopics,
       ),
       [
         ...history,

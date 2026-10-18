@@ -15,6 +15,9 @@ final class PromptContext {
     this.role,
     this.reviewExpressions = const [],
     this.focusArea,
+    this.aiTopic = false,
+    this.topicSeed = 0,
+    this.avoidTopics = const [],
   });
 
   final SessionMode mode;
@@ -31,6 +34,13 @@ final class PromptContext {
   /// A kind of mistake that keeps coming back (P2-4), from recorded
   /// corrections.
   final ErrorCategory? focusArea;
+
+  /// The learner chose "random": the AI picks the topic (roleplay: the
+  /// scenario). [topicSeed] varies the pick between sessions and
+  /// [avoidTopics] (recent topics, untrusted) keeps it from repeating.
+  final bool aiTopic;
+  final int topicSeed;
+  final List<String> avoidTopics;
 }
 
 /// Builds the request messages in the layer order of spec §8.1: system
@@ -42,7 +52,7 @@ class PromptComposer {
 
   /// Bump when the wording changes, so transcripts can be compared by
   /// prompt version.
-  String get version => 'coach-v6';
+  String get version => 'coach-v7';
 
   static const maxFieldLength = 80;
   static const _maxReviewExpressions = 5;
@@ -61,6 +71,7 @@ class PromptComposer {
       for (final rule in _modeRules[context.mode]!) '- $rule',
       for (final rule in _levelRules[context.level]!) '- $rule',
       if (context.focusArea case final f?) '- ${_focusRules[f]}',
+      if (context.aiTopic) '- ${_aiTopicRule(context)}',
       for (final note in policyNotes) '- ${_oneLine(note, 300)}',
       '',
       _learnerContext(context),
@@ -150,6 +161,19 @@ BEHAVIOR:
     ErrorCategory.structure: 'Focus area: sentence structure. If the learner\'s last message is incomplete or out of order, begin your reply by echoing it as one complete sentence, then ask your question. Example: learner "Because busy, no time" -> you "Ah, you had no time because you were busy! ..." Never explain or name the mistake.',
     ErrorCategory.naturalness: 'Focus area: natural phrasing. If the learner\'s last message sounds unnatural, begin your reply by echoing it with more natural phrasing, then ask your question. Example: learner "I am boring at home" -> you "Oh, you were bored at home! ..." Never explain or name the mistake.',
   };
+
+  static String _aiTopicRule(PromptContext c) {
+    final avoid = [
+      for (final t in c.avoidTopics.take(_maxReviewExpressions + 3))
+        if (_oneLine(t, maxFieldLength) case final v when v.isNotEmpty) '"$v"',
+    ];
+    final variety =
+        'Variety seed ${c.topicSeed}: let it steer you away from your usual first ideas'
+        '${avoid.isEmpty ? '' : '; avoid these recent topics: ${avoid.join(', ')}'}.';
+    return c.mode == SessionMode.roleplay
+        ? 'The learner asked you to choose. Invent a realistic, specific everyday scenario, choose your role in it, and set the scene in one short sentence before your question. Keep the role for the whole session. $variety'
+        : 'The learner asked you to choose the topic. Pick one specific, interesting topic suited to the mode and level (not a generic one like hobbies or the weather), name it in your first turn, and keep the conversation on it. $variety';
+  }
 
   static const _modeRules = {
     SessionMode.daily: [

@@ -2077,6 +2077,30 @@ abstract class AppLocalizations {
   /// In ko, this message translates to:
   /// **'이 브라우저에서는 음성 인식을 쓸 수 없어요. 아이폰·아이패드는 Safari, 그 외에는 Chrome 최신 버전에서 열고 마이크를 허용해 주세요. 그동안은 입력해서 대화할 수 있어요.'**
   String get speechUnavailableWeb;
+
+  /// No description provided for @setupAiTopic.
+  ///
+  /// In ko, this message translates to:
+  /// **'🎲 랜덤 (AI가 정해요)'**
+  String get setupAiTopic;
+
+  /// No description provided for @setupAiScenario.
+  ///
+  /// In ko, this message translates to:
+  /// **'🎲 랜덤 상황 (AI가 정해요)'**
+  String get setupAiScenario;
+
+  /// No description provided for @setupAiTopicNote.
+  ///
+  /// In ko, this message translates to:
+  /// **'대화를 시작하면 AI가 매번 다른 주제를 골라 첫마디에 알려줘요.'**
+  String get setupAiTopicNote;
+
+  /// No description provided for @setupAiScenarioNote.
+  ///
+  /// In ko, this message translates to:
+  /// **'AI가 상황과 자기 역할을 정해서 첫마디에 알려줘요.'**
+  String get setupAiScenarioNote;
 }
 
 class _AppLocalizationsDelegate

@@ -329,5 +329,9 @@
   "pasteLabel": "Paste the address",
   "pasteInvalid": "That's not the sign-in address. Paste the full address starting with 127.0.0.1.",
   "pasteConfirm": "Continue",
-  "speechUnavailableWeb": "Speech recognition isn't available in this browser. Open it in Safari on iPhone/iPad or the latest Chrome elsewhere, and allow the microphone. Meanwhile you can type."
+  "speechUnavailableWeb": "Speech recognition isn't available in this browser. Open it in Safari on iPhone/iPad or the latest Chrome elsewhere, and allow the microphone. Meanwhile you can type.",
+  "setupAiTopic": "🎲 Random (AI picks)",
+  "setupAiScenario": "🎲 Random scenario (AI picks)",
+  "setupAiTopicNote": "When you start, the AI picks a different topic each time and tells you in its first line.",
+  "setupAiScenarioNote": "The AI makes up the situation and its role and tells you in its first line."
 }

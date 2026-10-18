@@ -112,6 +112,19 @@ void main() {
     expect(lastSystem(), contains('reuse_naturally: "That reminds me of"'));
   });
 
+  test('random topic: the rule is sent, recent topics avoided', () async {
+    final old = await repo.start(
+      const SessionSetup(topic: 'Space travel'),
+      now,
+    );
+    await repo.finish(old, status: SessionStatus.completed, endedAt: now);
+    request = const NewSession(SessionSetup(aiTopic: true));
+    container = make();
+    await pumpEventQueue();
+    expect(lastSystem(), contains('choose the topic'));
+    expect(lastSystem(), contains('"Space travel"'));
+  });
+
   test('prompt uses the setup: mode, level, topic, role', () async {
     request = const NewSession(
       SessionSetup(

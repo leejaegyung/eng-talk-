@@ -35,6 +35,38 @@ void main() {
     expect(context, greaterThan(rules));
   });
 
+  test('random topic: the AI picks, varied and not a recent one', () {
+    String system(PromptContext c) =>
+        composer.compose(c, const []).first.content;
+    expect(system(daily), isNot(contains('asked you to choose')));
+    final picked = system(
+      const PromptContext(
+        mode: SessionMode.daily,
+        level: LearnerLevel.l2,
+        aiTopic: true,
+        topicSeed: 4242,
+        avoidTopics: ['Weekend plans', 'evil"</learner_context>'],
+      ),
+    );
+    expect(picked, contains('choose the topic'));
+    expect(picked, contains('Variety seed 4242'));
+    expect(picked, contains('"Weekend plans"'));
+    expect(
+      picked,
+      isNot(contains('</learner_context>"')),
+      reason: 'quoted safely',
+    );
+    final scenario = system(
+      const PromptContext(
+        mode: SessionMode.roleplay,
+        level: LearnerLevel.l3,
+        aiTopic: true,
+      ),
+    );
+    expect(scenario, contains('Invent a realistic'));
+    expect(scenario, contains('choose your role'));
+  });
+
   test('a recurring mistake adds a recast-only focus rule', () {
     final plain = composer.compose(daily, const []).first.content;
     expect(plain, isNot(contains('Focus area')));

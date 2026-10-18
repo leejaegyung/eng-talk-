@@ -43,8 +43,12 @@ class SetupController extends Notifier<SessionSetup> {
 
   void setMode(SessionMode mode) {
     if (mode == state.mode) return;
-    state = state.copyWith(mode: mode, clearScenario: true);
+    state = state.copyWith(mode: mode, aiTopic: false, clearScenario: true);
   }
+
+  /// "Random": the AI picks the topic (roleplay: the whole scenario).
+  void setAiTopic(bool on) =>
+      state = state.copyWith(aiTopic: on, clearScenario: true);
 
   Future<void> setLevel(LearnerLevel level) async {
     state = state.copyWith(level: level);
@@ -55,6 +59,7 @@ class SetupController extends Notifier<SessionSetup> {
 
   void setTopic(String? topic) => state = state.copyWith(
     topic: topic,
+    aiTopic: false,
     goal: state.goal,
     role: state.role,
     clearScenario: true,
@@ -62,6 +67,7 @@ class SetupController extends Notifier<SessionSetup> {
 
   void setScenario(Scenario s) => state = state.copyWith(
     topic: s.situation,
+    aiTopic: false,
     role: s.role,
     goal: s.goal,
     clearScenario: true,
@@ -69,6 +75,7 @@ class SetupController extends Notifier<SessionSetup> {
 
   void setRole(String? role) => state = state.copyWith(
     topic: state.topic,
+    aiTopic: false,
     goal: state.goal,
     role: role,
     clearScenario: true,
@@ -76,6 +83,7 @@ class SetupController extends Notifier<SessionSetup> {
 
   void setGoal(String? goal) => state = state.copyWith(
     topic: state.topic,
+    aiTopic: false,
     goal: goal,
     role: state.role,
     clearScenario: true,
@@ -86,6 +94,7 @@ class SetupController extends Notifier<SessionSetup> {
   /// Roleplay needs someone to play; other modes can start as they are.
   bool get ready =>
       state.mode != SessionMode.roleplay ||
+      state.aiTopic ||
       (state.role?.trim().isNotEmpty ?? false);
 
   void start() => ref

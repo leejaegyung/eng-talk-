@@ -305,6 +305,25 @@ void main() {
     expect(h.geminiAi.chats, isEmpty);
   });
 
+  testWidgets('setup: random topic and random roleplay scenario', (
+    tester,
+  ) async {
+    final h = Harness();
+    await h.boot(tester);
+    await tapText(tester, '대화 시작');
+    await tapText(tester, '테마 대화');
+    await tapText(tester, '🎲 랜덤 (AI가 정해요)');
+    expect(find.textContaining('AI가 매번 다른 주제를 골라'), findsOneWidget);
+    await tapText(tester, '상황 역할극');
+    await tapText(tester, '🎲 랜덤 상황 (AI가 정해요)');
+    final start = find.widgetWithText(FilledButton, '대화 시작');
+    await tester.ensureVisible(start);
+    await tester.tap(start);
+    await settle(tester);
+    expect(h.ai.chats.first.first.content, contains('Invent a realistic'));
+    expect(find.text('Nice! Where do you hike?'), findsOneWidget);
+  });
+
   testWidgets('app to the background pauses the conversation', (tester) async {
     tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.resumed);
     final h = Harness();

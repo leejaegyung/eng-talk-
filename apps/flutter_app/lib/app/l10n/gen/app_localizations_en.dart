@@ -1149,4 +1149,18 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get speechUnavailableWeb =>
       'Speech recognition isn\'t available in this browser. Open it in Safari on iPhone/iPad or the latest Chrome elsewhere, and allow the microphone. Meanwhile you can type.';
+
+  @override
+  String get setupAiTopic => '🎲 Random (AI picks)';
+
+  @override
+  String get setupAiScenario => '🎲 Random scenario (AI picks)';
+
+  @override
+  String get setupAiTopicNote =>
+      'When you start, the AI picks a different topic each time and tells you in its first line.';
+
+  @override
+  String get setupAiScenarioNote =>
+      'The AI makes up the situation and its role and tells you in its first line.';
 }

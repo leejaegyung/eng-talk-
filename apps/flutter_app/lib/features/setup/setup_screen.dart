@@ -119,6 +119,14 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
                   spacing: 8,
                   runSpacing: 8,
                   children: [
+                    ChoiceChip(
+                      label: Text(l10n.setupAiScenario),
+                      selected: s.aiTopic,
+                      onSelected: (on) {
+                        ctrl.setAiTopic(on);
+                        _sync();
+                      },
+                    ),
                     for (final sc in roleplayScenarios)
                       ChoiceChip(
                         label: Text(sc.labelKo),
@@ -130,6 +138,14 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
                       ),
                   ],
                 ),
+                if (s.aiTopic)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 8),
+                    child: Text(
+                      l10n.setupAiScenarioNote,
+                      style: theme.textTheme.bodySmall,
+                    ),
+                  ),
                 const SizedBox(height: 16),
                 TextField(
                   controller: _role,
@@ -167,6 +183,14 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
                   spacing: 8,
                   runSpacing: 8,
                   children: [
+                    ChoiceChip(
+                      label: Text(l10n.setupAiTopic),
+                      selected: s.aiTopic,
+                      onSelected: (on) {
+                        ctrl.setAiTopic(on);
+                        _sync();
+                      },
+                    ),
                     for (final t in suggestions)
                       ChoiceChip(
                         label: Text(t),
@@ -178,6 +202,14 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
                       ),
                   ],
                 ),
+                if (s.aiTopic)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 8),
+                    child: Text(
+                      l10n.setupAiTopicNote,
+                      style: theme.textTheme.bodySmall,
+                    ),
+                  ),
                 const SizedBox(height: 12),
                 TextField(
                   controller: _topic,
