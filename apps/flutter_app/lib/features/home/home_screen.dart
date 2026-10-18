@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../app/l10n/gen/app_localizations.dart';
 import '../../app/router.dart';
 import '../../app/theme.dart';
+import '../../core/platform/platform_info.dart';
 import '../../domain/conversation/session_enums.dart';
 import '../common/goal_picker.dart';
 import '../common/mode_text.dart';
@@ -335,26 +336,28 @@ class HomeScreen extends ConsumerWidget {
                   icon: const Icon(Icons.assignment_outlined),
                   label: Text(l10n.homePlacementAgain),
                 ),
-              ExpansionTile(
-                title: Text(l10n.homeDevTools),
-                children: [
-                  ListTile(
-                    leading: const Icon(Icons.chat_bubble_outline),
-                    title: Text(l10n.homeChatGptLab),
-                    onTap: () => context.push(AppRoutes.chatGptLab),
-                  ),
-                  ListTile(
-                    leading: const Icon(Icons.graphic_eq),
-                    title: Text(l10n.homeAudioLab),
-                    onTap: () => context.push(AppRoutes.audioLab),
-                  ),
-                  ListTile(
-                    leading: const Icon(Icons.record_voice_over),
-                    title: Text(l10n.homeVoiceLab),
-                    onTap: () => context.push(AppRoutes.voiceLab),
-                  ),
-                ],
-              ),
+              // Recording/API-key labs need native audio and files.
+              if (!PlatformInfo.isWeb)
+                ExpansionTile(
+                  title: Text(l10n.homeDevTools),
+                  children: [
+                    ListTile(
+                      leading: const Icon(Icons.chat_bubble_outline),
+                      title: Text(l10n.homeChatGptLab),
+                      onTap: () => context.push(AppRoutes.chatGptLab),
+                    ),
+                    ListTile(
+                      leading: const Icon(Icons.graphic_eq),
+                      title: Text(l10n.homeAudioLab),
+                      onTap: () => context.push(AppRoutes.audioLab),
+                    ),
+                    ListTile(
+                      leading: const Icon(Icons.record_voice_over),
+                      title: Text(l10n.homeVoiceLab),
+                      onTap: () => context.push(AppRoutes.voiceLab),
+                    ),
+                  ],
+                ),
             ],
           ),
         ),

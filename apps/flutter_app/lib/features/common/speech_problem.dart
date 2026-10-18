@@ -36,7 +36,11 @@ class SpeechProblem extends StatelessWidget {
         child: ListTile(
           leading: const Icon(Icons.mic_off),
           title: Text(l10n.speechUnavailableTitle),
-          subtitle: Text(l10n.speechUnavailableBody),
+          subtitle: Text(
+            PlatformInfo.isWeb
+                ? l10n.speechUnavailableWeb
+                : l10n.speechUnavailableBody,
+          ),
           trailing: settings == null
               ? null
               : TextButton(

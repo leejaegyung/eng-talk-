@@ -39,6 +39,7 @@ import '../domain/sessions/session_repository.dart';
 import '../domain/settings/settings_store.dart';
 import 'active_ai.dart';
 import 'notifying_session_repository.dart';
+import 'pasted_callback.dart';
 
 // The only place where data implementations are bound to domain interfaces.
 // Tests override these.
@@ -142,13 +143,21 @@ final _chatGptAuthProvider = Provider<ChatGptAuth>(
   (ref) => ChatGptAuth(
     vault: ref.watch(credentialVaultProvider),
     openBrowser: (url) async {
-      if (!await launchUrl(url, mode: LaunchMode.externalApplication)) {
+      if (!await launchUrl(
+        url,
+        mode: LaunchMode.externalApplication,
+        webOnlyWindowName: '_blank',
+      )) {
         throw const ProviderException(ProviderFailure.signInRequired);
       }
     },
     whenForeground: PlatformInfo.isMobileApp ? _untilResumed : null,
     // Matches the Android intent filter and the iOS URL scheme.
     returnLink: PlatformInfo.isMobileApp ? 'speakingcoach://signed-in' : null,
+    // No loopback server in a browser: the learner pastes the address.
+    pastedCallback: PlatformInfo.isWeb
+        ? ref.watch(pastedCallbackProvider).request
+        : null,
   ),
 );
 

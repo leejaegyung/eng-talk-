@@ -86,6 +86,12 @@ class Harness {
   }
 }
 
+extension HarnessContainer on Harness {
+  /// The running app's provider container.
+  ProviderContainer container(WidgetTester tester) =>
+      ProviderScope.containerOf(tester.element(find.byType(Navigator).first));
+}
+
 /// Like pumpAndSettle, but finite: the conversation clock ticks forever.
 Future<void> settle(WidgetTester tester) async {
   for (var i = 0; i < 20; i++) {

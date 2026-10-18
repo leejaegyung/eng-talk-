@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'app_language.dart';
 import 'l10n/gen/app_localizations.dart';
+import 'pasted_callback_prompt.dart';
 import 'router.dart';
 import 'theme.dart';
 
@@ -19,6 +20,8 @@ class SpeakingCoachApp extends ConsumerWidget {
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
       routerConfig: ref.watch(routerProvider),
+      builder: (context, child) =>
+          PastedCallbackPrompt(child: child ?? const SizedBox.shrink()),
     );
   }
 }

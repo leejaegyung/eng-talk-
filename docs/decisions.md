@@ -76,3 +76,13 @@ Galaxy(Android)는 배포 빌드(APK)를 설치해 최종 확인만 한다(USB �
 - 키는 vault(`provider.gemini`)에만, 요청 헤더(`x-goog-api-key`)로만 보냄(URL 쿼리 금지).
 - 무료 등급은 대화 내용이 Google 제품 개선에 쓰이고 사람이 검토할 수 있음 → 설정·데이터 처리 안내에 고지, 개인정보를 말하지 말라고 안내.
 - 사용량 제한(RESOURCE_EXHAUSTED)은 rateLimited로 안내. ChatGPT 구독이 기본 경로로 남는다(ADR-011).
+
+## ADR-016 iPhone·iPad 사용자에게는 웹 앱(PWA)으로 배포 — 확정 (2026-10-18)
+사용자 결정: iOS 사용자들에게 배포하려는데 무료 서명(7일·기기 3개)은 너무 제한적 → 웹 앱(Safari → 홈 화면에 추가). ADR-006(개인용 설치)을 보완: 갤럭시·Windows·Mac은 GitHub 릴리스 설치 파일, iOS는 웹.
+- 호스팅: GitHub Pages(https://leejaegyung.github.io/eng-talk-/), 릴리스 태그마다 `pages.yml`로 자동 배포. 서버 없음 — 기록은 각자 브라우저(IndexedDB)에.
+- DB: drift 웹(sqlite3.wasm + drift_worker.js, 공식 릴리스 고정 버전·SHA-256, `tool/fetch_web_assets.sh`). 홈 화면 앱은 Safari 7일 정리 대상에서 제외, `navigator.storage.persist()` 요청.
+- ChatGPT 구독 로그인: 브라우저는 127.0.0.1 루프백 서버를 열 수 없어 **로그인 후 주소 붙여넣기**(redirect_uri는 문서대로 http://127.0.0.1:1455/auth/callback). OpenAI 인증·응답 API는 CORS 허용 확인(2026-10-18 preflight). Gemini 키도 웹에서 동작.
+- 스트리밍: 웹 기본 HTTP 클라이언트는 응답을 모아서 주므로 fetch 기반 클라이언트(fetch_client).
+- 키·토큰 보관: 웹은 OS 보안 저장소가 없어 flutter_secure_storage 웹(브라우저 저장소 + WebCrypto) — 네이티브보다 약함, 개인정보 검수에 기록.
+- 내보내기: 공유 시트(아이폰 '파일에 저장') 또는 다운로드. 오류 기록은 웹에서 세션 동안만.
+- 남은 위험: iOS 홈 화면 앱에서 Web Speech 음성 인식 지원 여부는 기기 확인 필요(안 되면 입력 안내). 한글 글꼴은 처음 한 번 Google Fonts에서 받음.

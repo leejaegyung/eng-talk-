@@ -1128,4 +1128,25 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get assessmentKeepTalking =>
       'It keeps listening through short pauses. Tap ■ when you\'re done.';
+
+  @override
+  String get pasteTitle => 'Finish ChatGPT sign-in';
+
+  @override
+  String get pasteSteps =>
+      '1. Sign in to ChatGPT in the new tab.\n2. When it ends on a \'can\'t connect\' page, that\'s expected.\n3. Copy that page\'s full address (http://127.0.0.1:1455/auth/callback?code=…) and paste it below.';
+
+  @override
+  String get pasteLabel => 'Paste the address';
+
+  @override
+  String get pasteInvalid =>
+      'That\'s not the sign-in address. Paste the full address starting with 127.0.0.1.';
+
+  @override
+  String get pasteConfirm => 'Continue';
+
+  @override
+  String get speechUnavailableWeb =>
+      'Speech recognition isn\'t available in this browser. Open it in Safari on iPhone/iPad or the latest Chrome elsewhere, and allow the microphone. Meanwhile you can type.';
 }

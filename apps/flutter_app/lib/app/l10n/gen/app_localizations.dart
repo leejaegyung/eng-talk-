@@ -2041,6 +2041,42 @@ abstract class AppLocalizations {
   /// In ko, this message translates to:
   /// **'잠깐 쉬어도 계속 들어요. 다 말했으면 ■를 누르세요.'**
   String get assessmentKeepTalking;
+
+  /// No description provided for @pasteTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'ChatGPT 로그인 마무리'**
+  String get pasteTitle;
+
+  /// No description provided for @pasteSteps.
+  ///
+  /// In ko, this message translates to:
+  /// **'1. 새로 열린 탭에서 ChatGPT에 로그인하세요.\n2. 로그인 후 \'사이트에 연결할 수 없음\' 페이지가 뜨면 정상이에요.\n3. 그 페이지 주소창의 주소 전체(http://127.0.0.1:1455/auth/callback?code=…)를 복사해서 아래에 붙여넣으세요.'**
+  String get pasteSteps;
+
+  /// No description provided for @pasteLabel.
+  ///
+  /// In ko, this message translates to:
+  /// **'주소 붙여넣기'**
+  String get pasteLabel;
+
+  /// No description provided for @pasteInvalid.
+  ///
+  /// In ko, this message translates to:
+  /// **'로그인 후 받은 주소가 아니에요. 127.0.0.1로 시작하는 주소 전체를 붙여넣어 주세요.'**
+  String get pasteInvalid;
+
+  /// No description provided for @pasteConfirm.
+  ///
+  /// In ko, this message translates to:
+  /// **'확인'**
+  String get pasteConfirm;
+
+  /// No description provided for @speechUnavailableWeb.
+  ///
+  /// In ko, this message translates to:
+  /// **'이 브라우저에서는 음성 인식을 쓸 수 없어요. 아이폰·아이패드는 Safari, 그 외에는 Chrome 최신 버전에서 열고 마이크를 허용해 주세요. 그동안은 입력해서 대화할 수 있어요.'**
+  String get speechUnavailableWeb;
 }
 
 class _AppLocalizationsDelegate

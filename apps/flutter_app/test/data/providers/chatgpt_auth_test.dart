@@ -116,6 +116,49 @@ void main() {
     now = DateTime.utc(2026, 10, 17, 12);
   });
 
+  group('web: pasted callback address', () {
+    test('signs in without a loopback server', () async {
+      final pasted = Completer<Map<String, String>>();
+      final web = ChatGptAuth(
+        vault: vault,
+        // The browser opens; nothing comes back to the app by itself.
+        openBrowser: (url) async {
+          openAi.authorizeUrls.add(url);
+          final q = url.queryParameters;
+          expect(q['redirect_uri'], 'http://127.0.0.1:1455/auth/callback');
+          final address =
+              '${q['redirect_uri']}?code=auth-code&state=${q['state']}'
+              '&client_id=$issuedClientId';
+          pasted.complete(ChatGptAuth.parseCallback('  $address  '));
+        },
+        client: openAi.client,
+        now: () => now,
+        pastedCallback: () => pasted.future,
+      );
+      await web.signIn();
+      expect(await web.isSignedIn(), isTrue);
+      expect(
+        openAi.tokenForms.single['redirect_uri'],
+        contains('127.0.0.1:1455'),
+      );
+    });
+
+    test('only callback addresses are accepted', () {
+      expect(ChatGptAuth.parseCallback('https://chatgpt.com/?code=x'), isNull);
+      expect(ChatGptAuth.parseCallback('hello'), isNull);
+      expect(
+        ChatGptAuth.parseCallback('http://127.0.0.1:1455/auth/callback'),
+        isNull,
+      );
+      expect(
+        ChatGptAuth.parseCallback(
+          'http://127.0.0.1:1455/auth/callback?code=c&state=s',
+        ),
+        {'code': 'c', 'state': 's'},
+      );
+    });
+  });
+
   group('first sign-in', () {
     test('registers dynamically with PKCE and stores tokens', () async {
       final a = auth();

@@ -323,5 +323,11 @@
   "settingsRestored": "Restored {added} conversations ({skipped} already here were skipped)",
   "settingsRestoreFailed": "That isn't a Speaking Coach backup. Pick the speaking-coach.json made by export.",
   "speechAndroidTip": "If what's heard keeps coming out wrong: phone Settings → General → Keyboard list and default (or 'Voice input') → set the default speech recognition service to 'Google', and make sure English (US) is downloaded for it.",
-  "assessmentKeepTalking": "It keeps listening through short pauses. Tap ■ when you're done."
+  "assessmentKeepTalking": "It keeps listening through short pauses. Tap ■ when you're done.",
+  "pasteTitle": "Finish ChatGPT sign-in",
+  "pasteSteps": "1. Sign in to ChatGPT in the new tab.\n2. When it ends on a 'can't connect' page, that's expected.\n3. Copy that page's full address (http://127.0.0.1:1455/auth/callback?code=…) and paste it below.",
+  "pasteLabel": "Paste the address",
+  "pasteInvalid": "That's not the sign-in address. Paste the full address starting with 127.0.0.1.",
+  "pasteConfirm": "Continue",
+  "speechUnavailableWeb": "Speech recognition isn't available in this browser. Open it in Safari on iPhone/iPad or the latest Chrome elsewhere, and allow the microphone. Meanwhile you can type."
 }
