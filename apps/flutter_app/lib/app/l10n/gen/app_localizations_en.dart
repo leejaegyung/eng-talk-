@@ -1180,32 +1180,15 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get resultWordOrderNote =>
-      'Sentences with the wrong order come back in review as \'put the words in order\'. Tense and pronunciation aren\'t judged here.';
+      'Sentences with the wrong order come back in review to say in the right order. Tense and pronunciation aren\'t judged here.';
 
   @override
-  String get reviewWordOrderTitle => 'Put the words in order';
+  String get reviewKindWordOrder => 'Word order';
 
   @override
-  String get reviewWordOrderHelp =>
-      'Tap the words in order to build the sentence. Tap a placed word to take it back.';
+  String get practiceMatched => 'You said it as corrected';
 
   @override
-  String get reviewWordOrderCheck => 'Check';
-
-  @override
-  String get reviewWordOrderCorrect => 'That\'s right!';
-
-  @override
-  String get reviewWordOrderTryAgain => 'Not quite. Try again?';
-
-  @override
-  String get reviewWordOrderReset => 'Reset';
-
-  @override
-  String get reviewWordOrderShow => 'Show answer';
-
-  @override
-  String reviewYouSaidBefore(String text) {
-    return 'You said: $text';
-  }
+  String get practiceDiffers =>
+      'A little different. Look at the corrected sentence and try again?';
 }

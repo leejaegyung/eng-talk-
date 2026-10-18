@@ -2129,56 +2129,26 @@ abstract class AppLocalizations {
   /// No description provided for @resultWordOrderNote.
   ///
   /// In ko, this message translates to:
-  /// **'어순이 틀린 문장은 복습에서 \'단어 순서 맞추기\'로 연습해요. 발음·시제는 여기서 보지 않아요.'**
+  /// **'어순이 틀린 문장은 복습에서 바른 어순으로 다시 말해봐요. 발음·시제는 여기서 보지 않아요.'**
   String get resultWordOrderNote;
 
-  /// No description provided for @reviewWordOrderTitle.
+  /// No description provided for @reviewKindWordOrder.
   ///
   /// In ko, this message translates to:
-  /// **'단어 순서 맞추기'**
-  String get reviewWordOrderTitle;
+  /// **'어순 교정'**
+  String get reviewKindWordOrder;
 
-  /// No description provided for @reviewWordOrderHelp.
+  /// No description provided for @practiceMatched.
   ///
   /// In ko, this message translates to:
-  /// **'단어를 순서대로 눌러 문장을 완성하세요. 잘못 누른 단어는 위에서 다시 누르면 빠져요.'**
-  String get reviewWordOrderHelp;
+  /// **'교정된 문장대로 말했어요'**
+  String get practiceMatched;
 
-  /// No description provided for @reviewWordOrderCheck.
+  /// No description provided for @practiceDiffers.
   ///
   /// In ko, this message translates to:
-  /// **'확인'**
-  String get reviewWordOrderCheck;
-
-  /// No description provided for @reviewWordOrderCorrect.
-  ///
-  /// In ko, this message translates to:
-  /// **'정답이에요!'**
-  String get reviewWordOrderCorrect;
-
-  /// No description provided for @reviewWordOrderTryAgain.
-  ///
-  /// In ko, this message translates to:
-  /// **'순서가 달라요. 다시 해볼까요?'**
-  String get reviewWordOrderTryAgain;
-
-  /// No description provided for @reviewWordOrderReset.
-  ///
-  /// In ko, this message translates to:
-  /// **'다시'**
-  String get reviewWordOrderReset;
-
-  /// No description provided for @reviewWordOrderShow.
-  ///
-  /// In ko, this message translates to:
-  /// **'정답 보기'**
-  String get reviewWordOrderShow;
-
-  /// No description provided for @reviewYouSaidBefore.
-  ///
-  /// In ko, this message translates to:
-  /// **'전에 말한 문장: {text}'**
-  String reviewYouSaidBefore(String text);
+  /// **'조금 달라요. 교정된 문장을 보고 다시 말해볼까요?'**
+  String get practiceDiffers;
 }
 
 class _AppLocalizationsDelegate

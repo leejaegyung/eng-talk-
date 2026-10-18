@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter_test/flutter_test.dart';
 import 'package:speaking_coach/domain/learning/word_order.dart';
 
@@ -13,19 +11,6 @@ void main() {
       'the',
       'park',
     ]);
-  });
-
-  test('shuffled tiles differ from the answer when they can', () {
-    final tiles = wordTiles('I went to the park yesterday');
-    for (var seed = 0; seed < 20; seed++) {
-      final s = shuffledTiles(tiles, Random(seed));
-      expect(s..sort(), [...tiles]..sort());
-    }
-    expect(
-      shuffledTiles(tiles, Random(1)).join(' '),
-      isNot('I went to the park yesterday'),
-    );
-    expect(shuffledTiles(['Hi'], Random(1)), ['Hi']);
   });
 
   test('answer is checked ignoring case and punctuation', () {
@@ -53,6 +38,19 @@ void main() {
       isFalse,
     );
     expect(wordOrderCorrect(['I', 'went'], sentence), isFalse);
+  });
+
+  test('said as corrected: same words, same order', () {
+    const target = 'I like the seafood there very much.';
+    expect(
+      saidAsCorrected('i like the seafood there very much', target),
+      isTrue,
+    );
+    expect(
+      saidAsCorrected('Very much I like the seafood there', target),
+      isFalse,
+    );
+    expect(saidAsCorrected('', target), isFalse);
   });
 
   test('shared words tell a reorder from a rewrite', () {

@@ -1,6 +1,6 @@
-import 'dart:math';
-
-/// The "put the words in order" review exercise (user request 2026-10-18).
+/// Comparing what the learner said with a corrected sentence
+/// (user request 2026-10-18: repeat the corrected sentence).
+library;
 
 /// Words of [sentence] as tiles, punctuation dropped ("I'm" stays whole).
 List<String> wordTiles(String sentence) => [
@@ -10,21 +10,13 @@ List<String> wordTiles(String sentence) => [
       t,
 ];
 
-/// [tiles] in a random order that differs from the answer whenever the
-/// words allow it.
-List<String> shuffledTiles(List<String> tiles, Random random) {
-  final shuffled = [...tiles];
-  if (tiles.toSet().length < 2) return shuffled;
-  for (var i = 0; i < 20; i++) {
-    shuffled.shuffle(random);
-    if (!_same(shuffled, tiles)) break;
-  }
-  return shuffled;
-}
-
 /// Whether [answer] tiles spell [sentence], ignoring case and punctuation.
 bool wordOrderCorrect(List<String> answer, String sentence) =>
     _same(answer, wordTiles(sentence));
+
+/// Whether [said] is [target] word for word, in the same order.
+bool saidAsCorrected(String said, String target) =>
+    wordOrderCorrect(wordTiles(said), target);
 
 /// How much of [b]'s vocabulary [a] reuses (0..1): a word-order fix keeps
 /// the words, a rewrite doesn't.

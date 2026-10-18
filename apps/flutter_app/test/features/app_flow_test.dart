@@ -75,12 +75,19 @@ void main() {
       expect(find.text('Weekend plans'), findsOneWidget);
 
       h.mic.queue.add('I want a room for two nights.');
-      await tester.ensureVisible(find.text('다시 말하기'));
-      await tester.tap(find.text('다시 말하기'));
+      // The correction's button; the word-order row has its own.
+      expect(find.text('다시 말하기'), findsNWidgets(2));
+      await tester.ensureVisible(find.text('다시 말하기').first);
+      await tester.tap(find.text('다시 말하기').first);
       await settle(tester);
       expect(
         find.textContaining('방금 말한 문장: I want a room for two nights.'),
         findsOneWidget,
+      );
+      expect(
+        find.textContaining('조금 달라요'),
+        findsOneWidget,
+        reason: 'not the corrected sentence',
       );
 
       await tester.ensureVisible(find.text('홈으로'));
@@ -96,14 +103,11 @@ void main() {
       expect(find.text('Fixed sentence.'), findsOneWidget);
       await tapText(tester, '말해봤어요');
 
-      // Word order: tap the shuffled words in the right order.
-      expect(find.text('단어 순서 맞추기'), findsOneWidget);
-      for (final w in 'night two for room a want I'.split(' ')) {
-        await tester.tap(find.widgetWithText(ActionChip, w).last);
-        await tester.pump();
-      }
-      await tapText(tester, '확인');
-      expect(find.text('정답이에요!'), findsOneWidget);
+      // Word order: say the corrected sentence; it's checked word for word.
+      expect(find.text('어순 교정'), findsOneWidget);
+      h.mic.queue.add('night two for room a want I');
+      await tapText(tester, '다시 말하기');
+      expect(find.text('교정된 문장대로 말했어요'), findsOneWidget);
       await tapText(tester, '말해봤어요');
       expect(find.textContaining('지금 복습할 문장이 없어요'), findsOneWidget);
 

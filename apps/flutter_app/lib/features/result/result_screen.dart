@@ -9,6 +9,7 @@ import '../../domain/conversation/session_enums.dart';
 import '../../domain/feedback/feedback.dart';
 import '../common/failure_text.dart';
 import '../common/mode_text.dart';
+import '../common/practice_verdict.dart';
 import '../conversation/conversation_request.dart';
 import 'result_controller.dart';
 
@@ -147,7 +148,15 @@ class ResultScreen extends ConsumerWidget {
               ),
               style: theme.textTheme.titleSmall,
             ),
-            for (final w in f.wordOrder) _WordOrderRow(check: w),
+            for (final (i, w) in f.wordOrder.indexed)
+              _WordOrderRow(
+                check: w,
+                listening: s.listeningTo == ResultController.wordOrderKey(i),
+                canPractice: s.listeningTo == null,
+                heard: s.heard[ResultController.wordOrderKey(i)],
+                onPractice: () =>
+                    ctrl.practice(ResultController.wordOrderKey(i)),
+              ),
             Padding(
               padding: const EdgeInsets.only(top: 8),
               child: Text(
@@ -310,7 +319,7 @@ class _CorrectionCard extends StatelessWidget {
               ],
             ),
             if (heard case final h? when h.isNotEmpty)
-              Text(l10n.resultYouSaid(h)),
+              PracticeVerdict(heard: h, target: suggested),
           ],
         ),
       ),
@@ -320,9 +329,19 @@ class _CorrectionCard extends StatelessWidget {
 
 /// One learner sentence with its word-order verdict.
 class _WordOrderRow extends StatelessWidget {
-  const _WordOrderRow({required this.check});
+  const _WordOrderRow({
+    required this.check,
+    required this.listening,
+    required this.canPractice,
+    required this.heard,
+    required this.onPractice,
+  });
 
   final WordOrderCheck check;
+  final bool listening;
+  final bool canPractice;
+  final String? heard;
+  final VoidCallback onPractice;
 
   @override
   Widget build(BuildContext context) {
@@ -359,6 +378,17 @@ class _WordOrderRow extends StatelessWidget {
                       check.explanationKo!,
                       style: theme.textTheme.bodySmall,
                     ),
+                  if (!ok && check.corrected != null) ...[
+                    if (heard case final h? when h.isNotEmpty)
+                      PracticeVerdict(heard: h, target: check.corrected!),
+                    OutlinedButton.icon(
+                      onPressed: canPractice ? onPractice : null,
+                      icon: const Icon(Icons.mic),
+                      label: Text(
+                        listening ? l10n.resultListening : l10n.resultSayAgain,
+                      ),
+                    ),
+                  ],
                 ],
               ),
             ),

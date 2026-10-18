@@ -1143,32 +1143,14 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get resultWordOrderNote =>
-      '어순이 틀린 문장은 복습에서 \'단어 순서 맞추기\'로 연습해요. 발음·시제는 여기서 보지 않아요.';
+      '어순이 틀린 문장은 복습에서 바른 어순으로 다시 말해봐요. 발음·시제는 여기서 보지 않아요.';
 
   @override
-  String get reviewWordOrderTitle => '단어 순서 맞추기';
+  String get reviewKindWordOrder => '어순 교정';
 
   @override
-  String get reviewWordOrderHelp =>
-      '단어를 순서대로 눌러 문장을 완성하세요. 잘못 누른 단어는 위에서 다시 누르면 빠져요.';
+  String get practiceMatched => '교정된 문장대로 말했어요';
 
   @override
-  String get reviewWordOrderCheck => '확인';
-
-  @override
-  String get reviewWordOrderCorrect => '정답이에요!';
-
-  @override
-  String get reviewWordOrderTryAgain => '순서가 달라요. 다시 해볼까요?';
-
-  @override
-  String get reviewWordOrderReset => '다시';
-
-  @override
-  String get reviewWordOrderShow => '정답 보기';
-
-  @override
-  String reviewYouSaidBefore(String text) {
-    return '전에 말한 문장: $text';
-  }
+  String get practiceDiffers => '조금 달라요. 교정된 문장을 보고 다시 말해볼까요?';
 }

@@ -693,20 +693,8 @@
   },
   "resultWordOrderOk": "어순 맞음",
   "resultWordOrderWrong": "어순 다시 보기",
-  "resultWordOrderNote": "어순이 틀린 문장은 복습에서 '단어 순서 맞추기'로 연습해요. 발음·시제는 여기서 보지 않아요.",
-  "reviewWordOrderTitle": "단어 순서 맞추기",
-  "reviewWordOrderHelp": "단어를 순서대로 눌러 문장을 완성하세요. 잘못 누른 단어는 위에서 다시 누르면 빠져요.",
-  "reviewWordOrderCheck": "확인",
-  "reviewWordOrderCorrect": "정답이에요!",
-  "reviewWordOrderTryAgain": "순서가 달라요. 다시 해볼까요?",
-  "reviewWordOrderReset": "다시",
-  "reviewWordOrderShow": "정답 보기",
-  "reviewYouSaidBefore": "전에 말한 문장: {text}",
-  "@reviewYouSaidBefore": {
-    "placeholders": {
-      "text": {
-        "type": "String"
-      }
-    }
-  }
+  "resultWordOrderNote": "어순이 틀린 문장은 복습에서 바른 어순으로 다시 말해봐요. 발음·시제는 여기서 보지 않아요.",
+  "reviewKindWordOrder": "어순 교정",
+  "practiceMatched": "교정된 문장대로 말했어요",
+  "practiceDiffers": "조금 달라요. 교정된 문장을 보고 다시 말해볼까요?"
 }

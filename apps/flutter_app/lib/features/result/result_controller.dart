@@ -98,7 +98,11 @@ class ResultController extends Notifier<ResultState> {
     }
   }
 
-  /// "Say it again" for correction [index]: shows what was recognized.
+  /// Practice key of word-order sentence [i] (corrections use their index).
+  static int wordOrderKey(int i) => 100 + i;
+
+  /// "Say it again" for correction [index] (or [wordOrderKey]): shows what
+  /// was recognized. No hints here, so a match isn't helped along.
   Future<void> practice(int index) async {
     final mic = ref.read(speechInputProvider);
     if (state.listeningTo != null || !await mic.ensureAvailable()) return;
