@@ -9,6 +9,7 @@ BYOK(사용자 API 키) 기반 영어 회화 코치 앱. Flutter 단일 코드�
 - 확정된 결정: `docs/decisions.md` — 여기 있는 결정을 임의로 뒤집지 말 것. 바꿔야 하면 사용자에게 묻고 새 항목 추가
 - 구조/레이어 규칙: `docs/architecture.md`
 - 보안 불변식: `docs/security.md`
+- 개인정보 검수(데이터 목록·출시 전 확인): `docs/privacy-review.md`
 - 작업 방식과 완료 기준: `docs/workflow.md`
 
 ## 명령어

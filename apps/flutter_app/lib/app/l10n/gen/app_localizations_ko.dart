@@ -1046,4 +1046,15 @@ class AppLocalizationsKo extends AppLocalizations {
   @override
   String get settingsAutoBargeInNote =>
       '자동 듣기가 켜져 있을 때 AI가 말하는 동안에도 들어요. 스피커로 들으면 AI 목소리를 내 말로 알아들을 수 있어서 이어폰을 쓸 때만 켜세요.';
+
+  @override
+  String get settingsDiagnostics => '진단 정보 내보내기';
+
+  @override
+  String settingsDiagnosticsNote(int count) {
+    return '앱 오류 기록(최근 $count건)을 파일로 저장해요. 대화 내용과 키는 들어가지 않아요. 문제를 알릴 때 첨부해 주세요.';
+  }
+
+  @override
+  String get settingsDiagnosticsClear => '오류 기록 지우기';
 }

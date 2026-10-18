@@ -1080,4 +1080,15 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get settingsAutoBargeInNote =>
       'With auto-listen on, it also listens while the AI speaks. On speakers the AI\'s own voice can be heard as yours, so turn this on only with earphones.';
+
+  @override
+  String get settingsDiagnostics => 'Export diagnostics';
+
+  @override
+  String settingsDiagnosticsNote(int count) {
+    return 'Saves the app\'s error log ($count recent) to a file, without conversations or keys. Attach it when reporting a problem.';
+  }
+
+  @override
+  String get settingsDiagnosticsClear => 'Clear error log';
 }

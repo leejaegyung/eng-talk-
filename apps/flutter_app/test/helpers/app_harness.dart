@@ -6,6 +6,7 @@ import 'package:speaking_coach/app/app.dart';
 import 'package:speaking_coach/app/notifying_session_repository.dart';
 import 'package:speaking_coach/app/providers.dart';
 import 'package:speaking_coach/data/sessions/drift_session_repository.dart';
+import 'package:speaking_coach/domain/diagnostics/error_journal.dart';
 import 'package:speaking_coach/domain/providers/ai_provider.dart';
 import 'package:speaking_coach/domain/settings/settings_store.dart';
 
@@ -40,6 +41,7 @@ class Harness {
   final voice = FakeSpeechOutput();
   final vault = MemoryVault();
   final exporter = CapturingExporter();
+  final journal = MemoryErrorJournal();
   late final DriftSessionRepository repo;
   DateTime now = DateTime(2026, 10, 17, 9);
   Future<String> Function() selectModel = () async => 'plan-model';
@@ -58,6 +60,7 @@ class Harness {
     speechOutputProvider.overrideWithValue(voice),
     credentialVaultProvider.overrideWithValue(vault),
     dataExporterProvider.overrideWithValue(exporter),
+    errorJournalProvider.overrideWithValue(journal),
     clockProvider.overrideWithValue(() => now),
     sessionRepositoryProvider.overrideWith(
       (ref) => NotifyingSessionRepository(

@@ -188,6 +188,23 @@ class SettingsScreen extends ConsumerWidget {
                 ),
               ),
               ListTile(
+                leading: const Icon(Icons.bug_report_outlined),
+                title: Text(l10n.settingsDiagnostics),
+                subtitle: Text(l10n.settingsDiagnosticsNote(s.errorCount)),
+                onTap: ctrl.exportDiagnostics,
+              ),
+              if (s.errorCount > 0)
+                Padding(
+                  padding: const EdgeInsets.only(left: 56),
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: TextButton(
+                      onPressed: ctrl.clearErrors,
+                      child: Text(l10n.settingsDiagnosticsClear),
+                    ),
+                  ),
+                ),
+              ListTile(
                 leading: const Icon(Icons.description_outlined),
                 title: Text(l10n.settingsLicenses),
                 onTap: () => showLicensePage(

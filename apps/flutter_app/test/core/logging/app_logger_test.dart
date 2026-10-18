@@ -19,6 +19,13 @@ void main() {
       expect(AppLogger.redact('AIzaFAKEFAKEFAKEFAKEFAKEFAKE'), '[REDACTED]');
     });
 
+    test('masks JWT sign-in tokens', () {
+      expect(
+        AppLogger.redact('token eyJFAKEhead123.eyJFAKEbody456.FAKEsig789 end'),
+        'token [REDACTED] end',
+      );
+    });
+
     test('leaves ordinary text untouched', () {
       expect(
         AppLogger.redact('I went there yesterday.'),

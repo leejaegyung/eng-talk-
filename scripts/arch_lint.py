@@ -27,6 +27,11 @@ LAYER_RULES = [
 CONTENT_RULES = [
     (re.compile(r"(?<![\w.])print\("), "print() 금지 — core/logging의 redacting logger 사용", None),
     (re.compile(r"debugPrint\("), "debugPrint() 금지 — core/logging 사용", None),
+    # spec §16.2: personal data never reaches logs. Log lines may carry error
+    # kinds and codes, not what the learner said or any credential.
+    (re.compile(r"_log\.(info|warning|error)\([^;]*\$\{?(text|transcript|content|heard|partial|"
+                r"message|answer|reply|turns?|said|draft|key|secret|token|accessToken|refreshToken)\b"),
+     "로그에 대화 내용·키를 넣지 말 것 — 오류 종류(runtimeType/코드)만 (spec §16.2)", None),
     (re.compile(r"\bclaude-[a-z0-9-]+\b|\bgpt-[0-9][\w.-]*\b|\bgemini-[0-9][\w.-]*\b"),
      "모델 ID 하드코딩 금지 — provider catalog/설정에서 조회 (spec §6.2)", "provider_catalog"),
 ]

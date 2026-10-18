@@ -443,6 +443,35 @@ void main() {
     expect(saved.single.setup.mode, SessionMode.assessment);
   });
 
+  testWidgets('settings: diagnostics export has errors, no conversations', (
+    tester,
+  ) async {
+    final h = Harness();
+    final id = await h.repo.start(const SessionSetup(), h.now);
+    await h.repo.addTurn(
+      id,
+      TurnRecord(
+        speaker: Speaker.user,
+        text: 'My secret answer.',
+        startedAt: h.now,
+      ),
+    );
+    await h.journal.record(StateError('boom'), null, source: 'flutter');
+    await h.boot(tester);
+    await tester.tap(find.byIcon(Icons.settings_outlined));
+    await settle(tester);
+    expect(find.textContaining('최근 1건'), findsOneWidget);
+
+    await tapText(tester, '진단 정보 내보내기');
+    final text = h.exporter.exports.single['speaking-coach-diagnostics.txt']!;
+    expect(text, contains('StateError: Bad state: boom'));
+    expect(text, isNot(contains('My secret answer')));
+
+    await tapText(tester, '오류 기록 지우기');
+    expect(await h.journal.entries(), isEmpty);
+    expect(find.textContaining('최근 0건'), findsOneWidget);
+  });
+
   testWidgets('settings: export has no credentials; delete all', (
     tester,
   ) async {

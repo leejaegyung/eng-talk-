@@ -13,6 +13,8 @@ class AppLogger {
     RegExp(r'sk-[A-Za-z0-9_\-]{8,}'),
     RegExp(r'AIza[0-9A-Za-z_\-]{20,}'),
     RegExp(r'Bearer\s+[A-Za-z0-9._\-]+', caseSensitive: false),
+    // JWTs such as the ChatGPT sign-in tokens.
+    RegExp(r'eyJ[A-Za-z0-9_\-]{8,}\.[A-Za-z0-9_\-]{8,}\.[A-Za-z0-9_\-]*'),
   ];
 
   static String redact(String message) {

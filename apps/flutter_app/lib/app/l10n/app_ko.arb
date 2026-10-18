@@ -638,5 +638,15 @@
   "geminiFreeTier": "무료 사용량 안에서는 요금이 없어요. 대신 Google 무료 등급에서는 대화 내용이 Google 서비스 개선에 쓰이고 사람이 검토할 수 있어요. 개인정보는 말하지 마세요. 사용량이 많으면 잠시 막힐 수 있어요.",
   "geminiChosenNoKey": "Gemini를 고르셨지만 키가 없어요. 키를 넣기 전까지 대화를 시작할 수 없어요.",
   "settingsAutoBargeIn": "말하면 AI 말 끊기 (이어폰 사용 시)",
-  "settingsAutoBargeInNote": "자동 듣기가 켜져 있을 때 AI가 말하는 동안에도 들어요. 스피커로 들으면 AI 목소리를 내 말로 알아들을 수 있어서 이어폰을 쓸 때만 켜세요."
+  "settingsAutoBargeInNote": "자동 듣기가 켜져 있을 때 AI가 말하는 동안에도 들어요. 스피커로 들으면 AI 목소리를 내 말로 알아들을 수 있어서 이어폰을 쓸 때만 켜세요.",
+  "settingsDiagnostics": "진단 정보 내보내기",
+  "settingsDiagnosticsNote": "앱 오류 기록(최근 {count}건)을 파일로 저장해요. 대화 내용과 키는 들어가지 않아요. 문제를 알릴 때 첨부해 주세요.",
+  "@settingsDiagnosticsNote": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsDiagnosticsClear": "오류 기록 지우기"
 }

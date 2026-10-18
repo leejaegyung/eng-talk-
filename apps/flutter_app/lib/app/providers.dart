@@ -3,11 +3,13 @@ import 'dart:io';
 
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../data/audio/record_audio_input.dart';
 import '../data/audio/temp_file_audio_output.dart';
 import '../data/db/app_database.dart' show AppDatabase;
+import '../data/diagnostics/file_error_journal.dart';
 import '../data/export/file_exporter.dart';
 import '../data/providers/chatgpt/chatgpt_auth.dart';
 import '../data/providers/chatgpt/chatgpt_plan_client.dart';
@@ -25,6 +27,7 @@ import '../domain/audio/audio_io.dart';
 import '../domain/audio/speech_io.dart';
 import '../domain/credentials/credential_vault.dart';
 import '../domain/credentials/provider_account.dart';
+import '../domain/diagnostics/error_journal.dart';
 import '../domain/providers/ai_choice.dart';
 import '../domain/providers/ai_provider.dart';
 import '../domain/providers/provider_failure.dart';
@@ -55,6 +58,17 @@ final settingsStoreProvider = Provider<SettingsStore>(
 );
 
 final dataExporterProvider = Provider<DataExporter>((ref) => FileExporter());
+
+/// Uncaught errors, on the device only. main() overrides this with the
+/// file journal opened at startup.
+final errorJournalProvider = Provider<ErrorJournal>(
+  (ref) => MemoryErrorJournal(),
+);
+
+Future<ErrorJournal> openErrorJournal() async {
+  final dir = await getApplicationSupportDirectory();
+  return FileErrorJournal(File('${dir.path}/errors.jsonl'));
+}
 
 final sessionRepositoryProvider = Provider<SessionRepository>(
   (ref) => NotifyingSessionRepository(

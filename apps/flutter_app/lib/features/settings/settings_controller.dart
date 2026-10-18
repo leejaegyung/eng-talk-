@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -21,6 +22,7 @@ final class SettingsState {
     this.autoBargeIn = false,
     this.exportedTo,
     this.cleared = false,
+    this.errorCount = 0,
   });
 
   /// Null until the stored session has been checked.
@@ -39,6 +41,9 @@ final class SettingsState {
   final String? exportedTo;
   final bool cleared;
 
+  /// Entries in the local error journal.
+  final int errorCount;
+
   static const _unset = Object();
 
   SettingsState copyWith({
@@ -52,6 +57,7 @@ final class SettingsState {
     bool? autoBargeIn,
     String? exportedTo,
     bool? cleared,
+    int? errorCount,
   }) => SettingsState(
     signedIn: signedIn ?? this.signedIn,
     busy: busy ?? this.busy,
@@ -65,6 +71,7 @@ final class SettingsState {
     autoBargeIn: autoBargeIn ?? this.autoBargeIn,
     exportedTo: exportedTo ?? this.exportedTo,
     cleared: cleared ?? this.cleared,
+    errorCount: errorCount ?? this.errorCount,
   );
 }
 
@@ -96,6 +103,7 @@ class SettingsController extends Notifier<SettingsState> {
     final confirm = await _store.read(SettingKeys.confirmSpeech) == 'true';
     final bargeIn = await _store.read(SettingKeys.autoBargeIn) == 'true';
     final signedIn = await _account.isSignedIn();
+    final errors = (await ref.read(errorJournalProvider).entries()).length;
     if (!ref.mounted) return;
     state = state.copyWith(
       signedIn: signedIn,
@@ -103,6 +111,7 @@ class SettingsController extends Notifier<SettingsState> {
       handsFree: handsFree,
       confirmSpeech: confirm,
       autoBargeIn: bargeIn,
+      errorCount: errors,
     );
     if (signedIn) await checkConnection();
   }
@@ -152,6 +161,31 @@ class SettingsController extends Notifier<SettingsState> {
     final data = await ref.read(sessionRepositoryProvider).exportAll();
     final at = await ref.read(dataExporterProvider).export(exportFiles(data));
     if (ref.mounted) state = state.copyWith(exportedTo: at);
+  }
+
+  /// The local error journal as a text file (no conversations or keys).
+  Future<void> exportDiagnostics() async {
+    final entries = await ref.read(errorJournalProvider).entries();
+    final text = [
+      'Speaking Coach diagnostics',
+      'generated: ${DateTime.now().toUtc().toIso8601String()}',
+      'platform: ${Platform.operatingSystem} ${Platform.operatingSystemVersion}',
+      'errors: ${entries.length}',
+      '',
+      for (final e in entries) ...[
+        '[${e.at.toUtc().toIso8601String()}] ${e.source} ${e.type}: ${e.message}',
+        for (final f in e.frames) '    at $f',
+      ],
+    ].join('\n');
+    final at = await ref.read(dataExporterProvider).export({
+      'speaking-coach-diagnostics.txt': text,
+    });
+    if (ref.mounted) state = state.copyWith(exportedTo: at);
+  }
+
+  Future<void> clearErrors() async {
+    await ref.read(errorJournalProvider).clear();
+    if (ref.mounted) state = state.copyWith(errorCount: 0);
   }
 
   /// Deletes every session, transcript, correction, review and assessment.
