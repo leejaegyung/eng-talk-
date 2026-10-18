@@ -1831,6 +1831,24 @@ abstract class AppLocalizations {
   /// In ko, this message translates to:
   /// **'표현이 들리지 않았어요. 다시 해볼까요?'**
   String get reviewExpressionMissing;
+
+  /// No description provided for @a11yYouSaid.
+  ///
+  /// In ko, this message translates to:
+  /// **'나: {text}'**
+  String a11yYouSaid(String text);
+
+  /// No description provided for @a11yCoachSaid.
+  ///
+  /// In ko, this message translates to:
+  /// **'코치: {text}'**
+  String a11yCoachSaid(String text);
+
+  /// No description provided for @a11yStopListening.
+  ///
+  /// In ko, this message translates to:
+  /// **'듣기 멈추기'**
+  String get a11yStopListening;
 }
 
 class _AppLocalizationsDelegate

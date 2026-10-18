@@ -969,4 +969,17 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get reviewExpressionMissing => '표현이 들리지 않았어요. 다시 해볼까요?';
+
+  @override
+  String a11yYouSaid(String text) {
+    return '나: $text';
+  }
+
+  @override
+  String a11yCoachSaid(String text) {
+    return '코치: $text';
+  }
+
+  @override
+  String get a11yStopListening => '듣기 멈추기';
 }

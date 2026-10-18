@@ -192,10 +192,14 @@ class _ConversationScreenState extends ConsumerState<ConversationScreen> {
                   ),
                 ),
                 Flexible(
-                  child: Text(
-                    status,
-                    style: theme.textTheme.titleMedium,
-                    textAlign: TextAlign.center,
+                  // Announced by screen readers as it changes.
+                  child: Semantics(
+                    liveRegion: true,
+                    child: Text(
+                      status,
+                      style: theme.textTheme.titleMedium,
+                      textAlign: TextAlign.center,
+                    ),
                   ),
                 ),
               ],
@@ -253,7 +257,9 @@ class _ConversationScreenState extends ConsumerState<ConversationScreen> {
                           : theme.colorScheme.primary,
                       foregroundColor: Colors.white,
                     ),
-                    tooltip: l10n.chatGptLabTalk,
+                    tooltip: s.phase == SessionPhase.userSpeaking
+                        ? l10n.a11yStopListening
+                        : l10n.chatGptLabTalk,
                     onPressed: s.phase == SessionPhase.userSpeaking
                         ? ctrl.stopListening
                         : canAct
@@ -384,9 +390,19 @@ class _Line extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final theme = Theme.of(context);
     final colors = theme.colorScheme;
     final mine = turn.speaker == Speaker.user;
+    // Screen readers hear who said it, not just the words.
+    return Semantics(
+      label: mine ? l10n.a11yYouSaid(turn.text) : l10n.a11yCoachSaid(turn.text),
+      excludeSemantics: true,
+      child: _bubble(theme, colors, mine),
+    );
+  }
+
+  Widget _bubble(ThemeData theme, ColorScheme colors, bool mine) {
     if (turn.isRequest) {
       return Align(
         alignment: Alignment.centerRight,
@@ -396,7 +412,7 @@ class _Line extends StatelessWidget {
             turn.text,
             style: theme.textTheme.bodyMedium?.copyWith(
               fontStyle: FontStyle.italic,
-              color: colors.outline,
+              color: colors.onSurfaceVariant,
             ),
           ),
         ),

@@ -999,4 +999,17 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get reviewExpressionMissing =>
       'Didn\'t hear the expression. Try again?';
+
+  @override
+  String a11yYouSaid(String text) {
+    return 'You: $text';
+  }
+
+  @override
+  String a11yCoachSaid(String text) {
+    return 'Coach: $text';
+  }
+
+  @override
+  String get a11yStopListening => 'Stop listening';
 }

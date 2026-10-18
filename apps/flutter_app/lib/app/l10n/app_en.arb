@@ -288,5 +288,8 @@
   "reviewExpressionsIntro": "Say a sentence using each one. Your coach will also give you chances to use them in your next conversation.",
   "reviewUseExpression": "Use it",
   "reviewExpressionUsed": "You used it",
-  "reviewExpressionMissing": "Didn't hear the expression. Try again?"
+  "reviewExpressionMissing": "Didn't hear the expression. Try again?",
+  "a11yYouSaid": "You: {text}",
+  "a11yCoachSaid": "Coach: {text}",
+  "a11yStopListening": "Stop listening"
 }

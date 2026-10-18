@@ -13,7 +13,8 @@ abstract final class AppColors {
   static const green = Color(0xFF22A06B);
   static const greenSoft = Color(0xFFE3F6EC);
   static const ink = Color(0xFF263039);
-  static const inkMuted = Color(0xFF7B8794);
+  // 4.6:1 on the page background (WCAG AA for small text).
+  static const inkMuted = Color(0xFF66717F);
   static const line = Color(0xFFE4E9F2);
   static const canvas = Color(0xFFF5F7FB);
 }

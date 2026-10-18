@@ -602,5 +602,22 @@
   "reviewExpressionsIntro": "표현을 넣어 한 문장으로 말해보세요. 다음 대화에서도 코치가 써볼 기회를 만들어 줘요.",
   "reviewUseExpression": "넣어서 말하기",
   "reviewExpressionUsed": "표현을 넣어 말했어요",
-  "reviewExpressionMissing": "표현이 들리지 않았어요. 다시 해볼까요?"
+  "reviewExpressionMissing": "표현이 들리지 않았어요. 다시 해볼까요?",
+  "a11yYouSaid": "나: {text}",
+  "@a11yYouSaid": {
+    "placeholders": {
+      "text": {
+        "type": "String"
+      }
+    }
+  },
+  "a11yCoachSaid": "코치: {text}",
+  "@a11yCoachSaid": {
+    "placeholders": {
+      "text": {
+        "type": "String"
+      }
+    }
+  },
+  "a11yStopListening": "듣기 멈추기"
 }
