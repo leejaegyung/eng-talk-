@@ -1,6 +1,6 @@
 name: build
 
-# Reusable: check + release builds for macOS, Windows and Android.
+# Reusable: check + release builds for macOS, Windows, Android and iOS.
 # Each target uploads one installable file as artifact `speaking_coach-<target>`.
 on:
   workflow_call:
@@ -42,6 +42,9 @@ jobs:
             os: windows-latest
           - target: apk
             os: ubuntu-latest
+          # Unsigned: install by signing with your own Apple ID (ADR-012).
+          - target: ios
+            os: macos-latest
     runs-on: ${{ matrix.os }}
     defaults:
       run:
@@ -69,6 +72,7 @@ jobs:
           args=()
           [[ -n "$BUILD_NAME" ]] && args+=(--build-name "$BUILD_NAME")
           [[ -n "$BUILD_NUMBER" ]] && args+=(--build-number "$BUILD_NUMBER")
+          [[ "${{ matrix.target }}" == ios ]] && args+=(--no-codesign)
           flutter build ${{ matrix.target }} --release "${args[@]}"
       - name: package
         run: |
@@ -82,6 +86,10 @@ jobs:
               (cd build/windows/x64/runner/Release && 7z a -tzip "$GITHUB_WORKSPACE/apps/flutter_app/dist/SpeakingCoach-$version-windows-x64.zip" .) ;;
             apk)
               cp build/app/outputs/flutter-apk/app-release.apk "dist/SpeakingCoach-$version-android.apk" ;;
+            ios)
+              mkdir -p build/ipa/Payload
+              cp -R build/ios/iphoneos/Runner.app build/ipa/Payload/
+              (cd build/ipa && zip -qry "$GITHUB_WORKSPACE/apps/flutter_app/dist/SpeakingCoach-$version-ios-unsigned.ipa" Payload) ;;
           esac
           ls -la dist
       - uses: actions/upload-artifact@v4
