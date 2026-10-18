@@ -21,8 +21,12 @@ spec §19 기본 선택. MVP에는 세션 브로커를 운영하지 않는다. R
 STT/LLM/TTS를 한 공급자로 PoC. 모델 ID는 공급자의 모델 목록 API + 앱 내 catalog 설정으로 고르고 하드코딩하지 않는다.
 Anthropic/Gemini는 Phase 2 어댑터 (Anthropic은 STT/TTS가 없으므로 텍스트 LLM 전용 → 음성 공급자 분리 설정 필요).
 
-## ADR-006 배포 방식 — 미정
-개인 사이드로드 vs 스토어 출시. Phase 3 전에 결정. 그 전까지는 서명 없는 개발 빌드.
+## ADR-006 배포 방식: 개인용 직접 설치 — 확정 (2026-10-18)
+사용자 결정: "개인용으로 설치해서 쓸거야". 스토어 출시·TestFlight·Play 내부 테스트·개인정보처리방침 웹페이지·스토어 개인정보 라벨은 범위 밖.
+- 설치 파일은 GitHub Releases(ADR-010)에서 받는다.
+- macOS·Windows: 서명 없는 빌드 유지(처음 실행 시 우클릭 → 열기 / SmartScreen '추가 정보 → 실행').
+- Android: **고정 릴리스 키로 서명**해야 업데이트를 덮어 설치할 수 있다(앱을 지우면 로컬 기록도 지워짐). 키는 저장소에 넣지 않는다.
+- iOS: 본인 Apple ID 서명(무료 계정은 7일마다 재설치, ADR-012).
 
 ## ADR-007 오디오 / VAD — 잠정 (PoC로 확정)
 녹음: `record` 패키지(4개 플랫폼 지원) 후보. 재생: `just_audio` 또는 `audioplayers` 후보.
