@@ -84,6 +84,9 @@ class FakeAi implements LlmProvider, VoiceProvider {
   ];
   Object? chatError;
 
+  /// When set, replies wait for it after the first chunk (a slow stream).
+  Future<void>? gate;
+
   /// Per-request reply, e.g. feedback JSON for the feedback prompt.
   List<ChatChunk>? Function(List<ChatMessage> messages)? responder;
 
@@ -112,7 +115,11 @@ class FakeAi implements LlmProvider, VoiceProvider {
   }) async* {
     chats.add([...messages]);
     if (chatError != null) throw chatError!;
-    yield* Stream.fromIterable(responder?.call(messages) ?? reply);
+    final chunks = responder?.call(messages) ?? reply;
+    for (final (i, chunk) in chunks.indexed) {
+      if (i == 1 && gate != null) await gate;
+      yield chunk;
+    }
   }
 
   @override

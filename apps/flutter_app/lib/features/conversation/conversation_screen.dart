@@ -21,9 +21,20 @@ class ConversationScreen extends ConsumerStatefulWidget {
 
 class _ConversationScreenState extends ConsumerState<ConversationScreen> {
   final _input = TextEditingController();
+  late final AppLifecycleListener _lifecycle;
+
+  @override
+  void initState() {
+    super.initState();
+    // Another app, or the screen locked: pause rather than keep the mic on.
+    _lifecycle = AppLifecycleListener(
+      onHide: () => ref.read(conversationProvider.notifier).appHidden(),
+    );
+  }
 
   @override
   void dispose() {
+    _lifecycle.dispose();
     _input.dispose();
     super.dispose();
   }
@@ -77,9 +88,11 @@ class _ConversationScreenState extends ConsumerState<ConversationScreen> {
             color: theme.colorScheme.outline,
           ),
           Text(
-            s.connectionLost
-                ? l10n.conversationConnectionLost
-                : l10n.conversationPaused,
+            switch (s.pauseReason) {
+              PauseReason.connectionLost => l10n.conversationConnectionLost,
+              PauseReason.background => l10n.conversationPausedInBackground,
+              _ => l10n.conversationPaused,
+            },
             style: theme.textTheme.titleMedium,
             textAlign: TextAlign.center,
           ),

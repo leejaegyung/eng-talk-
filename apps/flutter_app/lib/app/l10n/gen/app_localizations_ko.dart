@@ -820,4 +820,8 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get settingsDeleted => '모든 기록을 삭제했어요.';
+
+  @override
+  String get conversationPausedInBackground =>
+      '앱을 벗어나서 일시정지했어요.\n준비되면 계속하기를 눌러주세요.';
 }

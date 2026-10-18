@@ -35,6 +35,8 @@ class ConversationSessionController {
       turn: startsTurn ? from.turn + 1 : from.turn,
       pauseReason: switch ((to, event)) {
         (SessionPhase.paused, ConnectionLost()) => PauseReason.connectionLost,
+        (SessionPhase.paused, PauseRequested(inBackground: true)) =>
+          PauseReason.background,
         (SessionPhase.paused, _) => PauseReason.user,
         _ => null,
       },

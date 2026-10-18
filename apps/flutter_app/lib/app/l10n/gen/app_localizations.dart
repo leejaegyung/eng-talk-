@@ -1561,6 +1561,12 @@ abstract class AppLocalizations {
   /// In ko, this message translates to:
   /// **'모든 기록을 삭제했어요.'**
   String get settingsDeleted;
+
+  /// No description provided for @conversationPausedInBackground.
+  ///
+  /// In ko, this message translates to:
+  /// **'앱을 벗어나서 일시정지했어요.\n준비되면 계속하기를 눌러주세요.'**
+  String get conversationPausedInBackground;
 }
 
 class _AppLocalizationsDelegate

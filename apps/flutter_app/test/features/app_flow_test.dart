@@ -90,6 +90,35 @@ void main() {
     },
   );
 
+  testWidgets('app to the background pauses the conversation', (tester) async {
+    tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.resumed);
+    final h = Harness();
+    await h.boot(tester);
+    await tapText(tester, '대화 시작');
+    final start = find.widgetWithText(FilledButton, '대화 시작');
+    await tester.ensureVisible(start);
+    await tester.tap(start);
+    await settle(tester);
+    expect(find.text('Nice! Where do you hike?'), findsOneWidget);
+
+    // No frames are drawn while hidden; check once the learner is back.
+    for (final state in [
+      AppLifecycleState.inactive,
+      AppLifecycleState.hidden,
+      AppLifecycleState.paused,
+      AppLifecycleState.hidden,
+      AppLifecycleState.inactive,
+      AppLifecycleState.resumed,
+    ]) {
+      tester.binding.handleAppLifecycleStateChanged(state);
+    }
+    await settle(tester);
+    expect(find.textContaining('앱을 벗어나서 일시정지했어요'), findsOneWidget);
+    await tapText(tester, '이어하기');
+    expect(find.textContaining('앱을 벗어나서'), findsNothing);
+    expect(find.text('Nice! Where do you hike?'), findsOneWidget);
+  });
+
   testWidgets('unfinished session: banner → continue with its transcript', (
     tester,
   ) async {

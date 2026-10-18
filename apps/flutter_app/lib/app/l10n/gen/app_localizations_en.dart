@@ -845,4 +845,8 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settingsDeleted => 'All history deleted.';
+
+  @override
+  String get conversationPausedInBackground =>
+      'Paused while you were away.\nTap resume when you\'re ready.';
 }

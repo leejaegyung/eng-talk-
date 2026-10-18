@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:speaking_coach/app/providers.dart';
@@ -174,6 +176,70 @@ void main() {
     ctrl().tick();
     expect(state().elapsed, const Duration(minutes: 3));
   });
+
+  test(
+    'app hidden: paused for the background, mic and voice stopped',
+    () async {
+      await ctrl().appHidden();
+      expect(state().paused, isTrue);
+      expect(state().pauseReason, PauseReason.background);
+      expect(mic.stops, greaterThanOrEqualTo(1));
+      expect(voice.stops, greaterThanOrEqualTo(1));
+      await ctrl().resume();
+      expect(state().phase, SessionPhase.listening);
+    },
+  );
+
+  test('hidden when already paused or ended: nothing changes', () async {
+    await ctrl().pause();
+    await ctrl().appHidden();
+    expect(state().pauseReason, PauseReason.user);
+  });
+
+  test('paused mid-reply: fragment dropped, asked again on resume', () async {
+    final gate = Completer<void>();
+    ai.gate = gate.future;
+    final sending = ctrl().send('I went hiking.');
+    await pumpEventQueue();
+    expect(state().turns.last.text, 'Nice! ');
+    await ctrl().appHidden();
+    gate.complete();
+    await sending;
+    expect(state().turns.last.text, 'I went hiking.');
+
+    ai.gate = null;
+    await ctrl().resume();
+    expect(ai.chats.last.last.content, 'I went hiking.');
+    expect(state().turns.last.text, 'Nice! Where do you hike?');
+    expect(state().phase, SessionPhase.listening);
+    final saved = (await repo.load(state().sessionId!))!;
+    expect(saved.turns.map((t) => t.text), [
+      'Nice! Where do you hike?',
+      'I went hiking.',
+      'Nice! Where do you hike?',
+    ]);
+  });
+
+  test(
+    'quick resume before the stream notices still gets the answer',
+    () async {
+      final gate = Completer<void>();
+      ai.gate = gate.future;
+      final sending = ctrl().send('I went hiking.');
+      await pumpEventQueue();
+      await ctrl().pause();
+      ai.gate = null;
+      final resuming = ctrl().resume();
+      gate.complete();
+      await sending;
+      await resuming;
+      expect(state().turns.last.text, 'Nice! Where do you hike?');
+      expect(
+        state().turns.where((t) => t.text.startsWith('Nice')),
+        hasLength(2),
+      );
+    },
+  );
 
   group('lost connection (B3)', () {
     setUp(() async {

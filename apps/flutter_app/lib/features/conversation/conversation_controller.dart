@@ -170,6 +170,11 @@ class ConversationController extends Notifier<ConversationState> {
   Future<void>? _replying;
   List<String> _retryNotes = const [];
 
+  /// Notes of the reply being streamed, and of one cut off by a pause
+  /// (asked again on resume so the learner's turn still gets an answer).
+  List<String>? _streamingNotes;
+  List<String>? _pendingNotes;
+
   @override
   ConversationState build() {
     _account = ref.watch(chatGptAccountProvider);
@@ -334,11 +339,18 @@ class ConversationController extends Notifier<ConversationState> {
 
   void toggleSubtitles() => state = state.copyWith(subtitles: !state.subtitles);
 
-  Future<void> pause() async {
+  Future<void> pause() => _pause(const PauseRequested());
+
+  /// The app went to the background or the screen locked: stop listening
+  /// and speaking (spec §3.3). The learner resumes when back.
+  Future<void> appHidden() => _pause(const PauseRequested(inBackground: true));
+
+  Future<void> _pause(PauseRequested event) async {
     if (!state.active) return;
+    _pendingNotes = _streamingNotes;
+    _dispatch(event);
     await _mic.stop();
     await _voice.stop();
-    _dispatch(const PauseRequested());
   }
 
   /// Resume after a user pause, or reconnect after a lost connection and
@@ -347,7 +359,14 @@ class ConversationController extends Notifier<ConversationState> {
     if (!state.paused) return;
     final reconnecting = state.connectionLost;
     if (!_dispatch(const ResumeRequested())) return;
-    if (!reconnecting) return;
+    if (!reconnecting) {
+      final pending = _pendingNotes;
+      _pendingNotes = null;
+      if (pending != null && _dispatch(const AssistantTurnRequested())) {
+        await _startReply(notes: pending);
+      }
+      return;
+    }
     _dispatch(const Connected());
     if (_dispatch(const AssistantTurnRequested())) {
       await _startReply(notes: _retryNotes);
@@ -533,17 +552,22 @@ class ConversationController extends Notifier<ConversationState> {
     final text = StringBuffer();
     ConversationTurn? streaming;
     var started = false;
+    var cut = false;
     bool current() =>
         ref.mounted &&
         _machine.state.turn == turn &&
         (state.phase == SessionPhase.processing ||
             state.phase == SessionPhase.aiSpeaking);
+    _streamingNotes = notes;
     try {
       await for (final chunk in _llm.streamChat(
         model: model,
         messages: messages,
       )) {
-        if (!current()) break;
+        if (!current()) {
+          cut = true;
+          break;
+        }
         if (chunk case TextDelta(text: final delta)) {
           if (!started) {
             started = true;
@@ -561,7 +585,20 @@ class ConversationController extends Notifier<ConversationState> {
           streaming = line;
         }
       }
+      _streamingNotes = null;
       if (!ref.mounted) return;
+      if (cut) {
+        // Paused or talked over before the reply was complete: drop the
+        // fragment (a pause asks again on resume).
+        state = state.copyWith(
+          turns: [
+            for (final t in state.turns)
+              if (!identical(t, streaming)) t,
+          ],
+        );
+        return;
+      }
+      _pendingNotes = null;
       final reply = text.toString().trim();
       if (!started) _dispatch(ResponseStarted(turn: turn));
       if (reply.isNotEmpty) {
@@ -581,6 +618,7 @@ class ConversationController extends Notifier<ConversationState> {
       if (_policy.correctionDue(elapsed)) _policy.correctionGiven(elapsed);
       _dispatch(ResponseEnded(turn: turn));
     } on ProviderException catch (e) {
+      _streamingNotes = null;
       if (ref.mounted) {
         state = state.copyWith(
           turns: [

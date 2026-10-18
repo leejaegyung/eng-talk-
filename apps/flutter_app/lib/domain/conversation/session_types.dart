@@ -10,7 +10,8 @@ enum SessionPhase {
   ended,
 }
 
-enum PauseReason { user, connectionLost }
+/// [background]: the app was hidden (another app, screen locked), spec §3.3.
+enum PauseReason { user, background, connectionLost }
 
 /// Immutable view of the session. [seq] grows by one per accepted transition;
 /// [turn] identifies the exchange the assistant is expected to answer.
@@ -106,7 +107,10 @@ final class ResponseFailed extends ResponseEvent {
 }
 
 final class PauseRequested extends SessionEvent {
-  const PauseRequested();
+  const PauseRequested({this.inBackground = false});
+
+  /// The app was hidden rather than the learner tapping pause.
+  final bool inBackground;
 }
 
 final class ResumeRequested extends SessionEvent {

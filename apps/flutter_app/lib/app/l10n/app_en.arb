@@ -243,5 +243,6 @@
   "settingsExportedTo": "Saved to: {path}",
   "settingsDeleteAll": "Delete all history",
   "settingsDeleteAllConfirm": "Delete all conversations, corrections, reviews and placements? This can't be undone. (Sign-in and settings are kept.)",
-  "settingsDeleted": "All history deleted."
+  "settingsDeleted": "All history deleted.",
+  "conversationPausedInBackground": "Paused while you were away.\nTap resume when you're ready."
 }
