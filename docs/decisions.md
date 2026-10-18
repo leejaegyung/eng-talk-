@@ -92,3 +92,11 @@ Galaxy(Android)는 배포 빌드(APK)를 설치해 최종 확인만 한다(USB �
 - 설정 → 음성 인식: 기기 내장(기본) / Gemini. Gemini는 녹음(PCM, 메모리만) → 레벨 기반 VAD로 끝 판단(말한 뒤 2.5초 무음, 첫 단어 대기는 화면별) → WAV를 generateContent(inlineData)로 받아쓰기. 실수는 고치지 말고 그대로, 맥락(질문·주제)은 철자 참고용.
 - 키가 없으면 기기 인식으로 자동 대체. 대화 AI는 별개(ChatGPT 유지 가능).
 - 무료 등급은 녹음이 Google 개선에 쓰일 수 있음 → 설정·온보딩 안내. ADR-013(유료 OpenAI 음성 미도입)은 유지.
+
+## ADR-018 앱 안에서 업데이트 확인 — 확정 (2026-10-18)
+사용자 요청: "모바일에서도 자동으로 버전 올라가면 패치 되게". 스토어 밖(ADR-006) APK는 무음 자동 설치가 불가(Android 정책) → 사용자 선택 A안: 앱 안에서 확인 후 한 번 눌러 설치.
+- 릴리스 빌드만 자기 버전을 안다(`--dart-define=APP_VERSION`, build.yml·pages.yml). 로컬·CI 빌드는 확인하지 않는다.
+- 앱 시작 시 1회(+설정 → 업데이트 확인): 네이티브는 GitHub `releases/latest`(정식 `vX.Y.Z`만, pre-release 제외), 웹은 배포된 `version.json`(캐시 무시).
+- 적용: Android = APK를 앱 캐시(`updates/`)에 받아 FileProvider로 시스템 설치 화면 열기(`REQUEST_INSTALL_PACKAGES`, 사용자가 "설치" 확인, 고정 서명 키라 덮어 설치·기록 유지). 웹 = 새로고침. 데스크톱·iOS 앱 = 릴리스 페이지 열기. 실패 시 다운로드 페이지 안내.
+- 설치 파일은 이 저장소의 `github.com/<repo>/releases/download/` HTTPS 주소만 받는다. 네이티브 쪽도 앱 캐시 `updates/` 안의 파일만 설치 화면에 넘긴다.
+- 대안: Obtainium(별도 앱 필요), Play 비공개 테스트(ADR-006 변경·등록비) — 채택 안 함.

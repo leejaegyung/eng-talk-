@@ -86,7 +86,8 @@ jobs:
       - name: flutter build
         run: |
           args=()
-          [[ -n "$BUILD_NAME" ]] && args+=(--build-name "$BUILD_NAME")
+          # Release builds know their version, so they can look for newer ones (ADR-018).
+          [[ -n "$BUILD_NAME" ]] && args+=(--build-name "$BUILD_NAME" --dart-define=APP_VERSION="$BUILD_NAME")
           [[ -n "$BUILD_NUMBER" ]] && args+=(--build-number "$BUILD_NUMBER")
           [[ "${{ matrix.target }}" == ios ]] && args+=(--no-codesign)
           flutter build ${{ matrix.target }} --release "${args[@]}"

@@ -47,6 +47,9 @@ class Harness {
   DateTime now = DateTime(2026, 10, 17, 9);
   Future<String> Function() selectModel = () async => 'plan-model';
 
+  /// Added after the defaults, so they win.
+  List<Override> extra = [];
+
   List<Override> get overrides => [
     settingsStoreProvider.overrideWithValue(settings),
     chatGptAccountProvider.overrideWithValue(account),
@@ -70,6 +73,7 @@ class Harness {
         () => ref.read(dataVersionProvider.notifier).bump(),
       ),
     ),
+    ...extra,
   ];
 
   /// Pumps the whole app in Korean.

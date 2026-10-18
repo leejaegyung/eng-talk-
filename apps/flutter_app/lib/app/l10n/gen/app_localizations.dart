@@ -2299,6 +2299,96 @@ abstract class AppLocalizations {
   /// In ko, this message translates to:
   /// **'AI가 내 실수를 바탕으로 만든 설명이에요.'**
   String get lessonAiNote;
+
+  /// No description provided for @updateAvailable.
+  ///
+  /// In ko, this message translates to:
+  /// **'새 버전이 나왔어요 (v{version})'**
+  String updateAvailable(String version);
+
+  /// No description provided for @updateInstallNote.
+  ///
+  /// In ko, this message translates to:
+  /// **'받은 뒤 나오는 화면에서 \'설치\'를 누르세요. 기록은 그대로 남아요.'**
+  String get updateInstallNote;
+
+  /// No description provided for @updateReloadNote.
+  ///
+  /// In ko, this message translates to:
+  /// **'새로고침하면 바로 새 버전이 열려요.'**
+  String get updateReloadNote;
+
+  /// No description provided for @updatePageNote.
+  ///
+  /// In ko, this message translates to:
+  /// **'다운로드 페이지에서 새 설치 파일을 받아 덮어 설치하세요.'**
+  String get updatePageNote;
+
+  /// No description provided for @updateInstall.
+  ///
+  /// In ko, this message translates to:
+  /// **'업데이트'**
+  String get updateInstall;
+
+  /// No description provided for @updateReload.
+  ///
+  /// In ko, this message translates to:
+  /// **'새로고침'**
+  String get updateReload;
+
+  /// No description provided for @updateOpenPage.
+  ///
+  /// In ko, this message translates to:
+  /// **'다운로드 페이지'**
+  String get updateOpenPage;
+
+  /// No description provided for @updateLater.
+  ///
+  /// In ko, this message translates to:
+  /// **'나중에'**
+  String get updateLater;
+
+  /// No description provided for @updateDownloading.
+  ///
+  /// In ko, this message translates to:
+  /// **'받는 중… {percent}%'**
+  String updateDownloading(int percent);
+
+  /// No description provided for @updateFailed.
+  ///
+  /// In ko, this message translates to:
+  /// **'업데이트하지 못했어요. 다운로드 페이지에서 받아 주세요.'**
+  String get updateFailed;
+
+  /// No description provided for @settingsVersion.
+  ///
+  /// In ko, this message translates to:
+  /// **'앱 버전'**
+  String get settingsVersion;
+
+  /// No description provided for @settingsVersionLocal.
+  ///
+  /// In ko, this message translates to:
+  /// **'개발용 빌드 (업데이트 확인 안 함)'**
+  String get settingsVersionLocal;
+
+  /// No description provided for @settingsCheckUpdate.
+  ///
+  /// In ko, this message translates to:
+  /// **'업데이트 확인'**
+  String get settingsCheckUpdate;
+
+  /// No description provided for @settingsUpToDate.
+  ///
+  /// In ko, this message translates to:
+  /// **'{version} · 최신 버전이에요'**
+  String settingsUpToDate(String version);
+
+  /// No description provided for @settingsUpdateUnknown.
+  ///
+  /// In ko, this message translates to:
+  /// **'{version} · 확인하지 못했어요. 인터넷 연결을 확인해 주세요.'**
+  String settingsUpdateUnknown(String version);
 }
 
 class _AppLocalizationsDelegate

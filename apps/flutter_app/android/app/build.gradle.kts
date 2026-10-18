@@ -62,3 +62,8 @@ kotlin {
 flutter {
     source = "../.."
 }
+
+dependencies {
+    // FileProvider for the in-app update (MainActivity).
+    implementation("androidx.core:core:1.13.1")
+}

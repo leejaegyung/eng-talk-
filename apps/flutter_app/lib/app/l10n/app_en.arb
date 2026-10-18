@@ -366,5 +366,20 @@
   "lessonRewrite": "Rewrite",
   "lessonNoMistakes": "No corrections of this kind yet.",
   "lessonOpen": "Mini lesson",
-  "lessonAiNote": "Written by the AI from your mistakes."
+  "lessonAiNote": "Written by the AI from your mistakes.",
+  "updateAvailable": "A new version is out (v{version})",
+  "updateInstallNote": "Tap Install on the screen that follows. Your records stay.",
+  "updateReloadNote": "Reload to open the new version.",
+  "updatePageNote": "Get the new installer from the download page and install it over this one.",
+  "updateInstall": "Update",
+  "updateReload": "Reload",
+  "updateOpenPage": "Download page",
+  "updateLater": "Later",
+  "updateDownloading": "Downloading… {percent}%",
+  "updateFailed": "Couldn't update. Please get it from the download page.",
+  "settingsVersion": "App version",
+  "settingsVersionLocal": "Development build (no update check)",
+  "settingsCheckUpdate": "Check for updates",
+  "settingsUpToDate": "{version} · Up to date",
+  "settingsUpdateUnknown": "{version} · Couldn't check. Check your internet connection."
 }

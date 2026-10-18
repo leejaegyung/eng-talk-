@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../app/notifying_session_repository.dart';
@@ -30,9 +32,23 @@ final class HomeData {
   final Goals goals;
 }
 
-/// S03 home KPIs, reloaded whenever saved data changes.
+/// Today's date (local), renewed at midnight so "today" numbers start over
+/// while the app stays open.
+final todayProvider = Provider.autoDispose<DateTime>((ref) {
+  final now = ref.watch(clockProvider)();
+  final next = DateTime(now.year, now.month, now.day + 1);
+  final timer = Timer(
+    next.difference(now) + const Duration(seconds: 1),
+    ref.invalidateSelf,
+  );
+  ref.onDispose(timer.cancel);
+  return DateTime(now.year, now.month, now.day);
+});
+
+/// S03 home KPIs, reloaded whenever saved data changes or the day turns.
 final homeProvider = FutureProvider.autoDispose<HomeData>((ref) async {
   ref.watch(dataVersionProvider);
+  ref.watch(todayProvider);
   final goals = await ref.watch(goalsProvider.future);
   final repo = ref.watch(sessionRepositoryProvider);
   final now = ref.watch(clockProvider)();

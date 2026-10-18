@@ -1277,4 +1277,60 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get lessonAiNote => 'Written by the AI from your mistakes.';
+
+  @override
+  String updateAvailable(String version) {
+    return 'A new version is out (v$version)';
+  }
+
+  @override
+  String get updateInstallNote =>
+      'Tap Install on the screen that follows. Your records stay.';
+
+  @override
+  String get updateReloadNote => 'Reload to open the new version.';
+
+  @override
+  String get updatePageNote =>
+      'Get the new installer from the download page and install it over this one.';
+
+  @override
+  String get updateInstall => 'Update';
+
+  @override
+  String get updateReload => 'Reload';
+
+  @override
+  String get updateOpenPage => 'Download page';
+
+  @override
+  String get updateLater => 'Later';
+
+  @override
+  String updateDownloading(int percent) {
+    return 'Downloading… $percent%';
+  }
+
+  @override
+  String get updateFailed =>
+      'Couldn\'t update. Please get it from the download page.';
+
+  @override
+  String get settingsVersion => 'App version';
+
+  @override
+  String get settingsVersionLocal => 'Development build (no update check)';
+
+  @override
+  String get settingsCheckUpdate => 'Check for updates';
+
+  @override
+  String settingsUpToDate(String version) {
+    return '$version · Up to date';
+  }
+
+  @override
+  String settingsUpdateUnknown(String version) {
+    return '$version · Couldn\'t check. Check your internet connection.';
+  }
 }

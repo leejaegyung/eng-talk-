@@ -38,6 +38,10 @@ jobs:
           name="${GITHUB_REF_NAME#v}"
           args=(--release --base-href "/${{ github.event.repository.name }}/")
           [[ "$GITHUB_REF_TYPE" == tag ]] && args+=(--build-name "$name")
+          # The version this page was built as; version.json next to it says
+          # what's deployed now (ADR-018).
+          [[ "$GITHUB_REF_TYPE" == tag ]] || name="$(sed -n 's/^version: *\([^+]*\).*/\1/p' pubspec.yaml)"
+          args+=(--dart-define=APP_VERSION="$name")
           flutter build web "${args[@]}"
       - uses: actions/upload-pages-artifact@v3
         with:

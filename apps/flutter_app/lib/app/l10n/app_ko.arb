@@ -745,5 +745,48 @@
   "lessonRewrite": "다시 만들기",
   "lessonNoMistakes": "이 유형의 교정이 아직 없어요.",
   "lessonOpen": "미니 설명 보기",
-  "lessonAiNote": "AI가 내 실수를 바탕으로 만든 설명이에요."
+  "lessonAiNote": "AI가 내 실수를 바탕으로 만든 설명이에요.",
+  "updateAvailable": "새 버전이 나왔어요 (v{version})",
+  "@updateAvailable": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "updateInstallNote": "받은 뒤 나오는 화면에서 '설치'를 누르세요. 기록은 그대로 남아요.",
+  "updateReloadNote": "새로고침하면 바로 새 버전이 열려요.",
+  "updatePageNote": "다운로드 페이지에서 새 설치 파일을 받아 덮어 설치하세요.",
+  "updateInstall": "업데이트",
+  "updateReload": "새로고침",
+  "updateOpenPage": "다운로드 페이지",
+  "updateLater": "나중에",
+  "updateDownloading": "받는 중… {percent}%",
+  "@updateDownloading": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "updateFailed": "업데이트하지 못했어요. 다운로드 페이지에서 받아 주세요.",
+  "settingsVersion": "앱 버전",
+  "settingsVersionLocal": "개발용 빌드 (업데이트 확인 안 함)",
+  "settingsCheckUpdate": "업데이트 확인",
+  "settingsUpToDate": "{version} · 최신 버전이에요",
+  "@settingsUpToDate": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsUpdateUnknown": "{version} · 확인하지 못했어요. 인터넷 연결을 확인해 주세요.",
+  "@settingsUpdateUnknown": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  }
 }

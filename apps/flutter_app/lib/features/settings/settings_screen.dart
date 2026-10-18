@@ -7,6 +7,8 @@ import '../common/failure_text.dart';
 import '../common/goal_picker.dart';
 import '../common/language_picker.dart';
 import '../common/privacy_notice.dart';
+import '../common/update_banner.dart';
+import '../common/update_controller.dart';
 import 'ai_choice_settings.dart';
 import 'settings_controller.dart';
 
@@ -19,6 +21,7 @@ class SettingsScreen extends ConsumerWidget {
     final s = ref.watch(settingsProvider);
     final ctrl = ref.read(settingsProvider.notifier);
     final theme = Theme.of(context);
+    final update = ref.watch(updateProvider);
 
     Widget section(String title) => Padding(
       padding: const EdgeInsets.fromLTRB(16, 24, 16, 8),
@@ -213,6 +216,32 @@ class SettingsScreen extends ConsumerWidget {
                 },
               ),
               section(l10n.settingsInfoSection),
+              ListTile(
+                leading: const Icon(Icons.system_update_outlined),
+                title: Text(l10n.settingsVersion),
+                subtitle: Text(switch (update) {
+                  UpdateState(current: null) => l10n.settingsVersionLocal,
+                  UpdateState(check: UpdateCheck.upToDate, :final current?) =>
+                    l10n.settingsUpToDate('$current'),
+                  UpdateState(check: UpdateCheck.unknown, :final current?) =>
+                    l10n.settingsUpdateUnknown('$current'),
+                  UpdateState(:final current?) => '$current',
+                }),
+                trailing: update.current == null
+                    ? null
+                    : TextButton(
+                        onPressed:
+                            update.check == UpdateCheck.checking ||
+                                update.applying
+                            ? null
+                            : ref.read(updateProvider.notifier).check,
+                        child: Text(l10n.settingsCheckUpdate),
+                      ),
+              ),
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16),
+                child: UpdateBanner(ignoreDismiss: true),
+              ),
               ListTile(
                 leading: const Icon(Icons.privacy_tip_outlined),
                 title: Text(l10n.settingsPrivacy),

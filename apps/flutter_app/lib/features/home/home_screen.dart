@@ -9,6 +9,7 @@ import '../../core/platform/platform_info.dart';
 import '../../domain/conversation/session_enums.dart';
 import '../common/goal_picker.dart';
 import '../common/mode_text.dart';
+import '../common/update_banner.dart';
 import '../conversation/conversation_request.dart';
 import '../setup/setup_controller.dart';
 import 'home_controller.dart';
@@ -121,6 +122,7 @@ class HomeScreen extends ConsumerWidget {
           child: ListView(
             padding: const EdgeInsets.fromLTRB(20, 8, 20, 32),
             children: [
+              const UpdateBanner(),
               if (data?.unfinished case final u?)
                 Card(
                   shape: RoundedRectangleBorder(

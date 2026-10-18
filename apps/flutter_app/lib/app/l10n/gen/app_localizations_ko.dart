@@ -1237,4 +1237,57 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get lessonAiNote => 'AI가 내 실수를 바탕으로 만든 설명이에요.';
+
+  @override
+  String updateAvailable(String version) {
+    return '새 버전이 나왔어요 (v$version)';
+  }
+
+  @override
+  String get updateInstallNote => '받은 뒤 나오는 화면에서 \'설치\'를 누르세요. 기록은 그대로 남아요.';
+
+  @override
+  String get updateReloadNote => '새로고침하면 바로 새 버전이 열려요.';
+
+  @override
+  String get updatePageNote => '다운로드 페이지에서 새 설치 파일을 받아 덮어 설치하세요.';
+
+  @override
+  String get updateInstall => '업데이트';
+
+  @override
+  String get updateReload => '새로고침';
+
+  @override
+  String get updateOpenPage => '다운로드 페이지';
+
+  @override
+  String get updateLater => '나중에';
+
+  @override
+  String updateDownloading(int percent) {
+    return '받는 중… $percent%';
+  }
+
+  @override
+  String get updateFailed => '업데이트하지 못했어요. 다운로드 페이지에서 받아 주세요.';
+
+  @override
+  String get settingsVersion => '앱 버전';
+
+  @override
+  String get settingsVersionLocal => '개발용 빌드 (업데이트 확인 안 함)';
+
+  @override
+  String get settingsCheckUpdate => '업데이트 확인';
+
+  @override
+  String settingsUpToDate(String version) {
+    return '$version · 최신 버전이에요';
+  }
+
+  @override
+  String settingsUpdateUnknown(String version) {
+    return '$version · 확인하지 못했어요. 인터넷 연결을 확인해 주세요.';
+  }
 }

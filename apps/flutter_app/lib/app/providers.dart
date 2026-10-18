@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../core/net/http_client.dart';
 import '../core/platform/platform_info.dart';
 import '../data/audio/record_audio_input.dart';
 import '../data/audio/temp_file_audio_output.dart';
@@ -26,6 +27,8 @@ import '../data/settings/drift_settings_store.dart';
 import '../data/speech/gemini_speech_input.dart';
 import '../data/speech/os_speech_input.dart';
 import '../data/speech/os_speech_output.dart';
+import '../data/update/platform_updaters.dart';
+import '../data/update/release_feeds.dart';
 import '../data/vault/secure_storage_vault.dart';
 import '../domain/audio/audio_io.dart';
 import '../domain/audio/speech_io.dart';
@@ -38,6 +41,7 @@ import '../domain/providers/provider_failure.dart';
 import '../domain/sessions/export.dart';
 import '../domain/sessions/session_repository.dart';
 import '../domain/settings/settings_store.dart';
+import '../domain/update/app_update.dart';
 import 'active_ai.dart';
 import 'active_speech.dart';
 import 'notifying_session_repository.dart';
@@ -280,4 +284,32 @@ final aiLlmProvider = Provider<LlmProvider>(
 
 final aiModelSelectorProvider = Provider<Future<String> Function()>(
   (ref) => ref.watch(_activeAiProvider).selectModel,
+);
+
+/// This build's release version, set by the release builds
+/// (`--dart-define=APP_VERSION`); null for local builds, which then never
+/// look for updates (ADR-018).
+final currentVersionProvider = Provider<AppVersion?>(
+  (ref) => AppVersion.tryParse(const String.fromEnvironment('APP_VERSION')),
+);
+
+final releaseFeedProvider = Provider<ReleaseFeed>((ref) {
+  final client = newHttpClient();
+  ref.onDispose(client.close);
+  return PlatformInfo.isWeb
+      ? DeployedWebFeed(client: client)
+      : GithubReleaseFeed(client: client);
+});
+
+final appUpdaterProvider = Provider<AppUpdater>((ref) {
+  if (PlatformInfo.isWeb) return ReloadUpdater();
+  if (!PlatformInfo.isAndroid) return PageUpdater();
+  final client = newHttpClient();
+  ref.onDispose(client.close);
+  return ApkUpdater(client: client, cacheDir: getTemporaryDirectory);
+});
+
+/// Opens the release page; the way out when [appUpdaterProvider] fails.
+final releasePageOpenerProvider = Provider<AppUpdater>(
+  (ref) => PlatformInfo.isWeb ? ReloadUpdater() : PageUpdater(),
 );
