@@ -56,3 +56,6 @@ Galaxy(Android)는 배포 빌드(APK)를 설치해 최종 확인만 한다(USB �
 - OpenAI API 키(BYOK) 경로는 "고품질 음성" 선택 옵션으로 유지(P0-T6 코드 재사용).
 - 토큰(access/refresh/id)과 발급 client_id는 CredentialVault에만 저장(S1과 동일 취급).
 - 위험: 오픈소스 앱 조건(저장소 공개 + 라이선스), 프리뷰 기능 변경 가능성, Android 루프백 리다이렉트 미문서화, 무료 사용자는 대상 아님(문서상 Plus/Pro).
+
+## ADR-012 iOS 빌드 추가 — 확정 (2026-10-18)
+사용자 요청으로 ADR-009의 "iOS는 MVP 이후"를 앞당겨 iOS 플랫폼을 추가한다(최소 iOS 15). 마이크·음성 인식 권한 문구, `speakingcoach://` URL 스킴(ChatGPT 로그인 후 앱 복귀)을 설정했다. 서명 인증서가 없어 서명 없는 빌드(`flutter build ios --no-codesign`)까지만 자동화한다. 설치용 서명 방식(무료 Apple ID 7일 / 유료 개발자 계정 TestFlight)은 사용자 결정 대기.

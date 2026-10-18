@@ -120,8 +120,10 @@ final _chatGptAuthProvider = Provider<ChatGptAuth>(
       }
     },
     whenForeground: Platform.isAndroid || Platform.isIOS ? _untilResumed : null,
-    // Matches the intent filter in AndroidManifest.xml.
-    returnLink: Platform.isAndroid ? 'speakingcoach://signed-in' : null,
+    // Matches the Android intent filter and the iOS URL scheme.
+    returnLink: Platform.isAndroid || Platform.isIOS
+        ? 'speakingcoach://signed-in'
+        : null,
   ),
 );
 
