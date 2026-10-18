@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../core/platform/platform_info.dart';
 import '../data/audio/record_audio_input.dart';
 import '../data/audio/temp_file_audio_output.dart';
 import '../data/db/app_database.dart' show AppDatabase;
@@ -142,11 +143,9 @@ final _chatGptAuthProvider = Provider<ChatGptAuth>(
         throw const ProviderException(ProviderFailure.signInRequired);
       }
     },
-    whenForeground: Platform.isAndroid || Platform.isIOS ? _untilResumed : null,
+    whenForeground: PlatformInfo.isMobileApp ? _untilResumed : null,
     // Matches the Android intent filter and the iOS URL scheme.
-    returnLink: Platform.isAndroid || Platform.isIOS
-        ? 'speakingcoach://signed-in'
-        : null,
+    returnLink: PlatformInfo.isMobileApp ? 'speakingcoach://signed-in' : null,
   ),
 );
 

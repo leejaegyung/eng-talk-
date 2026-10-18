@@ -130,9 +130,18 @@ class AssessmentController extends Notifier<AssessmentState> {
     state = state.copyWith(answers: answers);
   }
 
-  /// Mic check on step 0, otherwise appends what was said to the answer.
+  /// Longest a placement answer keeps listening.
+  static const _maxAnswer = Duration(seconds: 90);
+  bool _stopRequested = false;
+
+  /// Mic check on step 0. On a question, keeps listening across the short
+  /// pauses where phones end recognition (Android stops after ~1–2 s of
+  /// silence), appending each part, until the learner taps stop, stays
+  /// silent, or [_maxAnswer] passes.
   Future<void> talk() async {
     if (state.listening) return;
+    // Reset before any await so a stop tapped right away still counts.
+    _stopRequested = false;
     await ref.read(speechOutputProvider).stop();
     final mic = ref.read(speechInputProvider);
     if (!await mic.ensureAvailable()) {
@@ -141,25 +150,36 @@ class AssessmentController extends Notifier<AssessmentState> {
     }
     if (!ref.mounted) return;
     state = state.copyWith(listening: true, partial: '');
-    final heard = await mic.listenOnce(
-      hints: state.onQuestion
-          ? recognitionHints(texts: [placementQuestions[state.step - 1]])
-          : const [],
-      onPartial: (p) {
-        if (ref.mounted) state = state.copyWith(partial: p);
-      },
-    );
-    if (!ref.mounted) return;
-    state = state.copyWith(listening: false, partial: '');
-    if (state.step == 0) {
-      state = state.copyWith(micCheck: heard.trim());
-    } else if (heard.trim().isNotEmpty) {
-      final current = state.currentAnswer.trim();
-      setAnswer(current.isEmpty ? heard.trim() : '$current ${heard.trim()}');
-    }
+    final question = state.onQuestion;
+    final until = DateTime.now().add(_maxAnswer);
+    do {
+      final before = state.currentAnswer.trim();
+      final heard = (await mic.listenOnce(
+        hints: question
+            ? recognitionHints(
+                texts: [placementQuestions[state.step - 1], before],
+              )
+            : const [],
+        onPartial: (p) {
+          if (ref.mounted) state = state.copyWith(partial: p);
+        },
+      )).trim();
+      if (!ref.mounted) return;
+      state = state.copyWith(partial: '');
+      if (!question) {
+        state = state.copyWith(micCheck: heard);
+        break;
+      }
+      if (heard.isEmpty) break;
+      setAnswer(before.isEmpty ? heard : '$before $heard');
+    } while (!_stopRequested && DateTime.now().isBefore(until));
+    if (ref.mounted) state = state.copyWith(listening: false);
   }
 
-  Future<void> stopListening() => ref.read(speechInputProvider).stop();
+  Future<void> stopListening() {
+    _stopRequested = true;
+    return ref.read(speechInputProvider).stop();
+  }
 
   Future<void> evaluate() async {
     state = state.copyWith(

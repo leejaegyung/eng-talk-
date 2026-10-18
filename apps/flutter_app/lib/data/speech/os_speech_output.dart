@@ -1,7 +1,6 @@
-import 'dart:io';
-
 import 'package:flutter_tts/flutter_tts.dart';
 
+import '../../core/platform/platform_info.dart';
 import '../../domain/audio/speech_io.dart';
 
 /// [SpeechOutput] through the platform's built-in voices (free).
@@ -12,7 +11,7 @@ class OsSpeechOutput implements SpeechOutput {
   Future<void> _ensureSetup() => _setup ??= () async {
     await _tts.setLanguage('en-US');
     await _tts.awaitSpeakCompletion(true);
-    if (Platform.isIOS) {
+    if (PlatformInfo.isIOS) {
       // Shared with the recognizer: without this, replies after listening
       // play quietly through the earpiece, and Bluetooth is ignored.
       await _tts.setSharedInstance(true);

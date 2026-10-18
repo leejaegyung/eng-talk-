@@ -1,21 +1,20 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../app/l10n/gen/app_localizations.dart';
+import '../../core/platform/platform_info.dart';
 import '../../domain/audio/speech_io.dart';
 
 /// Where the OS lets the learner turn the permission back on, if it has a
 /// link for it (macOS privacy pane, iOS app settings).
 Uri? _settingsUri() {
-  if (Platform.isMacOS) {
+  if (PlatformInfo.isMacOS) {
     return Uri.parse(
       'x-apple.systempreferences:com.apple.preference.security'
       '?Privacy_SpeechRecognition',
     );
   }
-  if (Platform.isIOS) return Uri.parse('app-settings:');
+  if (PlatformInfo.isIOS) return Uri.parse('app-settings:');
   return null;
 }
 

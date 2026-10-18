@@ -1,12 +1,12 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../app/app_language.dart';
 import '../../app/providers.dart';
 import '../../core/logging/app_logger.dart';
+import '../../core/platform/platform_info.dart';
 import '../../domain/credentials/provider_account.dart';
 import '../../domain/providers/provider_failure.dart';
 import '../../domain/sessions/export.dart';
@@ -219,7 +219,7 @@ class SettingsController extends Notifier<SettingsState> {
     final text = [
       'Speaking Coach diagnostics',
       'generated: ${DateTime.now().toUtc().toIso8601String()}',
-      'platform: ${Platform.operatingSystem} ${Platform.operatingSystemVersion}',
+      'platform: ${PlatformInfo.label}',
       'errors: ${entries.length}',
       '',
       for (final e in entries) ...[

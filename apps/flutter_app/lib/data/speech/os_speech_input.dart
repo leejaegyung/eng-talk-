@@ -16,6 +16,11 @@ class OsSpeechInput implements SpeechInput {
   static const _pauseFor = Duration(seconds: 3);
   static const _listenFor = Duration(seconds: 60);
 
+  /// Android reports "not listening" before the final result arrives; the
+  /// final one is more accurate (and has the last words), so wait for it.
+  static const _finalGrace = Duration(milliseconds: 1500);
+  Timer? _grace;
+
   final SpeechToText _stt = SpeechToText();
   Completer<String>? _done;
   String _last = '';
@@ -43,6 +48,7 @@ class OsSpeechInput implements SpeechInput {
     final done = _done = Completer<String>();
     _last = '';
     lastIssue = null;
+    _grace?.cancel();
     await _stt.listen(
       onResult: (SpeechRecognitionResult r) {
         _last = r.recognizedWords;
@@ -71,9 +77,13 @@ class OsSpeechInput implements SpeechInput {
   }
 
   void _onStatus(String status) {
-    if (status == SpeechToText.doneStatus ||
-        status == SpeechToText.notListeningStatus) {
+    if (status == SpeechToText.doneStatus) {
       _finish();
+    } else if (status == SpeechToText.notListeningStatus) {
+      // The final result usually follows; finish without it only if it
+      // doesn't come.
+      _grace?.cancel();
+      _grace = Timer(_finalGrace, _finish);
     }
   }
 
@@ -100,6 +110,7 @@ class OsSpeechInput implements SpeechInput {
   };
 
   void _finish() {
+    _grace?.cancel();
     final done = _done;
     if (done != null && !done.isCompleted) done.complete(_last.trim());
   }

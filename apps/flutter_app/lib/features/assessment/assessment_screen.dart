@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../app/l10n/gen/app_localizations.dart';
 import '../../app/router.dart';
+import '../../core/platform/platform_info.dart';
 import '../../domain/learning/learner_level.dart';
 import '../../domain/learning/placement.dart';
 import '../common/failure_text.dart';
@@ -62,6 +63,11 @@ class _AssessmentScreenState extends ConsumerState<AssessmentScreen> {
                 ? l10n.assessmentMicNothing
                 : l10n.assessmentMicHeard(heard),
           ),
+        if (PlatformInfo.isAndroid && s.micCheck != null)
+          Text(
+            l10n.speechAndroidTip,
+            style: Theme.of(context).textTheme.bodySmall,
+          ),
         FilledButton(onPressed: ctrl.next, child: Text(l10n.assessmentNext)),
       ];
     } else if (s.onQuestion) {
@@ -97,6 +103,12 @@ class _AssessmentScreenState extends ConsumerState<AssessmentScreen> {
             ),
           ],
         ),
+        if (s.listening)
+          Text(
+            s.partial.isEmpty ? l10n.assessmentKeepTalking : s.partial,
+            style: Theme.of(context).textTheme.bodyMedium
+                ?.copyWith(color: Theme.of(context).colorScheme.primary),
+          ),
         FilledButton(
           onPressed: s.listening ? null : ctrl.next,
           child: Text(last ? l10n.assessmentFinish : l10n.assessmentNext),

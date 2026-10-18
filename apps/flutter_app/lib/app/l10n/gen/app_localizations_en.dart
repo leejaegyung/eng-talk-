@@ -1120,4 +1120,12 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get settingsRestoreFailed =>
       'That isn\'t a Speaking Coach backup. Pick the speaking-coach.json made by export.';
+
+  @override
+  String get speechAndroidTip =>
+      'If what\'s heard keeps coming out wrong: phone Settings → General → Keyboard list and default (or \'Voice input\') → set the default speech recognition service to \'Google\', and make sure English (US) is downloaded for it.';
+
+  @override
+  String get assessmentKeepTalking =>
+      'It keeps listening through short pauses. Tap ■ when you\'re done.';
 }

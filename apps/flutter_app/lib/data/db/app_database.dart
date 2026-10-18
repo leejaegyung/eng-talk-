@@ -25,8 +25,18 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase(super.e);
 
   /// On-device database in the app support directory.
-  factory AppDatabase.open() =>
-      AppDatabase(driftDatabase(name: 'speaking_coach'));
+  /// Native: a file in the app's data folder. Web: the browser's storage
+  /// through sqlite3.wasm and drift_worker.js in web/
+  /// (tool/fetch_web_assets.sh).
+  factory AppDatabase.open() => AppDatabase(
+    driftDatabase(
+      name: 'speaking_coach',
+      web: DriftWebOptions(
+        sqlite3Wasm: Uri.parse('sqlite3.wasm'),
+        driftWorker: Uri.parse('drift_worker.js'),
+      ),
+    ),
+  );
 
   @override
   int get schemaVersion => 4;

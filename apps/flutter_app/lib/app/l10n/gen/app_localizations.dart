@@ -2029,6 +2029,18 @@ abstract class AppLocalizations {
   /// In ko, this message translates to:
   /// **'Speaking Coach 백업 파일이 아니에요. 내보내기로 만든 speaking-coach.json을 골라 주세요.'**
   String get settingsRestoreFailed;
+
+  /// No description provided for @speechAndroidTip.
+  ///
+  /// In ko, this message translates to:
+  /// **'들린 말이 계속 이상하면: 휴대폰 설정 → 일반 → 키보드 목록 및 기본값(또는 \'음성 입력\') → 기본 음성 인식 서비스를 \'Google\'로 바꾸고, Google 음성 인식에 영어(미국)가 받아져 있는지 확인해 주세요.'**
+  String get speechAndroidTip;
+
+  /// No description provided for @assessmentKeepTalking.
+  ///
+  /// In ko, this message translates to:
+  /// **'잠깐 쉬어도 계속 들어요. 다 말했으면 ■를 누르세요.'**
+  String get assessmentKeepTalking;
 }
 
 class _AppLocalizationsDelegate

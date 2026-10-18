@@ -8,6 +8,7 @@ analyzer:
     - "**/*.g.dart"
     - windows/**
     - ios/**
+    - web/**
   language:
     strict-casts: true
     strict-inference: true
