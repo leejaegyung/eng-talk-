@@ -1236,4 +1236,20 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get speechEngineNeedsKey =>
       'Gemini recognition needs the free key. Without it, the device recognizer is used.';
+
+  @override
+  String get shadowingTitle => 'Shadowing';
+
+  @override
+  String get shadowingNote =>
+      'Listen to the coach\'s sentences and say them back. A box fills each time you say it word for word.';
+
+  @override
+  String get shadowingListen => 'Listen';
+
+  @override
+  String get shadowingSlow => 'Slowly';
+
+  @override
+  String get shadowingRepeat => 'Say it';
 }

@@ -353,5 +353,10 @@
   "speechEngineDevice": "On device",
   "speechEngineGemini": "Gemini (accurate)",
   "speechEngineGeminiNote": "When you finish, Gemini transcribes the recording. Much better with names and accents, but takes 1–2 seconds. The recording isn't kept; on a free key Google may use it to improve its products.",
-  "speechEngineNeedsKey": "Gemini recognition needs the free key. Without it, the device recognizer is used."
+  "speechEngineNeedsKey": "Gemini recognition needs the free key. Without it, the device recognizer is used.",
+  "shadowingTitle": "Shadowing",
+  "shadowingNote": "Listen to the coach's sentences and say them back. A box fills each time you say it word for word.",
+  "shadowingListen": "Listen",
+  "shadowingSlow": "Slowly",
+  "shadowingRepeat": "Say it"
 }

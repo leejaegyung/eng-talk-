@@ -12,6 +12,7 @@ import '../common/mode_text.dart';
 import '../common/practice_verdict.dart';
 import '../conversation/conversation_request.dart';
 import 'result_controller.dart';
+import 'shadowing_section.dart';
 
 class ResultScreen extends ConsumerWidget {
   const ResultScreen({required this.sessionId, super.key});
@@ -165,6 +166,7 @@ class ResultScreen extends ConsumerWidget {
               ),
             ),
           ],
+          ShadowingSection(sessionId: sessionId),
           if (f.expressions.isNotEmpty) ...[
             heading(l10n.resultExpressions),
             Wrap(

@@ -1198,4 +1198,19 @@ class AppLocalizationsKo extends AppLocalizations {
   @override
   String get speechEngineNeedsKey =>
       'Gemini 인식에는 무료 키가 필요해요. 키가 없으면 기기 내장 인식으로 들어요.';
+
+  @override
+  String get shadowingTitle => '따라 말하기';
+
+  @override
+  String get shadowingNote => '코치가 한 문장을 듣고 그대로 따라 말해요. 똑같이 말하면 칸이 채워져요.';
+
+  @override
+  String get shadowingListen => '듣기';
+
+  @override
+  String get shadowingSlow => '천천히';
+
+  @override
+  String get shadowingRepeat => '따라 말하기';
 }

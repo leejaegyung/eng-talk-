@@ -91,6 +91,18 @@ void main() {
         reason: 'not the corrected sentence',
       );
 
+      // Shadowing: the coach's sentence, listened to and said back.
+      final say = find.widgetWithText(FilledButton, '따라 말하기');
+      await tester.ensureVisible(say);
+      await tester.tap(find.widgetWithText(OutlinedButton, '천천히'));
+      await settle(tester);
+      expect(h.voice.spoken.last, 'Where do you hike?');
+      expect(h.voice.slow.last, isTrue);
+      h.mic.queue.add('where do you hike');
+      await tester.tap(say);
+      await settle(tester);
+      expect(find.text('반복 1/5'), findsOneWidget);
+
       await tester.ensureVisible(find.text('홈으로'));
       await tester.tap(find.text('홈으로'));
       await settle(tester);

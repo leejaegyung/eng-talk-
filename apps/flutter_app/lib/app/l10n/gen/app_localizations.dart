@@ -2221,6 +2221,36 @@ abstract class AppLocalizations {
   /// In ko, this message translates to:
   /// **'Gemini 인식에는 무료 키가 필요해요. 키가 없으면 기기 내장 인식으로 들어요.'**
   String get speechEngineNeedsKey;
+
+  /// No description provided for @shadowingTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'따라 말하기'**
+  String get shadowingTitle;
+
+  /// No description provided for @shadowingNote.
+  ///
+  /// In ko, this message translates to:
+  /// **'코치가 한 문장을 듣고 그대로 따라 말해요. 똑같이 말하면 칸이 채워져요.'**
+  String get shadowingNote;
+
+  /// No description provided for @shadowingListen.
+  ///
+  /// In ko, this message translates to:
+  /// **'듣기'**
+  String get shadowingListen;
+
+  /// No description provided for @shadowingSlow.
+  ///
+  /// In ko, this message translates to:
+  /// **'천천히'**
+  String get shadowingSlow;
+
+  /// No description provided for @shadowingRepeat.
+  ///
+  /// In ko, this message translates to:
+  /// **'따라 말하기'**
+  String get shadowingRepeat;
 }
 
 class _AppLocalizationsDelegate
