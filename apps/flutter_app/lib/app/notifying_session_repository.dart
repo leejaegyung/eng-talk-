@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../domain/conversation/session_enums.dart';
 import '../domain/feedback/feedback.dart';
 import '../domain/learning/learner_level.dart';
+import '../domain/sessions/growth_stats.dart';
 import '../domain/sessions/session_records.dart';
 import '../domain/sessions/session_repository.dart';
 
@@ -72,6 +73,13 @@ class NotifyingSessionRepository implements SessionRepository {
 
   @override
   Future<int> reviewCount(DateTime now) => _inner.reviewCount(now);
+
+  @override
+  Future<List<CorrectionStat>> correctionStats({required DateTime since}) =>
+      _inner.correctionStats(since: since);
+
+  @override
+  Future<List<LevelPoint>> levelHistory() => _inner.levelHistory();
 
   @override
   Future<void> saveReview(ReviewItem updated) =>

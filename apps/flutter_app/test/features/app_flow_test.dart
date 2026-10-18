@@ -1,12 +1,16 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:speaking_coach/domain/conversation/session_enums.dart';
 import 'package:speaking_coach/domain/sessions/session_records.dart';
 import 'package:speaking_coach/domain/settings/settings_store.dart';
+import 'package:speaking_coach/features/setup/setup_controller.dart';
+import 'package:speaking_coach/features/setup/setup_screen.dart';
 
 import '../helpers/app_harness.dart';
+import '../helpers/fakes.dart';
 
 /// End-to-end flows through the real screens with a scripted AI and an
 /// in-memory database.
@@ -89,6 +93,72 @@ void main() {
       expect(find.textContaining('지금 복습할 문장이 없어요'), findsOneWidget);
     },
   );
+
+  testWidgets('goals preset the setup; daily goal and growth dashboard', (
+    tester,
+  ) async {
+    final h = Harness(
+      settings: MemorySettings({
+        SettingKeys.onboardingDone: 'true',
+        SettingKeys.learningGoal: 'work',
+        SettingKeys.dailyGoalMinutes: '45',
+      }),
+    );
+    await h.boot(tester);
+    expect(find.text('오늘 0분 / 목표 45분'), findsOneWidget);
+    expect(find.text('업무·회의 목표 추천: 의견·토론'), findsOneWidget);
+
+    await tapText(tester, '대화 시작');
+    final setup = ProviderScope.containerOf(
+      tester.element(find.byType(SetupScreen)),
+    ).read(setupProvider);
+    expect(setup.mode, SessionMode.opinion);
+    expect(setup.length, const Duration(minutes: 45));
+    final start = find.widgetWithText(FilledButton, '대화 시작');
+    await tester.ensureVisible(start);
+    await tester.tap(start);
+    await settle(tester);
+    await tester.enterText(find.byType(TextField), 'I go to work by bus');
+    await tester.tap(find.text('보내기'));
+    await settle(tester);
+    h.now = h.now.add(const Duration(minutes: 12));
+    await tester.tap(find.text('종료'));
+    await settle(tester);
+    expect(find.text('Fixed sentence.'), findsOneWidget, reason: 'feedback');
+
+    await tester.ensureVisible(find.text('홈으로'));
+    await tester.tap(find.text('홈으로'));
+    await settle(tester);
+    expect(find.text('오늘 12분 / 목표 45분'), findsOneWidget);
+
+    await tapText(tester, '성장 기록');
+    expect(find.text('12분'), findsOneWidget);
+    expect(find.text('1회'), findsNWidgets(2), reason: 'sessions, grammar');
+    expect(find.text('문법 (시제·관사·전치사)'), findsOneWidget);
+    expect(find.text('레벨 진단 기록이 없어요.'), findsOneWidget);
+    await tapText(tester, '30일');
+    expect(find.text('12분'), findsOneWidget);
+  });
+
+  testWidgets('phone width: home with goals and the dashboard fit', (
+    tester,
+  ) async {
+    final h = Harness(
+      settings: MemorySettings({
+        SettingKeys.onboardingDone: 'true',
+        SettingKeys.learningGoal: 'interview',
+        SettingKeys.dailyGoalMinutes: '30',
+      }),
+    );
+    await h.boot(tester);
+    tester.view.physicalSize = const Size(360, 780);
+    await settle(tester);
+    expect(find.text('오늘 0분 / 목표 30분'), findsOneWidget);
+    await tester.tap(find.byTooltip('성장 기록'));
+    await settle(tester);
+    await tapText(tester, '30일');
+    expect(find.text('이 기간에 끝낸 대화가 없어요.'), findsOneWidget);
+  });
 
   testWidgets('app to the background pauses the conversation', (tester) async {
     tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.resumed);

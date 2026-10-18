@@ -1567,6 +1567,198 @@ abstract class AppLocalizations {
   /// In ko, this message translates to:
   /// **'앱을 벗어나서 일시정지했어요.\n준비되면 계속하기를 눌러주세요.'**
   String get conversationPausedInBackground;
+
+  /// No description provided for @goalsTitle.
+  ///
+  /// In ko, this message translates to:
+  /// **'학습 목표'**
+  String get goalsTitle;
+
+  /// No description provided for @goalsWhy.
+  ///
+  /// In ko, this message translates to:
+  /// **'왜 영어 말하기를 연습하나요?'**
+  String get goalsWhy;
+
+  /// No description provided for @goalEveryday.
+  ///
+  /// In ko, this message translates to:
+  /// **'일상 대화'**
+  String get goalEveryday;
+
+  /// No description provided for @goalTravel.
+  ///
+  /// In ko, this message translates to:
+  /// **'여행'**
+  String get goalTravel;
+
+  /// No description provided for @goalWork.
+  ///
+  /// In ko, this message translates to:
+  /// **'업무·회의'**
+  String get goalWork;
+
+  /// No description provided for @goalInterview.
+  ///
+  /// In ko, this message translates to:
+  /// **'면접'**
+  String get goalInterview;
+
+  /// No description provided for @goalConfidence.
+  ///
+  /// In ko, this message translates to:
+  /// **'자신감 키우기'**
+  String get goalConfidence;
+
+  /// No description provided for @goalsDaily.
+  ///
+  /// In ko, this message translates to:
+  /// **'하루 목표 시간'**
+  String get goalsDaily;
+
+  /// No description provided for @goalsMinutes.
+  ///
+  /// In ko, this message translates to:
+  /// **'{minutes}분'**
+  String goalsMinutes(int minutes);
+
+  /// No description provided for @goalsNote.
+  ///
+  /// In ko, this message translates to:
+  /// **'목표에 맞는 대화 모드와 시간을 추천해 드려요. 설정에서 언제든 바꿀 수 있어요.'**
+  String get goalsNote;
+
+  /// No description provided for @homeGoalProgress.
+  ///
+  /// In ko, this message translates to:
+  /// **'오늘 {done}분 / 목표 {goal}분'**
+  String homeGoalProgress(int done, int goal);
+
+  /// No description provided for @homeGoalDone.
+  ///
+  /// In ko, this message translates to:
+  /// **'오늘 목표 달성!'**
+  String get homeGoalDone;
+
+  /// No description provided for @homeSuggestedMode.
+  ///
+  /// In ko, this message translates to:
+  /// **'{goal} 목표 추천: {mode}'**
+  String homeSuggestedMode(String goal, String mode);
+
+  /// No description provided for @homeGrowth.
+  ///
+  /// In ko, this message translates to:
+  /// **'성장 기록'**
+  String get homeGrowth;
+
+  /// No description provided for @growthPeriodWeek.
+  ///
+  /// In ko, this message translates to:
+  /// **'7일'**
+  String get growthPeriodWeek;
+
+  /// No description provided for @growthPeriodMonth.
+  ///
+  /// In ko, this message translates to:
+  /// **'30일'**
+  String get growthPeriodMonth;
+
+  /// No description provided for @growthPractice.
+  ///
+  /// In ko, this message translates to:
+  /// **'연습 시간'**
+  String get growthPractice;
+
+  /// No description provided for @growthSpeech.
+  ///
+  /// In ko, this message translates to:
+  /// **'말한 시간 (추정)'**
+  String get growthSpeech;
+
+  /// No description provided for @growthSessions.
+  ///
+  /// In ko, this message translates to:
+  /// **'대화 수'**
+  String get growthSessions;
+
+  /// No description provided for @growthSessionCount.
+  ///
+  /// In ko, this message translates to:
+  /// **'{count}회'**
+  String growthSessionCount(int count);
+
+  /// No description provided for @growthDaily.
+  ///
+  /// In ko, this message translates to:
+  /// **'날짜별 연습 시간'**
+  String get growthDaily;
+
+  /// No description provided for @growthDayBar.
+  ///
+  /// In ko, this message translates to:
+  /// **'{date} · {minutes}분'**
+  String growthDayBar(String date, int minutes);
+
+  /// No description provided for @growthEmpty.
+  ///
+  /// In ko, this message translates to:
+  /// **'이 기간에 끝낸 대화가 없어요.'**
+  String get growthEmpty;
+
+  /// No description provided for @growthWeakAreas.
+  ///
+  /// In ko, this message translates to:
+  /// **'자주 고친 부분'**
+  String get growthWeakAreas;
+
+  /// No description provided for @growthWeakNote.
+  ///
+  /// In ko, this message translates to:
+  /// **'대화 후 AI 피드백이 분류한 교정 기준이에요. 발음은 평가하지 않아요.'**
+  String get growthWeakNote;
+
+  /// No description provided for @growthNoWeak.
+  ///
+  /// In ko, this message translates to:
+  /// **'아직 분류된 교정이 없어요. 대화를 마치고 결과를 보면 쌓여요.'**
+  String get growthNoWeak;
+
+  /// No description provided for @growthLevels.
+  ///
+  /// In ko, this message translates to:
+  /// **'레벨 변화'**
+  String get growthLevels;
+
+  /// No description provided for @growthNoLevels.
+  ///
+  /// In ko, this message translates to:
+  /// **'레벨 진단 기록이 없어요.'**
+  String get growthNoLevels;
+
+  /// No description provided for @categoryGrammar.
+  ///
+  /// In ko, this message translates to:
+  /// **'문법 (시제·관사·전치사)'**
+  String get categoryGrammar;
+
+  /// No description provided for @categoryWordChoice.
+  ///
+  /// In ko, this message translates to:
+  /// **'단어 선택'**
+  String get categoryWordChoice;
+
+  /// No description provided for @categoryStructure.
+  ///
+  /// In ko, this message translates to:
+  /// **'문장 구조·어순'**
+  String get categoryStructure;
+
+  /// No description provided for @categoryNaturalness.
+  ///
+  /// In ko, this message translates to:
+  /// **'자연스러운 표현'**
+  String get categoryNaturalness;
 }
 
 class _AppLocalizationsDelegate

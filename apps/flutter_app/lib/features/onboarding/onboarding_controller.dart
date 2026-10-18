@@ -8,9 +8,9 @@ import '../../core/logging/app_logger.dart';
 import '../../domain/credentials/provider_account.dart';
 import '../../domain/providers/provider_failure.dart';
 
-/// S01, minimal (slice A): what the app does → how data is handled →
-/// connect an AI. Mic test and the placement assessment join in slice D.
-enum OnboardingStep { welcome, privacy, connect }
+/// S01: what the app does → how data is handled → goals → connect an AI.
+/// The mic test and placement are offered on home.
+enum OnboardingStep { welcome, privacy, goals, connect }
 
 final class OnboardingState {
   const OnboardingState({

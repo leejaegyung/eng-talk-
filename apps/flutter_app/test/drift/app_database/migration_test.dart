@@ -1,6 +1,6 @@
 // dart format width=80
 // ignore_for_file: unused_local_variable, unused_import
-import 'package:drift/drift.dart';
+import 'package:drift/drift.dart' hide isNull;
 import 'package:drift_dev/api/migrations_native.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:speaking_coach/data/db/app_database.dart';
@@ -32,5 +32,28 @@ void main() {
         }
       });
     }
+  });
+
+  test('v3 → v4 keeps corrections; category starts empty', () async {
+    final schema = await verifier.schemaAt(3);
+    schema.rawDatabase
+      ..execute(
+        "INSERT INTO sessions (id, mode, started_at, status) "
+        "VALUES (1, 'daily', 0, 'completed')",
+      )
+      ..execute(
+        "INSERT INTO turns (id, session_id, speaker, transcript, started_at) "
+        "VALUES (1, 1, 'user', 'I go yesterday', 0)",
+      )
+      ..execute(
+        "INSERT INTO corrections (session_id, turn_id, original, suggested) "
+        "VALUES (1, 1, 'I go yesterday', 'I went yesterday')",
+      );
+    final db = AppDatabase(schema.newConnection());
+    await verifier.migrateAndValidate(db, 4);
+    final row = await db.select(db.corrections).getSingle();
+    expect(row.suggested, 'I went yesterday');
+    expect(row.category, isNull);
+    await db.close();
   });
 }

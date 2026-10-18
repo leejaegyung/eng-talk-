@@ -126,6 +126,54 @@ void main() {
     expect((await db.select(db.corrections).getSingle()).practiced, isTrue);
   });
 
+  test(
+    'growth: correction categories by session date, level history',
+    () async {
+      final (id, turn) = await sessionWithTurns();
+      await repo.saveFeedback(
+        id,
+        FeedbackResult(
+          corrections: [
+            Correction(
+              turnId: turn,
+              original: 'I go there yesterday',
+              suggested: 'I went there yesterday.',
+              category: ErrorCategory.grammar,
+            ),
+          ],
+        ),
+        t0,
+      );
+      final stats = await repo.correctionStats(since: t0);
+      expect(stats.single.category, ErrorCategory.grammar);
+      expect(stats.single.at.isAtSameMomentAs(t0), isTrue);
+      expect(
+        await repo.correctionStats(since: t0.add(const Duration(days: 1))),
+        isEmpty,
+      );
+      expect(
+        (await repo.load(id))!.feedback!.corrections.single.category,
+        ErrorCategory.grammar,
+      );
+
+      for (final (days, level) in [
+        (5, LearnerLevel.l3),
+        (0, LearnerLevel.l2),
+      ]) {
+        await repo.saveAssessment(
+          sessionId: null,
+          rubricJson: '{}',
+          level: level,
+          at: t0.subtract(Duration(days: days)),
+        );
+      }
+      expect((await repo.levelHistory()).map((p) => p.level), [
+        LearnerLevel.l3,
+        LearnerLevel.l2,
+      ]);
+    },
+  );
+
   test('search matches topic or transcript; newest first', () async {
     await sessionWithTurns(topic: 'Travel');
     final (second, _) = await sessionWithTurns(topic: 'Food');

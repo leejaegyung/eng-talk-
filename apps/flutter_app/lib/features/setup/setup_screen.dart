@@ -6,6 +6,7 @@ import '../../app/l10n/gen/app_localizations.dart';
 import '../../app/router.dart';
 import '../../domain/conversation/session_enums.dart';
 import '../../domain/learning/learner_level.dart';
+import '../../domain/learning/learning_goal.dart';
 import '../common/mode_text.dart';
 import 'scenarios.dart';
 import 'setup_controller.dart';
@@ -190,8 +191,11 @@ class _SetupScreenState extends ConsumerState<SetupScreen> {
               heading(l10n.setupLength),
               SegmentedButton<int>(
                 segments: [
-                  for (final m in [20, 30, 45])
-                    ButtonSegment(value: m, label: Text(l10n.setupMinutes(m))),
+                  for (final l in sessionLengths)
+                    ButtonSegment(
+                      value: l.inMinutes,
+                      label: Text(l10n.setupMinutes(l.inMinutes)),
+                    ),
                 ],
                 selected: {s.length.inMinutes},
                 showSelectedIcon: false,

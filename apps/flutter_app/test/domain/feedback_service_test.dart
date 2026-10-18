@@ -77,12 +77,14 @@ void main() {
     int turn,
     String original, {
     String? severity,
+    String? category,
   }) => {
     'turn_id': turn,
     'original': original,
     'suggested': '$original (fixed)',
     'explanation_ko': '설명',
     'severity': ?severity,
+    'category': ?category,
     'practice_prompt': 'Tell me again.',
   };
 
@@ -110,6 +112,23 @@ void main() {
     expect(f.expressions.single.phrase, 'That reminds me of...');
     expect(f.nextTopic, 'Weekend plans');
     expect(llm.requests, hasLength(1));
+  });
+
+  test('category is parsed; unknown or missing is left empty', () async {
+    final (f, _) = await run([
+      json(
+        corrections: [
+          correction(
+            2,
+            'I go to the park',
+            severity: 'high',
+            category: 'grammar',
+          ),
+          correction(4, 'I', severity: 'medium', category: 'spelling'),
+        ],
+      ),
+    ]);
+    expect(f.corrections.map((c) => c.category), [ErrorCategory.grammar, null]);
   });
 
   test('transcript is sent with turn ids; quick actions marked', () async {

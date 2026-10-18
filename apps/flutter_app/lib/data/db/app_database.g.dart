@@ -2471,6 +2471,17 @@ class $CorrectionsTable extends Corrections
     type: DriftSqlType.string,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _categoryMeta = const VerificationMeta(
+    'category',
+  );
+  @override
+  late final GeneratedColumn<String> category = GeneratedColumn<String>(
+    'category',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -2482,6 +2493,7 @@ class $CorrectionsTable extends Corrections
     practiced,
     severity,
     practicePrompt,
+    category,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -2560,6 +2572,12 @@ class $CorrectionsTable extends Corrections
         ),
       );
     }
+    if (data.containsKey('category')) {
+      context.handle(
+        _categoryMeta,
+        category.isAcceptableOrUnknown(data['category']!, _categoryMeta),
+      );
+    }
     return context;
   }
 
@@ -2605,6 +2623,10 @@ class $CorrectionsTable extends Corrections
         DriftSqlType.string,
         data['${effectivePrefix}practice_prompt'],
       ),
+      category: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}category'],
+      ),
     );
   }
 
@@ -2626,6 +2648,9 @@ class Correction extends DataClass implements Insertable<Correction> {
   /// v3
   final String? severity;
   final String? practicePrompt;
+
+  /// v4: [ErrorCategory] wire value; null for older feedback.
+  final String? category;
   const Correction({
     required this.id,
     required this.sessionId,
@@ -2636,6 +2661,7 @@ class Correction extends DataClass implements Insertable<Correction> {
     required this.practiced,
     this.severity,
     this.practicePrompt,
+    this.category,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -2654,6 +2680,9 @@ class Correction extends DataClass implements Insertable<Correction> {
     }
     if (!nullToAbsent || practicePrompt != null) {
       map['practice_prompt'] = Variable<String>(practicePrompt);
+    }
+    if (!nullToAbsent || category != null) {
+      map['category'] = Variable<String>(category);
     }
     return map;
   }
@@ -2675,6 +2704,9 @@ class Correction extends DataClass implements Insertable<Correction> {
       practicePrompt: practicePrompt == null && nullToAbsent
           ? const Value.absent()
           : Value(practicePrompt),
+      category: category == null && nullToAbsent
+          ? const Value.absent()
+          : Value(category),
     );
   }
 
@@ -2693,6 +2725,7 @@ class Correction extends DataClass implements Insertable<Correction> {
       practiced: serializer.fromJson<bool>(json['practiced']),
       severity: serializer.fromJson<String?>(json['severity']),
       practicePrompt: serializer.fromJson<String?>(json['practicePrompt']),
+      category: serializer.fromJson<String?>(json['category']),
     );
   }
   @override
@@ -2708,6 +2741,7 @@ class Correction extends DataClass implements Insertable<Correction> {
       'practiced': serializer.toJson<bool>(practiced),
       'severity': serializer.toJson<String?>(severity),
       'practicePrompt': serializer.toJson<String?>(practicePrompt),
+      'category': serializer.toJson<String?>(category),
     };
   }
 
@@ -2721,6 +2755,7 @@ class Correction extends DataClass implements Insertable<Correction> {
     bool? practiced,
     Value<String?> severity = const Value.absent(),
     Value<String?> practicePrompt = const Value.absent(),
+    Value<String?> category = const Value.absent(),
   }) => Correction(
     id: id ?? this.id,
     sessionId: sessionId ?? this.sessionId,
@@ -2733,6 +2768,7 @@ class Correction extends DataClass implements Insertable<Correction> {
     practicePrompt: practicePrompt.present
         ? practicePrompt.value
         : this.practicePrompt,
+    category: category.present ? category.value : this.category,
   );
   Correction copyWithCompanion(CorrectionsCompanion data) {
     return Correction(
@@ -2749,6 +2785,7 @@ class Correction extends DataClass implements Insertable<Correction> {
       practicePrompt: data.practicePrompt.present
           ? data.practicePrompt.value
           : this.practicePrompt,
+      category: data.category.present ? data.category.value : this.category,
     );
   }
 
@@ -2763,7 +2800,8 @@ class Correction extends DataClass implements Insertable<Correction> {
           ..write('explanation: $explanation, ')
           ..write('practiced: $practiced, ')
           ..write('severity: $severity, ')
-          ..write('practicePrompt: $practicePrompt')
+          ..write('practicePrompt: $practicePrompt, ')
+          ..write('category: $category')
           ..write(')'))
         .toString();
   }
@@ -2779,6 +2817,7 @@ class Correction extends DataClass implements Insertable<Correction> {
     practiced,
     severity,
     practicePrompt,
+    category,
   );
   @override
   bool operator ==(Object other) =>
@@ -2792,7 +2831,8 @@ class Correction extends DataClass implements Insertable<Correction> {
           other.explanation == this.explanation &&
           other.practiced == this.practiced &&
           other.severity == this.severity &&
-          other.practicePrompt == this.practicePrompt);
+          other.practicePrompt == this.practicePrompt &&
+          other.category == this.category);
 }
 
 class CorrectionsCompanion extends UpdateCompanion<Correction> {
@@ -2805,6 +2845,7 @@ class CorrectionsCompanion extends UpdateCompanion<Correction> {
   final Value<bool> practiced;
   final Value<String?> severity;
   final Value<String?> practicePrompt;
+  final Value<String?> category;
   const CorrectionsCompanion({
     this.id = const Value.absent(),
     this.sessionId = const Value.absent(),
@@ -2815,6 +2856,7 @@ class CorrectionsCompanion extends UpdateCompanion<Correction> {
     this.practiced = const Value.absent(),
     this.severity = const Value.absent(),
     this.practicePrompt = const Value.absent(),
+    this.category = const Value.absent(),
   });
   CorrectionsCompanion.insert({
     this.id = const Value.absent(),
@@ -2826,6 +2868,7 @@ class CorrectionsCompanion extends UpdateCompanion<Correction> {
     this.practiced = const Value.absent(),
     this.severity = const Value.absent(),
     this.practicePrompt = const Value.absent(),
+    this.category = const Value.absent(),
   }) : sessionId = Value(sessionId),
        turnId = Value(turnId),
        original = Value(original),
@@ -2840,6 +2883,7 @@ class CorrectionsCompanion extends UpdateCompanion<Correction> {
     Expression<bool>? practiced,
     Expression<String>? severity,
     Expression<String>? practicePrompt,
+    Expression<String>? category,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
@@ -2851,6 +2895,7 @@ class CorrectionsCompanion extends UpdateCompanion<Correction> {
       if (practiced != null) 'practiced': practiced,
       if (severity != null) 'severity': severity,
       if (practicePrompt != null) 'practice_prompt': practicePrompt,
+      if (category != null) 'category': category,
     });
   }
 
@@ -2864,6 +2909,7 @@ class CorrectionsCompanion extends UpdateCompanion<Correction> {
     Value<bool>? practiced,
     Value<String?>? severity,
     Value<String?>? practicePrompt,
+    Value<String?>? category,
   }) {
     return CorrectionsCompanion(
       id: id ?? this.id,
@@ -2875,6 +2921,7 @@ class CorrectionsCompanion extends UpdateCompanion<Correction> {
       practiced: practiced ?? this.practiced,
       severity: severity ?? this.severity,
       practicePrompt: practicePrompt ?? this.practicePrompt,
+      category: category ?? this.category,
     );
   }
 
@@ -2908,6 +2955,9 @@ class CorrectionsCompanion extends UpdateCompanion<Correction> {
     if (practicePrompt.present) {
       map['practice_prompt'] = Variable<String>(practicePrompt.value);
     }
+    if (category.present) {
+      map['category'] = Variable<String>(category.value);
+    }
     return map;
   }
 
@@ -2922,7 +2972,8 @@ class CorrectionsCompanion extends UpdateCompanion<Correction> {
           ..write('explanation: $explanation, ')
           ..write('practiced: $practiced, ')
           ..write('severity: $severity, ')
-          ..write('practicePrompt: $practicePrompt')
+          ..write('practicePrompt: $practicePrompt, ')
+          ..write('category: $category')
           ..write(')'))
         .toString();
   }
@@ -6485,6 +6536,7 @@ typedef $$CorrectionsTableCreateCompanionBuilder =
       Value<bool> practiced,
       Value<String?> severity,
       Value<String?> practicePrompt,
+      Value<String?> category,
     });
 typedef $$CorrectionsTableUpdateCompanionBuilder =
     CorrectionsCompanion Function({
@@ -6497,6 +6549,7 @@ typedef $$CorrectionsTableUpdateCompanionBuilder =
       Value<bool> practiced,
       Value<String?> severity,
       Value<String?> practicePrompt,
+      Value<String?> category,
     });
 
 final class $$CorrectionsTableReferences
@@ -6597,6 +6650,11 @@ class $$CorrectionsTableFilterComposer
 
   ColumnFilters<String> get practicePrompt => $composableBuilder(
     column: $table.practicePrompt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get category => $composableBuilder(
+    column: $table.category,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -6716,6 +6774,11 @@ class $$CorrectionsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get category => $composableBuilder(
+    column: $table.category,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   $$SessionsTableOrderingComposer get sessionId {
     final $$SessionsTableOrderingComposer composer = $composerBuilder(
       composer: this,
@@ -6796,6 +6859,9 @@ class $$CorrectionsTableAnnotationComposer
     column: $table.practicePrompt,
     builder: (column) => column,
   );
+
+  GeneratedColumn<String> get category =>
+      $composableBuilder(column: $table.category, builder: (column) => column);
 
   $$SessionsTableAnnotationComposer get sessionId {
     final $$SessionsTableAnnotationComposer composer = $composerBuilder(
@@ -6910,6 +6976,7 @@ class $$CorrectionsTableTableManager
                 Value<bool> practiced = const Value.absent(),
                 Value<String?> severity = const Value.absent(),
                 Value<String?> practicePrompt = const Value.absent(),
+                Value<String?> category = const Value.absent(),
               }) => CorrectionsCompanion(
                 id: id,
                 sessionId: sessionId,
@@ -6920,6 +6987,7 @@ class $$CorrectionsTableTableManager
                 practiced: practiced,
                 severity: severity,
                 practicePrompt: practicePrompt,
+                category: category,
               ),
           createCompanionCallback:
               ({
@@ -6932,6 +7000,7 @@ class $$CorrectionsTableTableManager
                 Value<bool> practiced = const Value.absent(),
                 Value<String?> severity = const Value.absent(),
                 Value<String?> practicePrompt = const Value.absent(),
+                Value<String?> category = const Value.absent(),
               }) => CorrectionsCompanion.insert(
                 id: id,
                 sessionId: sessionId,
@@ -6942,6 +7011,7 @@ class $$CorrectionsTableTableManager
                 practiced: practiced,
                 severity: severity,
                 practicePrompt: practicePrompt,
+                category: category,
               ),
           withReferenceMapper: (p0) => p0
               .map(

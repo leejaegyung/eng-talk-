@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../app/l10n/gen/app_localizations.dart';
 import '../common/failure_text.dart';
+import '../common/goal_picker.dart';
 import '../common/privacy_notice.dart';
 import 'settings_controller.dart';
 
@@ -91,6 +92,11 @@ class SettingsScreen extends ConsumerWidget {
                   l10n.settingsApiKeyNote,
                   style: theme.textTheme.bodySmall,
                 ),
+              ),
+              section(l10n.goalsTitle),
+              const Padding(
+                padding: EdgeInsets.fromLTRB(16, 4, 16, 8),
+                child: GoalPicker(),
               ),
               section(l10n.settingsVoiceSection),
               SwitchListTile(

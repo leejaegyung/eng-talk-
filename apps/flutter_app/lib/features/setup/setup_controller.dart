@@ -5,8 +5,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../app/providers.dart';
 import '../../domain/conversation/session_enums.dart';
 import '../../domain/learning/learner_level.dart';
+import '../../domain/learning/learning_goal.dart';
 import '../../domain/sessions/session_records.dart';
 import '../../domain/settings/settings_store.dart';
+import '../common/goals_controller.dart';
 import '../conversation/conversation_request.dart';
 import 'scenarios.dart';
 
@@ -23,12 +25,20 @@ class SetupController extends Notifier<SessionSetup> {
     return const SessionSetup();
   }
 
+  /// Saved level, and the mode and length that fit the learner's goals.
   Future<void> _loadLevel() async {
     final saved = await ref
         .read(settingsStoreProvider)
         .read(SettingKeys.learnerLevel);
+    final goals = await ref.read(goalsProvider.future);
+    if (!ref.mounted) return;
     final level = LearnerLevel.values.asNameMap()[saved];
-    if (ref.mounted && level != null) state = state.copyWith(level: level);
+    final minutes = goals.dailyMinutes;
+    state = state.copyWith(
+      level: level,
+      mode: goals.goal?.mode,
+      length: minutes == null ? null : sessionLengthFor(minutes),
+    );
   }
 
   void setMode(SessionMode mode) {

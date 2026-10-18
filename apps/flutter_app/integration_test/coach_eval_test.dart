@@ -161,13 +161,14 @@ void main() {
     final f = await FeedbackService(llm)
         .evaluate(model: model, setup: const SessionSetup(), turns: turns);
     _log.info(
-      'feedback: strengths=${f.strengths} corrections=${[for (final c in f.corrections) '${c.original} → ${c.suggested}']} next=${f.nextTopic}',
+      'feedback: strengths=${f.strengths} corrections=${[for (final c in f.corrections) '${c.original} → ${c.suggested} (${c.category?.wire})']} next=${f.nextTopic}',
     );
     expect(f.reduced, isFalse);
     expect(f.corrections, isNotEmpty);
     for (final c in f.corrections) {
       expect([2, 4], contains(c.turnId));
       expect(c.explanationKo, isNotNull);
+      expect(c.category, isNotNull, reason: 'classified for S10');
     }
   }, timeout: const Timeout(Duration(minutes: 2)));
 

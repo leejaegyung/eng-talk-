@@ -6,6 +6,7 @@ import 'session_records.dart';
 final class ProgressStats {
   const ProgressStats({
     required this.todaySpeech,
+    this.todayPractice = Duration.zero,
     required this.weekSpeech,
     required this.speechMeasured,
     required this.completed,
@@ -16,6 +17,10 @@ final class ProgressStats {
   });
 
   final Duration todaySpeech;
+
+  /// Active time of today's finished sessions (measured), for the daily
+  /// goal.
+  final Duration todayPractice;
   final Duration weekSpeech;
 
   /// False when no session has a speaking-time estimate yet.
@@ -39,6 +44,7 @@ final class ProgressStats {
   }) {
     final today = _day(now);
     var todayMs = 0;
+    var todayPractice = Duration.zero;
     var weekMs = 0;
     var measured = false;
     var completed = 0;
@@ -57,10 +63,12 @@ final class ProgressStats {
       }
       switch (s.status) {
         case SessionStatus.completed:
+          if (day == today) todayPractice += s.duration;
           completed++;
           finished++;
           practiceDays.add(day);
         case SessionStatus.abandoned:
+          if (day == today) todayPractice += s.duration;
           finished++;
         case SessionStatus.active || SessionStatus.paused:
           break;
@@ -79,6 +87,7 @@ final class ProgressStats {
     }
     return ProgressStats(
       todaySpeech: Duration(milliseconds: todayMs),
+      todayPractice: todayPractice,
       weekSpeech: Duration(milliseconds: weekMs),
       speechMeasured: measured,
       completed: completed,

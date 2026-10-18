@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../app/l10n/gen/app_localizations.dart';
 import '../common/failure_text.dart';
+import '../common/goal_picker.dart';
 import '../common/privacy_notice.dart';
 import 'onboarding_controller.dart';
 
@@ -31,6 +32,18 @@ class OnboardingScreen extends ConsumerWidget {
         <Widget>[
           TextButton(onPressed: ctrl.back, child: Text(l10n.onboardingBack)),
           FilledButton(onPressed: ctrl.next, child: Text(l10n.onboardingAgree)),
+        ],
+      ),
+      OnboardingStep.goals => (
+        l10n.goalsTitle,
+        <Widget>[
+          const GoalPicker(),
+          const SizedBox(height: 16),
+          Text(l10n.goalsNote, style: theme.textTheme.bodySmall),
+        ],
+        <Widget>[
+          TextButton(onPressed: ctrl.back, child: Text(l10n.onboardingBack)),
+          FilledButton(onPressed: ctrl.next, child: Text(l10n.onboardingNext)),
         ],
       ),
       OnboardingStep.connect => (

@@ -1,6 +1,7 @@
 import '../conversation/session_enums.dart';
 import '../feedback/feedback.dart';
 import '../learning/learner_level.dart';
+import 'growth_stats.dart';
 import 'session_records.dart';
 
 /// Local store for sessions, transcripts, feedback and review (spec §9).
@@ -45,6 +46,12 @@ abstract interface class SessionRepository {
     required LearnerLevel level,
     required DateTime at,
   });
+
+  /// Corrections from sessions started at or after [since] (S10).
+  Future<List<CorrectionStat>> correctionStats({required DateTime since});
+
+  /// Assessed levels, oldest first (S10).
+  Future<List<LevelPoint>> levelHistory();
 
   /// Everything except credentials, for export (spec §9.2).
   Future<Map<String, Object?>> exportAll();

@@ -824,4 +824,110 @@ class AppLocalizationsKo extends AppLocalizations {
   @override
   String get conversationPausedInBackground =>
       '앱을 벗어나서 일시정지했어요.\n준비되면 계속하기를 눌러주세요.';
+
+  @override
+  String get goalsTitle => '학습 목표';
+
+  @override
+  String get goalsWhy => '왜 영어 말하기를 연습하나요?';
+
+  @override
+  String get goalEveryday => '일상 대화';
+
+  @override
+  String get goalTravel => '여행';
+
+  @override
+  String get goalWork => '업무·회의';
+
+  @override
+  String get goalInterview => '면접';
+
+  @override
+  String get goalConfidence => '자신감 키우기';
+
+  @override
+  String get goalsDaily => '하루 목표 시간';
+
+  @override
+  String goalsMinutes(int minutes) {
+    return '$minutes분';
+  }
+
+  @override
+  String get goalsNote => '목표에 맞는 대화 모드와 시간을 추천해 드려요. 설정에서 언제든 바꿀 수 있어요.';
+
+  @override
+  String homeGoalProgress(int done, int goal) {
+    return '오늘 $done분 / 목표 $goal분';
+  }
+
+  @override
+  String get homeGoalDone => '오늘 목표 달성!';
+
+  @override
+  String homeSuggestedMode(String goal, String mode) {
+    return '$goal 목표 추천: $mode';
+  }
+
+  @override
+  String get homeGrowth => '성장 기록';
+
+  @override
+  String get growthPeriodWeek => '7일';
+
+  @override
+  String get growthPeriodMonth => '30일';
+
+  @override
+  String get growthPractice => '연습 시간';
+
+  @override
+  String get growthSpeech => '말한 시간 (추정)';
+
+  @override
+  String get growthSessions => '대화 수';
+
+  @override
+  String growthSessionCount(int count) {
+    return '$count회';
+  }
+
+  @override
+  String get growthDaily => '날짜별 연습 시간';
+
+  @override
+  String growthDayBar(String date, int minutes) {
+    return '$date · $minutes분';
+  }
+
+  @override
+  String get growthEmpty => '이 기간에 끝낸 대화가 없어요.';
+
+  @override
+  String get growthWeakAreas => '자주 고친 부분';
+
+  @override
+  String get growthWeakNote => '대화 후 AI 피드백이 분류한 교정 기준이에요. 발음은 평가하지 않아요.';
+
+  @override
+  String get growthNoWeak => '아직 분류된 교정이 없어요. 대화를 마치고 결과를 보면 쌓여요.';
+
+  @override
+  String get growthLevels => '레벨 변화';
+
+  @override
+  String get growthNoLevels => '레벨 진단 기록이 없어요.';
+
+  @override
+  String get categoryGrammar => '문법 (시제·관사·전치사)';
+
+  @override
+  String get categoryWordChoice => '단어 선택';
+
+  @override
+  String get categoryStructure => '문장 구조·어순';
+
+  @override
+  String get categoryNaturalness => '자연스러운 표현';
 }

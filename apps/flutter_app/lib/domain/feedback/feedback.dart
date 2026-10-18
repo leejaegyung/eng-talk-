@@ -3,6 +3,22 @@ library;
 
 enum Severity { low, medium, high }
 
+/// Kind of mistake, as classified by the model, for the growth dashboard's
+/// weak areas (spec §3.2 S10). [wire] is the JSON value.
+enum ErrorCategory {
+  grammar('grammar'),
+  wordChoice('word_choice'),
+  structure('structure'),
+  naturalness('naturalness');
+
+  const ErrorCategory(this.wire);
+
+  final String wire;
+
+  static ErrorCategory? fromWire(Object? value) =>
+      values.where((c) => c.wire == value).firstOrNull;
+}
+
 final class Correction {
   const Correction({
     required this.turnId,
@@ -11,6 +27,7 @@ final class Correction {
     this.explanationKo,
     this.severity = Severity.medium,
     this.practicePrompt,
+    this.category,
   });
 
   /// The learner turn the [original] text was taken from.
@@ -20,6 +37,9 @@ final class Correction {
   final String? explanationKo;
   final Severity severity;
   final String? practicePrompt;
+
+  /// Null for older feedback or an unknown value.
+  final ErrorCategory? category;
 }
 
 final class Expression {

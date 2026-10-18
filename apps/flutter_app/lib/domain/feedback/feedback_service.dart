@@ -85,6 +85,7 @@ Return ONLY a JSON object, no other text:
       "suggested": "natural corrected sentence",
       "explanation_ko": "한국어로 짧은 이유",
       "severity": "low" | "medium" | "high",
+      "category": "grammar" | "word_choice" | "structure" | "naturalness",
       "practice_prompt": "a question that lets them say it again"
     }
   ],                                    // the 2-3 most important only
@@ -93,6 +94,9 @@ Return ONLY a JSON object, no other text:
 }
 Rules:
 - Only correct learner lines. "original" must be copied exactly from that line.
+- category: grammar = tense, articles, agreement, prepositions;
+  word_choice = wrong or missing vocabulary; structure = word order or
+  missing parts of a sentence; naturalness = correct but unnatural.
 - Skip trivial slips; prefer errors that hurt meaning or repeat.
 - Learner lines come from speech recognition. Do not correct punctuation or
   capitalization, or a word that looks misheard (a similar-sounding word
@@ -143,6 +147,7 @@ Rules:
           severity:
               Severity.values.asNameMap()[c['severity']] ?? Severity.medium,
           practicePrompt: _str(c['practice_prompt']),
+          category: ErrorCategory.fromWire(c['category']),
         ),
       );
     }

@@ -849,4 +849,113 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get conversationPausedInBackground =>
       'Paused while you were away.\nTap resume when you\'re ready.';
+
+  @override
+  String get goalsTitle => 'Your goals';
+
+  @override
+  String get goalsWhy => 'Why do you practice speaking?';
+
+  @override
+  String get goalEveryday => 'Everyday talk';
+
+  @override
+  String get goalTravel => 'Travel';
+
+  @override
+  String get goalWork => 'Work & meetings';
+
+  @override
+  String get goalInterview => 'Interviews';
+
+  @override
+  String get goalConfidence => 'Confidence';
+
+  @override
+  String get goalsDaily => 'Daily target';
+
+  @override
+  String goalsMinutes(int minutes) {
+    return '$minutes min';
+  }
+
+  @override
+  String get goalsNote =>
+      'We suggest a mode and session length that fit. You can change these in settings anytime.';
+
+  @override
+  String homeGoalProgress(int done, int goal) {
+    return 'Today $done / $goal min';
+  }
+
+  @override
+  String get homeGoalDone => 'Today\'s goal reached!';
+
+  @override
+  String homeSuggestedMode(String goal, String mode) {
+    return 'For $goal: $mode';
+  }
+
+  @override
+  String get homeGrowth => 'Progress';
+
+  @override
+  String get growthPeriodWeek => '7 days';
+
+  @override
+  String get growthPeriodMonth => '30 days';
+
+  @override
+  String get growthPractice => 'Practice time';
+
+  @override
+  String get growthSpeech => 'Speaking time (est.)';
+
+  @override
+  String get growthSessions => 'Sessions';
+
+  @override
+  String growthSessionCount(int count) {
+    return '$count';
+  }
+
+  @override
+  String get growthDaily => 'Practice by day';
+
+  @override
+  String growthDayBar(String date, int minutes) {
+    return '$date · $minutes min';
+  }
+
+  @override
+  String get growthEmpty => 'No finished sessions in this period.';
+
+  @override
+  String get growthWeakAreas => 'Most corrected';
+
+  @override
+  String get growthWeakNote =>
+      'Based on how post-session feedback classified corrections. Pronunciation is not assessed.';
+
+  @override
+  String get growthNoWeak =>
+      'No classified corrections yet. They build up as you finish sessions and open the results.';
+
+  @override
+  String get growthLevels => 'Level history';
+
+  @override
+  String get growthNoLevels => 'No placement results yet.';
+
+  @override
+  String get categoryGrammar => 'Grammar (tense, articles, prepositions)';
+
+  @override
+  String get categoryWordChoice => 'Word choice';
+
+  @override
+  String get categoryStructure => 'Sentence structure';
+
+  @override
+  String get categoryNaturalness => 'Natural phrasing';
 }

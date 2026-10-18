@@ -246,7 +246,8 @@ List<ChatChunk>? smartReplies(List<ChatMessage> messages) {
         '{"strengths": ["Kept the conversation going"], "corrections": '
         '[{"turn_id": ${line.group(1)}, "original": "${line.group(2)}", '
         '"suggested": "Fixed sentence.", "explanation_ko": "설명", '
-        '"severity": "high", "practice_prompt": "Say it again?"}], '
+        '"severity": "high", "category": "grammar", '
+        '"practice_prompt": "Say it again?"}], '
         '"expressions": [{"phrase": "That reminds me of", "meaning_ko": "그러고 보니"}], '
         '"next_topic": "Weekend plans"}',
       ),

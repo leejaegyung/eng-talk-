@@ -29,7 +29,7 @@ class AppDatabase extends _$AppDatabase {
       AppDatabase(driftDatabase(name: 'speaking_coach'));
 
   @override
-  int get schemaVersion => 3;
+  int get schemaVersion => 4;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -55,6 +55,8 @@ class AppDatabase extends _$AppDatabase {
         await m.createTable(schema.reviewQueue);
         await m.createTable(schema.assessments);
       },
+      from3To4: (m, schema) =>
+          m.addColumn(schema.corrections, schema.corrections.category),
     ),
     beforeOpen: (details) async {
       await customStatement('PRAGMA foreign_keys = ON');

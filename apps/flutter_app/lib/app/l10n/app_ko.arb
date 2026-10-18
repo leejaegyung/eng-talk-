@@ -514,5 +514,81 @@
   "settingsDeleteAll": "모든 대화 기록 삭제",
   "settingsDeleteAllConfirm": "모든 대화, 교정, 복습, 진단 기록을 지울까요? 되돌릴 수 없어요. (로그인과 설정은 유지돼요)",
   "settingsDeleted": "모든 기록을 삭제했어요.",
-  "conversationPausedInBackground": "앱을 벗어나서 일시정지했어요.\n준비되면 계속하기를 눌러주세요."
+  "conversationPausedInBackground": "앱을 벗어나서 일시정지했어요.\n준비되면 계속하기를 눌러주세요.",
+  "goalsTitle": "학습 목표",
+  "goalsWhy": "왜 영어 말하기를 연습하나요?",
+  "goalEveryday": "일상 대화",
+  "goalTravel": "여행",
+  "goalWork": "업무·회의",
+  "goalInterview": "면접",
+  "goalConfidence": "자신감 키우기",
+  "goalsDaily": "하루 목표 시간",
+  "goalsMinutes": "{minutes}분",
+  "@goalsMinutes": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "goalsNote": "목표에 맞는 대화 모드와 시간을 추천해 드려요. 설정에서 언제든 바꿀 수 있어요.",
+  "homeGoalProgress": "오늘 {done}분 / 목표 {goal}분",
+  "@homeGoalProgress": {
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "goal": {
+        "type": "int"
+      }
+    }
+  },
+  "homeGoalDone": "오늘 목표 달성!",
+  "homeSuggestedMode": "{goal} 목표 추천: {mode}",
+  "@homeSuggestedMode": {
+    "placeholders": {
+      "goal": {
+        "type": "String"
+      },
+      "mode": {
+        "type": "String"
+      }
+    }
+  },
+  "homeGrowth": "성장 기록",
+  "growthPeriodWeek": "7일",
+  "growthPeriodMonth": "30일",
+  "growthPractice": "연습 시간",
+  "growthSpeech": "말한 시간 (추정)",
+  "growthSessions": "대화 수",
+  "growthSessionCount": "{count}회",
+  "@growthSessionCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "growthDaily": "날짜별 연습 시간",
+  "growthDayBar": "{date} · {minutes}분",
+  "@growthDayBar": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      },
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "growthEmpty": "이 기간에 끝낸 대화가 없어요.",
+  "growthWeakAreas": "자주 고친 부분",
+  "growthWeakNote": "대화 후 AI 피드백이 분류한 교정 기준이에요. 발음은 평가하지 않아요.",
+  "growthNoWeak": "아직 분류된 교정이 없어요. 대화를 마치고 결과를 보면 쌓여요.",
+  "growthLevels": "레벨 변화",
+  "growthNoLevels": "레벨 진단 기록이 없어요.",
+  "categoryGrammar": "문법 (시제·관사·전치사)",
+  "categoryWordChoice": "단어 선택",
+  "categoryStructure": "문장 구조·어순",
+  "categoryNaturalness": "자연스러운 표현"
 }

@@ -5,6 +5,7 @@ import 'package:drift/drift.dart';
 import '../../domain/conversation/session_enums.dart';
 import '../../domain/feedback/feedback.dart' as fb;
 import '../../domain/learning/learner_level.dart';
+import '../../domain/sessions/growth_stats.dart';
 import '../../domain/sessions/session_records.dart';
 import '../../domain/sessions/session_repository.dart';
 import '../db/app_database.dart';
@@ -90,6 +91,7 @@ class DriftSessionRepository implements SessionRepository {
                   explanation: Value(c.explanationKo),
                   severity: Value(c.severity.name),
                   practicePrompt: Value(c.practicePrompt),
+                  category: Value(c.category?.wire),
                 ),
               );
           await _db
@@ -304,6 +306,36 @@ class DriftSessionRepository implements SessionRepository {
       );
 
   @override
+  Future<List<CorrectionStat>> correctionStats({
+    required DateTime since,
+  }) async {
+    final c = _db.corrections;
+    final s = _db.sessions;
+    final rows = await (_db.select(c).join([
+      innerJoin(s, s.id.equalsExp(c.sessionId)),
+    ])..where(s.startedAt.isBiggerOrEqualValue(since))).get();
+    return [
+      for (final r in rows)
+        CorrectionStat(
+          r.readTable(s).startedAt,
+          fb.ErrorCategory.fromWire(r.readTable(c).category),
+        ),
+    ];
+  }
+
+  @override
+  Future<List<LevelPoint>> levelHistory() async {
+    final rows = await (_db.select(
+      _db.assessments,
+    )..orderBy([(a) => OrderingTerm.asc(a.assessedAt)])).get();
+    return [
+      for (final r in rows)
+        if (LearnerLevel.values.asNameMap()[r.level] case final level?)
+          LevelPoint(r.assessedAt, level),
+    ];
+  }
+
+  @override
   Future<Map<String, Object?>> exportAll() async {
     final sessions = <Object?>[];
     for (final s in await list()) {
@@ -364,6 +396,7 @@ String encodeFeedback(fb.FeedbackResult f) => jsonEncode({
         'explanation_ko': c.explanationKo,
         'severity': c.severity.name,
         'practice_prompt': c.practicePrompt,
+        'category': c.category?.wire,
       },
   ],
   'expressions': [
@@ -391,6 +424,7 @@ fb.FeedbackResult decodeFeedback(String raw) {
               fb.Severity.values.asNameMap()[c['severity']] ??
               fb.Severity.medium,
           practicePrompt: c['practice_prompt'] as String?,
+          category: fb.ErrorCategory.fromWire(c['category']),
         ),
     ],
     expressions: [

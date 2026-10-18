@@ -6,6 +6,7 @@ import '../../app/l10n/gen/app_localizations.dart';
 import '../../app/router.dart';
 import '../../app/theme.dart';
 import '../../domain/conversation/session_enums.dart';
+import '../common/goal_picker.dart';
 import '../common/mode_text.dart';
 import '../conversation/conversation_request.dart';
 import '../setup/setup_controller.dart';
@@ -85,8 +86,21 @@ class HomeScreen extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         toolbarHeight: 72,
-        title: Row(spacing: 12, children: [const _Logo(), Text(l10n.appTitle)]),
+        title: Row(
+          spacing: 12,
+          children: [
+            const _Logo(),
+            Flexible(
+              child: Text(l10n.appTitle, overflow: TextOverflow.ellipsis),
+            ),
+          ],
+        ),
         actions: [
+          IconButton(
+            tooltip: l10n.homeGrowth,
+            onPressed: () => context.push(AppRoutes.growth),
+            icon: const Icon(Icons.insights_outlined),
+          ),
           IconButton(
             tooltip: l10n.homeHistory,
             onPressed: () => context.push(AppRoutes.history),
@@ -207,6 +221,33 @@ class HomeScreen extends ConsumerWidget {
                 ),
               const SizedBox(height: 8),
               _Hero(
+                goalLine: switch ((
+                  data?.goals.dailyMinutes,
+                  data?.stats.todayPractice.inMinutes,
+                )) {
+                  (final goal?, final done?) when done >= goal =>
+                    l10n.homeGoalDone,
+                  (final goal?, final done?) => l10n.homeGoalProgress(
+                    done,
+                    goal,
+                  ),
+                  _ => null,
+                },
+                goalProgress: switch ((
+                  data?.goals.dailyMinutes,
+                  data?.stats.todayPractice,
+                )) {
+                  (final goal?, final done?) =>
+                    (done.inSeconds / (goal * 60)).clamp(0.0, 1.0),
+                  _ => null,
+                },
+                suggestion: switch (data?.goals.goal) {
+                  final g? => l10n.homeSuggestedMode(
+                    goalName(l10n, g),
+                    modeName(l10n, g.mode),
+                  ),
+                  null => null,
+                },
                 headline: l10n.homeHeadline,
                 button: l10n.homeStartButton,
                 onStart: () => context.push(AppRoutes.setup),
@@ -278,7 +319,16 @@ class HomeScreen extends ConsumerWidget {
                   color: theme.colorScheme.onSurfaceVariant,
                 ),
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 8),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: OutlinedButton.icon(
+                  onPressed: () => context.push(AppRoutes.growth),
+                  icon: const Icon(Icons.insights_outlined),
+                  label: Text(l10n.homeGrowth),
+                ),
+              ),
+              const SizedBox(height: 8),
               if (data?.placed ?? false)
                 TextButton.icon(
                   onPressed: () => context.push(AppRoutes.assessment),
@@ -351,6 +401,9 @@ class _Badge extends StatelessWidget {
 /// Blue call-to-action card (kit's "Let's start learning" header).
 class _Hero extends StatelessWidget {
   const _Hero({
+    required this.goalLine,
+    required this.goalProgress,
+    required this.suggestion,
     required this.headline,
     required this.button,
     required this.onStart,
@@ -358,6 +411,12 @@ class _Hero extends StatelessWidget {
     required this.onNextTopic,
   });
 
+  /// Today's practice against the daily target; null without a target.
+  final String? goalLine;
+  final double? goalProgress;
+
+  /// Mode suggested by the learning goal.
+  final String? suggestion;
   final String headline;
   final String button;
   final VoidCallback onStart;
@@ -401,14 +460,42 @@ class _Hero extends StatelessWidget {
                   ),
                 ),
               ),
-              Container(
-                height: 4,
-                width: 56,
-                decoration: BoxDecoration(
-                  color: AppColors.orange,
-                  borderRadius: BorderRadius.circular(2),
+              if (goalProgress case final progress?)
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  spacing: 6,
+                  children: [
+                    Text(
+                      goalLine ?? '',
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        color: Colors.white,
+                      ),
+                    ),
+                    LinearProgressIndicator(
+                      value: progress,
+                      minHeight: 6,
+                      color: AppColors.orange,
+                      backgroundColor: Colors.white.withValues(alpha: .25),
+                      borderRadius: BorderRadius.circular(3),
+                    ),
+                  ],
+                )
+              else
+                Container(
+                  height: 4,
+                  width: 56,
+                  decoration: BoxDecoration(
+                    color: AppColors.orange,
+                    borderRadius: BorderRadius.circular(2),
+                  ),
                 ),
-              ),
+              if (suggestion case final text?)
+                Text(
+                  text,
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: Colors.white.withValues(alpha: .9),
+                  ),
+                ),
               Wrap(
                 spacing: 8,
                 runSpacing: 8,

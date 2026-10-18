@@ -13,4 +13,10 @@ abstract final class SettingKeys {
 
   /// [LearnerLevel] name; unset until the placement assessment (slice D).
   static const learnerLevel = 'learner.level';
+
+  /// [LearningGoal] name; unset until chosen (onboarding or settings).
+  static const learningGoal = 'learner.goal';
+
+  /// Daily practice target in minutes; unset = no target.
+  static const dailyGoalMinutes = 'learner.daily_minutes';
 }

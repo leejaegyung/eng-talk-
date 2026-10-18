@@ -6,6 +6,7 @@ import '../../domain/conversation/session_enums.dart';
 import '../../domain/sessions/progress_stats.dart';
 import '../../domain/sessions/session_records.dart';
 import '../../domain/settings/settings_store.dart';
+import '../common/goals_controller.dart';
 
 final class HomeData {
   const HomeData({
@@ -13,6 +14,7 @@ final class HomeData {
     this.unfinished,
     this.placed = false,
     this.nextTopic,
+    this.goals = const Goals(),
   });
 
   final ProgressStats stats;
@@ -25,11 +27,13 @@ final class HomeData {
 
   /// Suggested by the latest feedback.
   final String? nextTopic;
+  final Goals goals;
 }
 
 /// S03 home KPIs, reloaded whenever saved data changes.
 final homeProvider = FutureProvider.autoDispose<HomeData>((ref) async {
   ref.watch(dataVersionProvider);
+  final goals = await ref.watch(goalsProvider.future);
   final repo = ref.watch(sessionRepositoryProvider);
   final now = ref.watch(clockProvider)();
   final sessions = await repo.list();
@@ -49,6 +53,7 @@ final homeProvider = FutureProvider.autoDispose<HomeData>((ref) async {
         .map((s) => s.nextTopic)
         .nonNulls
         .firstOrNull,
+    goals: goals,
   );
 });
 
