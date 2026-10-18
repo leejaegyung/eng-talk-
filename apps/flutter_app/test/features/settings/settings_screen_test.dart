@@ -65,6 +65,8 @@ void main() {
   testWidgets('licenses page opens', (tester) async {
     await openSettings(tester);
     await tester.scrollUntilVisible(find.text('오픈소스 라이선스'), 100);
+    await tester.ensureVisible(find.text('오픈소스 라이선스'));
+    await tester.pumpAndSettle();
     await tester.tap(find.text('오픈소스 라이선스'));
     await tester.pumpAndSettle();
     expect(find.byType(LicensePage), findsOneWidget);
