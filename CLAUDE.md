@@ -18,6 +18,7 @@ scripts/check.sh          # 전체 검증: 시크릿 + 아키텍처 + format + a
 scripts/check.sh --fast   # 빠른 검증 (Stop 훅이 자동 실행)
 cd apps/flutter_app && flutter run -d macos   # 앱 실행
 scripts/release.sh 0.2.0  # 버전 릴리스: 태그 push → GitHub Release에 설치 파일 (ADR-010)
+cd apps/flutter_app && dart run tool/eval/sign_in.dart && flutter test tool/eval   # 실제 GPT 평가(1회 로그인)
 ```
 
 ## 절대 규칙 (훅·린트로 강제됨)

@@ -1,13 +1,11 @@
-// Evaluation set against the real model (P1-C1, spec §16.1): per mode, the
-// coach asks one question at a time and follows up after a one-sentence
-// answer; session feedback comes back as valid, transcript-backed JSON.
-// Uses the signed-in ChatGPT plan (no API charges):
-//   flutter test integration_test/coach_eval_test.dart -d macos
-//   flutter test integration_test/coach_eval_test.dart -d macos --dart-define=AI=gemini
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+// Evaluation set against the real model (P1-C1, spec §16.1), run from the
+// command line — no Xcode or app needed:
+//   dart run tool/eval/sign_in.dart          (once: ChatGPT sign-in)
+//   flutter test tool/eval                    (ChatGPT plan, no API charges)
+//   AI=gemini GEMINI_API_KEY=… flutter test tool/eval   (free Gemini key)
+// Per mode, the coach asks one question at a time and follows up; feedback
+// comes back as valid, transcript-backed JSON with word-order checks.
 import 'package:flutter_test/flutter_test.dart';
-import 'package:integration_test/integration_test.dart';
-import 'package:speaking_coach/app/providers.dart';
 import 'package:speaking_coach/core/logging/app_logger.dart';
 import 'package:speaking_coach/domain/conversation/prompt_composer.dart';
 import 'package:speaking_coach/domain/conversation/session_enums.dart';
@@ -18,11 +16,9 @@ import 'package:speaking_coach/domain/learning/placement.dart';
 import 'package:speaking_coach/domain/providers/ai_provider.dart';
 import 'package:speaking_coach/domain/sessions/session_records.dart';
 
-const _log = AppLogger('eval');
+import 'backend.dart';
 
-/// --dart-define=AI=gemini runs the same set against the free Gemini key
-/// (ADR-015) instead of the ChatGPT plan.
-const _gemini = String.fromEnvironment('AI') == 'gemini';
+const _log = AppLogger('eval');
 
 final _answers = {
   SessionMode.daily: 'I went to the park yesterday.',
@@ -74,28 +70,14 @@ int _sentences(String s) => RegExp(r'[^.!?]+[.!?]+')
     .length;
 
 void main() {
-  IntegrationTestWidgetsFlutterBinding.ensureInitialized();
-  late ProviderContainer c;
   late LlmProvider llm;
   late String model;
 
   setUpAll(() async {
-    c = ProviderContainer();
-    expect(
-      await c
-          .read(_gemini ? geminiAccountProvider : chatGptAccountProvider)
-          .isSignedIn(),
-      isTrue,
-      reason: _gemini
-          ? 'save a Gemini key in the app settings first'
-          : 'sign in with ChatGPT in the app first',
-    );
-    llm = c.read(_gemini ? geminiLlmProvider : chatGptLlmProvider);
-    model = await c.read(
-      _gemini ? geminiModelSelectorProvider : chatGptModelSelectorProvider,
-    )();
+    (llm, model) = await evalBackend();
+    // ignore: avoid_print
+    print('AI under test: $model');
   });
-  tearDownAll(() => c.dispose());
 
   Future<String> ask(List<ChatMessage> messages) async {
     final out = StringBuffer();
