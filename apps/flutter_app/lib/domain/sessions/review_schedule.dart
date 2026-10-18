@@ -18,6 +18,7 @@ abstract final class ReviewSchedule {
   static ReviewItem _with(ReviewItem i, DateTime now, int days, int reps) =>
       ReviewItem(
         id: i.id,
+        kind: i.kind,
         original: i.original,
         suggested: i.suggested,
         explanationKo: i.explanationKo,

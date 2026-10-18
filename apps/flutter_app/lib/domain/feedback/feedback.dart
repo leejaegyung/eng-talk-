@@ -42,6 +42,27 @@ final class Correction {
   final ErrorCategory? category;
 }
 
+/// Word order of one learner sentence, judged after the session: [ok]
+/// when the order is natural English; otherwise [corrected] is the same
+/// sentence in the right order (spec §3.2 S07, user request 2026-10-18).
+final class WordOrderCheck {
+  const WordOrderCheck({
+    required this.turnId,
+    required this.original,
+    required this.ok,
+    this.corrected,
+    this.explanationKo,
+  });
+
+  final int turnId;
+
+  /// What the learner said (from the transcript, not the model).
+  final String original;
+  final bool ok;
+  final String? corrected;
+  final String? explanationKo;
+}
+
 final class Expression {
   const Expression(this.phrase, {this.meaningKo});
 
@@ -56,6 +77,7 @@ final class FeedbackResult {
     this.expressions = const [],
     this.nextTopic,
     this.reduced = false,
+    this.wordOrder = const [],
   });
 
   static const empty = FeedbackResult(reduced: true);
@@ -64,6 +86,9 @@ final class FeedbackResult {
   final List<Correction> corrections;
   final List<Expression> expressions;
   final String? nextTopic;
+
+  /// One check per learner sentence, in transcript order.
+  final List<WordOrderCheck> wordOrder;
 
   /// True when the model's output couldn't be fully used and a safe,
   /// shortened result is shown instead (spec §11).

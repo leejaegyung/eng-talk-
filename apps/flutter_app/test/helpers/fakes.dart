@@ -282,7 +282,10 @@ List<ChatChunk>? smartReplies(List<ChatMessage> messages) {
         '"severity": "high", "category": "grammar", '
         '"practice_prompt": "Say it again?"}], '
         '"expressions": [{"phrase": "That reminds me of", "meaning_ko": "그러고 보니"}], '
-        '"next_topic": "Weekend plans"}',
+        '"next_topic": "Weekend plans", '
+        '"word_order": [{"turn_id": ${line.group(1)}, "ok": false, '
+        '"corrected": "${line.group(2)!.split(' ').reversed.join(' ')}", '
+        '"explanation_ko": "어순 설명"}]}',
       ),
     ];
   }

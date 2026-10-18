@@ -1163,4 +1163,49 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get setupAiScenarioNote =>
       'The AI makes up the situation and its role and tells you in its first line.';
+
+  @override
+  String get resultWordOrder => 'Word order';
+
+  @override
+  String resultWordOrderSummary(int total, int ok) {
+    return '$ok of $total sentences had natural word order';
+  }
+
+  @override
+  String get resultWordOrderOk => 'Natural order';
+
+  @override
+  String get resultWordOrderWrong => 'Order needs work';
+
+  @override
+  String get resultWordOrderNote =>
+      'Sentences with the wrong order come back in review as \'put the words in order\'. Tense and pronunciation aren\'t judged here.';
+
+  @override
+  String get reviewWordOrderTitle => 'Put the words in order';
+
+  @override
+  String get reviewWordOrderHelp =>
+      'Tap the words in order to build the sentence. Tap a placed word to take it back.';
+
+  @override
+  String get reviewWordOrderCheck => 'Check';
+
+  @override
+  String get reviewWordOrderCorrect => 'That\'s right!';
+
+  @override
+  String get reviewWordOrderTryAgain => 'Not quite. Try again?';
+
+  @override
+  String get reviewWordOrderReset => 'Reset';
+
+  @override
+  String get reviewWordOrderShow => 'Show answer';
+
+  @override
+  String reviewYouSaidBefore(String text) {
+    return 'You said: $text';
+  }
 }

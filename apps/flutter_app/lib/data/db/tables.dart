@@ -94,6 +94,9 @@ class Corrections extends Table {
 
   /// v4: [ErrorCategory] wire value; null for older feedback.
   TextColumn get category => text().nullable()();
+
+  /// v5: [ReviewKind] name; null = say it again.
+  TextColumn get kind => text().nullable()();
 }
 
 /// v3: suggested expressions from feedback.

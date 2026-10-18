@@ -83,10 +83,18 @@ void main() {
           ],
           expressions: const [Expression('I booked a room for')],
           nextTopic: 'Room service',
+          wordOrder: [
+            WordOrderCheck(
+              turnId: turn,
+              original: 'I want room for two night',
+              ok: false,
+              corrected: 'For two night I want room',
+            ),
+          ],
         ),
         t0,
       );
-      final due = (await a.dueReviews(t0)).single;
+      final due = (await a.dueReviews(t0)).first;
       await a.saveReview(ReviewSchedule.practiced(due, t0));
       await a.saveAssessment(
         sessionId: null,
@@ -118,14 +126,17 @@ void main() {
       final c = d.feedback!.corrections.single;
       expect(c.turnId, d.turns[1].id, reason: 'points at the restored turn');
       expect(c.category, ErrorCategory.grammar);
-      expect(await b.dueReviews(t0), isEmpty, reason: 'schedule kept');
-      expect(await b.dueReviews(t0.add(const Duration(days: 1))), hasLength(1));
+      expect((await b.dueReviews(t0)).map((r) => r.kind), [
+        ReviewKind.wordOrder,
+      ], reason: 'the practised one keeps its schedule');
+      expect(await b.dueReviews(t0.add(const Duration(days: 1))), hasLength(2));
+      expect(d.feedback!.wordOrder.single.turnId, d.turns[1].id);
       expect(
         (await b.recentExpressions()).single.phrase,
         'I booked a room for',
       );
       expect((await b.levelHistory()).single.level, LearnerLevel.l3);
-      expect(await b.correctionStats(since: t0), hasLength(1));
+      expect(await b.correctionStats(since: t0), hasLength(2));
 
       final again = await b.importAll(backup, t0);
       expect(again.added, 0);

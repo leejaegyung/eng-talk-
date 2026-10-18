@@ -1116,10 +1116,208 @@ i1.GeneratedColumn<String> _column_49(String aliasedName) =>
       type: i1.DriftSqlType.string,
       $customConstraints: 'NULL',
     );
+
+final class Schema5 extends i0.VersionedSchema {
+  Schema5({required super.database}) : super(version: 5);
+  @override
+  late final List<i1.DatabaseSchemaEntity> entities = [
+    profiles,
+    providers,
+    sessions,
+    turns,
+    speechMetrics,
+    corrections,
+    appSettings,
+    expressions,
+    reviewQueue,
+    assessments,
+  ];
+  late final Shape0 profiles = Shape0(
+    source: i0.VersionedTable(
+      entityName: 'profiles',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: [],
+      columns: [_column_0, _column_1, _column_2, _column_3, _column_4],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
+  late final Shape1 providers = Shape1(
+    source: i0.VersionedTable(
+      entityName: 'providers',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: [],
+      columns: [_column_0, _column_5, _column_6, _column_7, _column_8],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
+  late final Shape7 sessions = Shape7(
+    source: i0.VersionedTable(
+      entityName: 'sessions',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: [],
+      columns: [
+        _column_0,
+        _column_9,
+        _column_10,
+        _column_11,
+        _column_30,
+        _column_31,
+        _column_32,
+        _column_33,
+        _column_12,
+        _column_13,
+        _column_14,
+        _column_15,
+      ],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
+  late final Shape8 turns = Shape8(
+    source: i0.VersionedTable(
+      entityName: 'turns',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: [],
+      columns: [
+        _column_0,
+        _column_16,
+        _column_17,
+        _column_18,
+        _column_12,
+        _column_13,
+        _column_19,
+        _column_34,
+        _column_35,
+      ],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
+  late final Shape4 speechMetrics = Shape4(
+    source: i0.VersionedTable(
+      entityName: 'speech_metrics',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: ['PRIMARY KEY(session_id)'],
+      columns: [_column_16, _column_20, _column_21, _column_22, _column_23],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
+  late final Shape14 corrections = Shape14(
+    source: i0.VersionedTable(
+      entityName: 'corrections',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: [],
+      columns: [
+        _column_0,
+        _column_16,
+        _column_24,
+        _column_25,
+        _column_26,
+        _column_27,
+        _column_28,
+        _column_36,
+        _column_37,
+        _column_49,
+        _column_50,
+      ],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
+  late final Shape6 appSettings = Shape6(
+    source: i0.VersionedTable(
+      entityName: 'app_settings',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: ['PRIMARY KEY(name)'],
+      columns: [_column_5, _column_29],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
+  late final Shape10 expressions = Shape10(
+    source: i0.VersionedTable(
+      entityName: 'expressions',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: [],
+      columns: [_column_0, _column_38, _column_39, _column_40],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
+  late final Shape11 reviewQueue = Shape11(
+    source: i0.VersionedTable(
+      entityName: 'review_queue',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: [],
+      columns: [_column_0, _column_41, _column_42, _column_43, _column_44],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
+  late final Shape12 assessments = Shape12(
+    source: i0.VersionedTable(
+      entityName: 'assessments',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: [],
+      columns: [_column_0, _column_45, _column_46, _column_47, _column_48],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
+}
+
+class Shape14 extends i0.VersionedTable {
+  Shape14({required super.source, required super.alias}) : super.aliased();
+  i1.GeneratedColumn<int> get id =>
+      columnsByName['id']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<int> get sessionId =>
+      columnsByName['session_id']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<int> get turnId =>
+      columnsByName['turn_id']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<String> get original =>
+      columnsByName['original']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get suggested =>
+      columnsByName['suggested']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get explanation =>
+      columnsByName['explanation']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<int> get practiced =>
+      columnsByName['practiced']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<String> get severity =>
+      columnsByName['severity']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get practicePrompt =>
+      columnsByName['practice_prompt']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get category =>
+      columnsByName['category']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get kind =>
+      columnsByName['kind']! as i1.GeneratedColumn<String>;
+}
+
+i1.GeneratedColumn<String> _column_50(String aliasedName) =>
+    i1.GeneratedColumn<String>(
+      'kind',
+      aliasedName,
+      true,
+      type: i1.DriftSqlType.string,
+      $customConstraints: 'NULL',
+    );
 i0.MigrationStepWithVersion migrationSteps({
   required Future<void> Function(i1.Migrator m, Schema2 schema) from1To2,
   required Future<void> Function(i1.Migrator m, Schema3 schema) from2To3,
   required Future<void> Function(i1.Migrator m, Schema4 schema) from3To4,
+  required Future<void> Function(i1.Migrator m, Schema5 schema) from4To5,
 }) {
   return (currentVersion, database) async {
     switch (currentVersion) {
@@ -1138,6 +1336,11 @@ i0.MigrationStepWithVersion migrationSteps({
         final migrator = i1.Migrator(database, schema);
         await from3To4(migrator, schema);
         return 4;
+      case 4:
+        final schema = Schema5(database: database);
+        final migrator = i1.Migrator(database, schema);
+        await from4To5(migrator, schema);
+        return 5;
       default:
         throw ArgumentError.value('Unknown migration from $currentVersion');
     }
@@ -1148,10 +1351,12 @@ i1.OnUpgrade stepByStep({
   required Future<void> Function(i1.Migrator m, Schema2 schema) from1To2,
   required Future<void> Function(i1.Migrator m, Schema3 schema) from2To3,
   required Future<void> Function(i1.Migrator m, Schema4 schema) from3To4,
+  required Future<void> Function(i1.Migrator m, Schema5 schema) from4To5,
 }) => i0.VersionedSchema.stepByStepHelper(
   step: migrationSteps(
     from1To2: from1To2,
     from2To3: from2To3,
     from3To4: from3To4,
+    from4To5: from4To5,
   ),
 );

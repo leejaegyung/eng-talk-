@@ -199,6 +199,52 @@ void main() {
     expect(await repo.recentExpressions(limit: 1), hasLength(1));
   });
 
+  test(
+    'word-order mistakes become word-order reviews, no duplicates',
+    () async {
+      final (id, turn) = await sessionWithTurns();
+      await repo.saveFeedback(
+        id,
+        FeedbackResult(
+          corrections: [
+            Correction(
+              turnId: turn,
+              original: 'I go there yesterday',
+              suggested: 'Yesterday I went there.',
+            ),
+          ],
+          wordOrder: [
+            WordOrderCheck(
+              turnId: turn,
+              original: 'I go there yesterday',
+              ok: false,
+              corrected: 'Yesterday I go there',
+              explanationKo: '시간 표현은 앞에',
+            ),
+            // Same answer as the correction above: not asked twice.
+            WordOrderCheck(
+              turnId: turn,
+              original: 'I go there yesterday',
+              ok: false,
+              corrected: 'yesterday I went there',
+            ),
+            WordOrderCheck(turnId: turn, original: 'ok one', ok: true),
+          ],
+        ),
+        t0,
+      );
+      final due = await repo.dueReviews(t0);
+      expect(due.map((r) => r.kind), [ReviewKind.say, ReviewKind.wordOrder]);
+      expect(due.last.suggested, 'Yesterday I go there');
+      final d = (await repo.load(id))!;
+      expect(d.feedback!.wordOrder, hasLength(3));
+      expect(
+        (await repo.correctionStats(since: t0)).last.category,
+        ErrorCategory.structure,
+      );
+    },
+  );
+
   test('search matches topic or transcript; newest first', () async {
     await sessionWithTurns(topic: 'Travel');
     final (second, _) = await sessionWithTurns(topic: 'Food');

@@ -3,7 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../app/l10n/gen/app_localizations.dart';
 import '../../domain/learning/focus.dart';
+import '../../domain/sessions/session_records.dart';
 import 'review_controller.dart';
+import 'word_order_exercise.dart';
 
 class ReviewScreen extends ConsumerWidget {
   const ReviewScreen({super.key});
@@ -39,58 +41,66 @@ class ReviewScreen extends ConsumerWidget {
                     ] else
                       Text(l10n.reviewEmpty),
                     for (final item in items)
-                      Card(
-                        child: Padding(
-                          padding: const EdgeInsets.all(16),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            spacing: 8,
-                            children: [
-                              Text(
-                                item.original,
-                                style: theme.textTheme.bodyLarge?.copyWith(
-                                  decoration: TextDecoration.lineThrough,
-                                  color: theme.colorScheme.outline,
+                      if (item.kind == ReviewKind.wordOrder)
+                        WordOrderExercise(
+                          key: ValueKey(item.id),
+                          item: item,
+                          onDone: () => ctrl.done(item),
+                          onLater: () => ctrl.later(item),
+                        )
+                      else
+                        Card(
+                          child: Padding(
+                            padding: const EdgeInsets.all(16),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              spacing: 8,
+                              children: [
+                                Text(
+                                  item.original,
+                                  style: theme.textTheme.bodyLarge?.copyWith(
+                                    decoration: TextDecoration.lineThrough,
+                                    color: theme.colorScheme.outline,
+                                  ),
                                 ),
-                              ),
-                              Text(
-                                item.suggested,
-                                style: theme.textTheme.titleMedium?.copyWith(
-                                  color: theme.colorScheme.primary,
+                                Text(
+                                  item.suggested,
+                                  style: theme.textTheme.titleMedium?.copyWith(
+                                    color: theme.colorScheme.primary,
+                                  ),
                                 ),
-                              ),
-                              if (item.explanationKo case final e?) Text(e),
-                              if (s.heard[item.id] case final h?
-                                  when h.isNotEmpty)
-                                Text(l10n.resultYouSaid(h)),
-                              Wrap(
-                                spacing: 8,
-                                children: [
-                                  OutlinedButton.icon(
-                                    onPressed: !s.busy
-                                        ? () => ctrl.practice(item.id)
-                                        : null,
-                                    icon: const Icon(Icons.mic),
-                                    label: Text(
-                                      s.listeningTo == item.id
-                                          ? l10n.resultListening
-                                          : l10n.resultSayAgain,
+                                if (item.explanationKo case final e?) Text(e),
+                                if (s.heard[item.id] case final h?
+                                    when h.isNotEmpty)
+                                  Text(l10n.resultYouSaid(h)),
+                                Wrap(
+                                  spacing: 8,
+                                  children: [
+                                    OutlinedButton.icon(
+                                      onPressed: !s.busy
+                                          ? () => ctrl.practice(item.id)
+                                          : null,
+                                      icon: const Icon(Icons.mic),
+                                      label: Text(
+                                        s.listeningTo == item.id
+                                            ? l10n.resultListening
+                                            : l10n.resultSayAgain,
+                                      ),
                                     ),
-                                  ),
-                                  FilledButton(
-                                    onPressed: () => ctrl.done(item),
-                                    child: Text(l10n.reviewDone),
-                                  ),
-                                  TextButton(
-                                    onPressed: () => ctrl.later(item),
-                                    child: Text(l10n.reviewLater),
-                                  ),
-                                ],
-                              ),
-                            ],
+                                    FilledButton(
+                                      onPressed: () => ctrl.done(item),
+                                      child: Text(l10n.reviewDone),
+                                    ),
+                                    TextButton(
+                                      onPressed: () => ctrl.later(item),
+                                      child: Text(l10n.reviewLater),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
                           ),
                         ),
-                      ),
                     if (s.expressions.isNotEmpty) ...[
                       const SizedBox(height: 24),
                       Text(

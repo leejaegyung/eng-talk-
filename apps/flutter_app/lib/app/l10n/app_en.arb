@@ -333,5 +333,18 @@
   "setupAiTopic": "🎲 Random (AI picks)",
   "setupAiScenario": "🎲 Random scenario (AI picks)",
   "setupAiTopicNote": "When you start, the AI picks a different topic each time and tells you in its first line.",
-  "setupAiScenarioNote": "The AI makes up the situation and its role and tells you in its first line."
+  "setupAiScenarioNote": "The AI makes up the situation and its role and tells you in its first line.",
+  "resultWordOrder": "Word order",
+  "resultWordOrderSummary": "{ok} of {total} sentences had natural word order",
+  "resultWordOrderOk": "Natural order",
+  "resultWordOrderWrong": "Order needs work",
+  "resultWordOrderNote": "Sentences with the wrong order come back in review as 'put the words in order'. Tense and pronunciation aren't judged here.",
+  "reviewWordOrderTitle": "Put the words in order",
+  "reviewWordOrderHelp": "Tap the words in order to build the sentence. Tap a placed word to take it back.",
+  "reviewWordOrderCheck": "Check",
+  "reviewWordOrderCorrect": "That's right!",
+  "reviewWordOrderTryAgain": "Not quite. Try again?",
+  "reviewWordOrderReset": "Reset",
+  "reviewWordOrderShow": "Show answer",
+  "reviewYouSaidBefore": "You said: {text}"
 }

@@ -4,7 +4,9 @@ import 'package:go_router/go_router.dart';
 
 import '../../app/l10n/gen/app_localizations.dart';
 import '../../app/router.dart';
+import '../../app/theme.dart';
 import '../../domain/conversation/session_enums.dart';
+import '../../domain/feedback/feedback.dart';
 import '../common/failure_text.dart';
 import '../common/mode_text.dart';
 import '../conversation/conversation_request.dart';
@@ -136,6 +138,24 @@ class ResultScreen extends ConsumerWidget {
                 style: theme.textTheme.bodySmall,
               ),
             ),
+          if (f.wordOrder.isNotEmpty) ...[
+            heading(l10n.resultWordOrder),
+            Text(
+              l10n.resultWordOrderSummary(
+                f.wordOrder.length,
+                f.wordOrder.where((w) => w.ok).length,
+              ),
+              style: theme.textTheme.titleSmall,
+            ),
+            for (final w in f.wordOrder) _WordOrderRow(check: w),
+            Padding(
+              padding: const EdgeInsets.only(top: 8),
+              child: Text(
+                l10n.resultWordOrderNote,
+                style: theme.textTheme.bodySmall,
+              ),
+            ),
+          ],
           if (f.expressions.isNotEmpty) ...[
             heading(l10n.resultExpressions),
             Wrap(
@@ -291,6 +311,57 @@ class _CorrectionCard extends StatelessWidget {
             ),
             if (heard case final h? when h.isNotEmpty)
               Text(l10n.resultYouSaid(h)),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// One learner sentence with its word-order verdict.
+class _WordOrderRow extends StatelessWidget {
+  const _WordOrderRow({required this.check});
+
+  final WordOrderCheck check;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final theme = Theme.of(context);
+    final ok = check.ok;
+    return Semantics(
+      label: ok ? l10n.resultWordOrderOk : l10n.resultWordOrderWrong,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 8),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          spacing: 12,
+          children: [
+            Icon(
+              ok ? Icons.check_circle : Icons.swap_horiz,
+              color: ok ? AppColors.green : AppColors.orange,
+            ),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                spacing: 4,
+                children: [
+                  Text(check.original),
+                  if (!ok && check.corrected != null)
+                    Text(
+                      check.corrected!,
+                      style: theme.textTheme.titleSmall?.copyWith(
+                        color: theme.colorScheme.primary,
+                      ),
+                    ),
+                  if (!ok && check.explanationKo != null)
+                    Text(
+                      check.explanationKo!,
+                      style: theme.textTheme.bodySmall,
+                    ),
+                ],
+              ),
+            ),
           ],
         ),
       ),

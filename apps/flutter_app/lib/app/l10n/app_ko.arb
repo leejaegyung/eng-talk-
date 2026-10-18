@@ -678,5 +678,35 @@
   "setupAiTopic": "🎲 랜덤 (AI가 정해요)",
   "setupAiScenario": "🎲 랜덤 상황 (AI가 정해요)",
   "setupAiTopicNote": "대화를 시작하면 AI가 매번 다른 주제를 골라 첫마디에 알려줘요.",
-  "setupAiScenarioNote": "AI가 상황과 자기 역할을 정해서 첫마디에 알려줘요."
+  "setupAiScenarioNote": "AI가 상황과 자기 역할을 정해서 첫마디에 알려줘요.",
+  "resultWordOrder": "어순 체크",
+  "resultWordOrderSummary": "{total}문장 중 {ok}문장 어순이 맞았어요",
+  "@resultWordOrderSummary": {
+    "placeholders": {
+      "total": {
+        "type": "int"
+      },
+      "ok": {
+        "type": "int"
+      }
+    }
+  },
+  "resultWordOrderOk": "어순 맞음",
+  "resultWordOrderWrong": "어순 다시 보기",
+  "resultWordOrderNote": "어순이 틀린 문장은 복습에서 '단어 순서 맞추기'로 연습해요. 발음·시제는 여기서 보지 않아요.",
+  "reviewWordOrderTitle": "단어 순서 맞추기",
+  "reviewWordOrderHelp": "단어를 순서대로 눌러 문장을 완성하세요. 잘못 누른 단어는 위에서 다시 누르면 빠져요.",
+  "reviewWordOrderCheck": "확인",
+  "reviewWordOrderCorrect": "정답이에요!",
+  "reviewWordOrderTryAgain": "순서가 달라요. 다시 해볼까요?",
+  "reviewWordOrderReset": "다시",
+  "reviewWordOrderShow": "정답 보기",
+  "reviewYouSaidBefore": "전에 말한 문장: {text}",
+  "@reviewYouSaidBefore": {
+    "placeholders": {
+      "text": {
+        "type": "String"
+      }
+    }
+  }
 }

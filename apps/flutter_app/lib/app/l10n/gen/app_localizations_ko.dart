@@ -1126,4 +1126,49 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get setupAiScenarioNote => 'AI가 상황과 자기 역할을 정해서 첫마디에 알려줘요.';
+
+  @override
+  String get resultWordOrder => '어순 체크';
+
+  @override
+  String resultWordOrderSummary(int total, int ok) {
+    return '$total문장 중 $ok문장 어순이 맞았어요';
+  }
+
+  @override
+  String get resultWordOrderOk => '어순 맞음';
+
+  @override
+  String get resultWordOrderWrong => '어순 다시 보기';
+
+  @override
+  String get resultWordOrderNote =>
+      '어순이 틀린 문장은 복습에서 \'단어 순서 맞추기\'로 연습해요. 발음·시제는 여기서 보지 않아요.';
+
+  @override
+  String get reviewWordOrderTitle => '단어 순서 맞추기';
+
+  @override
+  String get reviewWordOrderHelp =>
+      '단어를 순서대로 눌러 문장을 완성하세요. 잘못 누른 단어는 위에서 다시 누르면 빠져요.';
+
+  @override
+  String get reviewWordOrderCheck => '확인';
+
+  @override
+  String get reviewWordOrderCorrect => '정답이에요!';
+
+  @override
+  String get reviewWordOrderTryAgain => '순서가 달라요. 다시 해볼까요?';
+
+  @override
+  String get reviewWordOrderReset => '다시';
+
+  @override
+  String get reviewWordOrderShow => '정답 보기';
+
+  @override
+  String reviewYouSaidBefore(String text) {
+    return '전에 말한 문장: $text';
+  }
 }

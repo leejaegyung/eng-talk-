@@ -231,6 +231,18 @@ void main() {
         text: 'The best part was swim in the sea. It was very relax.',
         startedAt: t0,
       ),
+      TurnRecord(
+        id: 5,
+        speaker: Speaker.assistant,
+        text: 'Sounds lovely. What did you like about the food?',
+        startedAt: t0,
+      ),
+      TurnRecord(
+        id: 6,
+        speaker: Speaker.user,
+        text: 'Very much I like the seafood there.',
+        startedAt: t0,
+      ),
     ];
     final f = await FeedbackService(llm)
         .evaluate(model: model, setup: const SessionSetup(), turns: turns);
@@ -239,8 +251,15 @@ void main() {
     );
     expect(f.reduced, isFalse);
     expect(f.corrections, isNotEmpty);
+    // ignore: avoid_print
+    print(
+      'WORD ORDER: ${[for (final w in f.wordOrder) '${w.turnId} ${w.ok} ${w.corrected ?? ''}']}',
+    );
+    final scrambled = f.wordOrder.where((w) => w.turnId == 6).single;
+    expect(scrambled.ok, isFalse, reason: 'wrong order is caught');
+    expect(scrambled.corrected!.toLowerCase(), startsWith('i like'));
     for (final c in f.corrections) {
-      expect([2, 4], contains(c.turnId));
+      expect([2, 4, 6], contains(c.turnId));
       expect(c.explanationKo, isNotNull);
       expect(c.category, isNotNull, reason: 'classified for S10');
     }

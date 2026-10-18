@@ -5,9 +5,11 @@ import 'package:drift/drift.dart';
 import '../../domain/conversation/session_enums.dart';
 import '../../domain/feedback/feedback.dart' as fb;
 import '../../domain/learning/learner_level.dart';
+import '../../domain/sessions/session_records.dart' show ReviewKind;
 import '../../domain/sessions/session_repository.dart';
 import '../db/app_database.dart';
-import 'drift_session_repository.dart' show decodeFeedback, encodeFeedback;
+import 'drift_session_repository.dart'
+    show decodeFeedback, encodeFeedback, wordOrderReviews;
 
 /// Backup file contents (spec §9.2, §16.2 backup/restore). Version 2 keeps
 /// everything a restore needs: turn ids that corrections point to, the
@@ -289,6 +291,56 @@ class Backup {
             ),
           );
     }
+    // Word-order checks point at turns too; their reviews come back with the
+    // schedule they had.
+    final wordOrder = [
+      for (final w in f.wordOrder)
+        if (turnIds[w.turnId] case final turn?)
+          fb.WordOrderCheck(
+            turnId: turn,
+            original: w.original,
+            ok: w.ok,
+            corrected: w.corrected,
+            explanationKo: w.explanationKo,
+          ),
+    ];
+    for (final w in wordOrderReviews(
+      fb.FeedbackResult(corrections: corrections, wordOrder: wordOrder),
+    )) {
+      final review = reviews
+          .where(
+            (r) => r['original'] == w.original && r['suggested'] == w.corrected,
+          )
+          .firstOrNull;
+      final correctionId = await _db
+          .into(_db.corrections)
+          .insert(
+            CorrectionsCompanion.insert(
+              sessionId: id,
+              turnId: w.turnId,
+              original: w.original,
+              suggested: w.corrected!,
+              explanation: Value(w.explanationKo),
+              category: Value(fb.ErrorCategory.structure.wire),
+              kind: Value(ReviewKind.wordOrder.name),
+              practiced: Value(review?['practiced'] == true),
+            ),
+          );
+      await _db
+          .into(_db.reviewQueue)
+          .insert(
+            ReviewQueueCompanion.insert(
+              correctionId: correctionId,
+              dueAt: _time(review?['due_at']) ?? now,
+              intervalDays: Value(
+                (review?['interval_days'] as num?)?.toInt() ?? 0,
+              ),
+              repetitions: Value(
+                (review?['repetitions'] as num?)?.toInt() ?? 0,
+              ),
+            ),
+          );
+    }
     for (final e in f.expressions) {
       await _db
           .into(_db.expressions)
@@ -310,6 +362,7 @@ class Backup {
               expressions: f.expressions,
               nextTopic: f.nextTopic,
               reduced: f.reduced,
+              wordOrder: wordOrder,
             ),
           ),
         ),

@@ -66,11 +66,13 @@ void main() {
   String json({
     List<Object> corrections = const [],
     List<Object> expressions = const ['That reminds me of...'],
+    List<Object>? wordOrder,
   }) => jsonEncode({
     'strengths': ['Answered every question'],
     'corrections': corrections,
     'expressions': expressions,
     'next_topic': 'Weekend plans',
+    'word_order': ?wordOrder,
   });
 
   Map<String, Object> correction(
@@ -129,6 +131,54 @@ void main() {
       ),
     ]);
     expect(f.corrections.map((c) => c.category), [ErrorCategory.grammar, null]);
+  });
+
+  group('word order', () {
+    test('one verdict per learner line, in transcript order', () async {
+      final (f, llm) = await run([
+        json(
+          wordOrder: [
+            {'turn_id': 4, 'ok': true},
+            {
+              'turn_id': 2,
+              'ok': false,
+              'corrected': 'Yesterday I go to the park with my friend.',
+              'explanation_ko': '시간 표현은 문장 앞이나 끝에',
+            },
+          ],
+        ),
+      ]);
+      expect(f.wordOrder.map((w) => w.turnId), [2, 4]);
+      final wrong = f.wordOrder.first;
+      expect(wrong.ok, isFalse);
+      expect(wrong.original, 'I go to the park yesterday with my friend.');
+      expect(wrong.corrected, startsWith('Yesterday'));
+      expect(llm.requests.single.first.content, contains('"word_order"'));
+    });
+
+    test('unbacked or unusable verdicts are dropped', () async {
+      final (f, _) = await run([
+        json(
+          wordOrder: [
+            {'turn_id': 3, 'ok': true}, // a quick action, not an answer
+            {'turn_id': 99, 'ok': true}, // no such line
+            {'turn_id': 2, 'ok': false}, // wrong but no answer
+            {
+              'turn_id': 4,
+              'ok': false,
+              'corrected': 'Football is my favourite sport ever.', // a rewrite
+            },
+          ],
+        ),
+      ]);
+      expect(f.wordOrder, isEmpty);
+    });
+
+    test('missing word_order is fine (older replies)', () async {
+      final (f, _) = await run([json()]);
+      expect(f.wordOrder, isEmpty);
+      expect(f.reduced, isFalse);
+    });
   });
 
   test('transcript is sent with turn ids; quick actions marked', () async {

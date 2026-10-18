@@ -139,8 +139,13 @@ final class SessionDetail {
 
 /// A correction to say again later (spec §12.3), spaced by
 /// [intervalDays].
+/// How an item is reviewed: say the corrected sentence, or put its words
+/// in order.
+enum ReviewKind { say, wordOrder }
+
 final class ReviewItem {
   const ReviewItem({
+    this.kind = ReviewKind.say,
     required this.id,
     required this.original,
     required this.suggested,
@@ -151,6 +156,7 @@ final class ReviewItem {
   });
 
   final int id;
+  final ReviewKind kind;
   final String original;
   final String suggested;
   final String? explanationKo;

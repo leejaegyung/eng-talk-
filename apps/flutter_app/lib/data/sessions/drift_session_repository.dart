@@ -76,43 +76,62 @@ class DriftSessionRepository implements SessionRepository {
   });
 
   @override
-  Future<void> saveFeedback(int sessionId, fb.FeedbackResult f, DateTime now) =>
-      _db.transaction(() async {
-        await (_db.update(_db.sessions)..where((s) => s.id.equals(sessionId)))
-            .write(SessionsCompanion(feedbackJson: Value(encodeFeedback(f))));
-        for (final c in f.corrections) {
-          final id = await _db
-              .into(_db.corrections)
-              .insert(
-                CorrectionsCompanion.insert(
-                  sessionId: sessionId,
-                  turnId: c.turnId,
-                  original: c.original,
-                  suggested: c.suggested,
-                  explanation: Value(c.explanationKo),
-                  severity: Value(c.severity.name),
-                  practicePrompt: Value(c.practicePrompt),
-                  category: Value(c.category?.wire),
-                ),
-              );
-          await _db
-              .into(_db.reviewQueue)
-              .insert(
-                ReviewQueueCompanion.insert(correctionId: id, dueAt: now),
-              );
-        }
-        for (final e in f.expressions) {
-          await _db
-              .into(_db.expressions)
-              .insert(
-                ExpressionsCompanion.insert(
-                  phrase: e.phrase,
-                  meaningKo: Value(e.meaningKo),
-                  sourceSessionId: sessionId,
-                ),
-              );
-        }
-      });
+  Future<void> saveFeedback(
+    int sessionId,
+    fb.FeedbackResult f,
+    DateTime now,
+  ) => _db.transaction(() async {
+    await (_db.update(_db.sessions)..where((s) => s.id.equals(sessionId)))
+        .write(SessionsCompanion(feedbackJson: Value(encodeFeedback(f))));
+    for (final c in f.corrections) {
+      final id = await _db
+          .into(_db.corrections)
+          .insert(
+            CorrectionsCompanion.insert(
+              sessionId: sessionId,
+              turnId: c.turnId,
+              original: c.original,
+              suggested: c.suggested,
+              explanation: Value(c.explanationKo),
+              severity: Value(c.severity.name),
+              practicePrompt: Value(c.practicePrompt),
+              category: Value(c.category?.wire),
+            ),
+          );
+      await _db
+          .into(_db.reviewQueue)
+          .insert(ReviewQueueCompanion.insert(correctionId: id, dueAt: now));
+    }
+    for (final w in wordOrderReviews(f)) {
+      final id = await _db
+          .into(_db.corrections)
+          .insert(
+            CorrectionsCompanion.insert(
+              sessionId: sessionId,
+              turnId: w.turnId,
+              original: w.original,
+              suggested: w.corrected!,
+              explanation: Value(w.explanationKo),
+              category: Value(fb.ErrorCategory.structure.wire),
+              kind: Value(ReviewKind.wordOrder.name),
+            ),
+          );
+      await _db
+          .into(_db.reviewQueue)
+          .insert(ReviewQueueCompanion.insert(correctionId: id, dueAt: now));
+    }
+    for (final e in f.expressions) {
+      await _db
+          .into(_db.expressions)
+          .insert(
+            ExpressionsCompanion.insert(
+              phrase: e.phrase,
+              meaningKo: Value(e.meaningKo),
+              sourceSessionId: sessionId,
+            ),
+          );
+    }
+  });
 
   @override
   Future<List<SessionSummary>> list({String? query}) async {
@@ -255,6 +274,11 @@ class DriftSessionRepository implements SessionRepository {
       for (final r in rows)
         ReviewItem(
           id: r.readTable(_db.reviewQueue).id,
+          kind:
+              ReviewKind.values.asNameMap()[r
+                  .readTable(_db.corrections)
+                  .kind] ??
+              ReviewKind.say,
           original: r.readTable(_db.corrections).original,
           suggested: r.readTable(_db.corrections).suggested,
           explanationKo: r.readTable(_db.corrections).explanation,
@@ -377,7 +401,34 @@ String encodeFeedback(fb.FeedbackResult f) => jsonEncode({
   ],
   'next_topic': f.nextTopic,
   'reduced': f.reduced,
+  'word_order': [
+    for (final w in f.wordOrder)
+      {
+        'turn_id': w.turnId,
+        'original': w.original,
+        'ok': w.ok,
+        'corrected': w.corrected,
+        'explanation_ko': w.explanationKo,
+      },
+  ],
 });
+
+/// Word-order mistakes to practise, except where a correction already asks
+/// the learner to say the same sentence.
+List<fb.WordOrderCheck> wordOrderReviews(fb.FeedbackResult f) {
+  String norm(String s) =>
+      s.toLowerCase().replaceAll(RegExp(r"[^a-z0-9' ]"), '').trim();
+  final said = {
+    for (final c in f.corrections) '${c.turnId}|${norm(c.suggested)}',
+  };
+  return [
+    for (final w in f.wordOrder)
+      if (!w.ok &&
+          w.corrected != null &&
+          !said.contains('${w.turnId}|${norm(w.corrected!)}'))
+        w,
+  ];
+}
 
 fb.FeedbackResult decodeFeedback(String raw) {
   final j = jsonDecode(raw) as Map<String, Object?>;
@@ -410,5 +461,17 @@ fb.FeedbackResult decodeFeedback(String raw) {
     ],
     nextTopic: j['next_topic'] as String?,
     reduced: j['reduced'] as bool? ?? false,
+    wordOrder: [
+      for (final w
+          in (j['word_order'] as List? ?? const [])
+              .cast<Map<String, Object?>>())
+        fb.WordOrderCheck(
+          turnId: w['turn_id'] as int,
+          original: w['original'] as String,
+          ok: w['ok'] as bool,
+          corrected: w['corrected'] as String?,
+          explanationKo: w['explanation_ko'] as String?,
+        ),
+    ],
   );
 }

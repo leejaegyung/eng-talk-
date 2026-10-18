@@ -39,7 +39,7 @@ class AppDatabase extends _$AppDatabase {
   );
 
   @override
-  int get schemaVersion => 4;
+  int get schemaVersion => 5;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -67,6 +67,8 @@ class AppDatabase extends _$AppDatabase {
       },
       from3To4: (m, schema) =>
           m.addColumn(schema.corrections, schema.corrections.category),
+      from4To5: (m, schema) =>
+          m.addColumn(schema.corrections, schema.corrections.kind),
     ),
     beforeOpen: (details) async {
       await customStatement('PRAGMA foreign_keys = ON');

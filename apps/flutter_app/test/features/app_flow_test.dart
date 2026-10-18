@@ -66,7 +66,11 @@ void main() {
       expect(find.text('대화 결과'), findsOneWidget);
       expect(find.text('4분 0초'), findsOneWidget);
       expect(find.text('Kept the conversation going'), findsOneWidget);
-      expect(find.text('I want a room for two night'), findsOneWidget);
+      // In the correction and in the word-order check.
+      expect(find.text('I want a room for two night'), findsNWidgets(2));
+      expect(find.text('어순 체크'), findsOneWidget);
+      expect(find.text('1문장 중 0문장 어순이 맞았어요'), findsOneWidget);
+      expect(find.text('night two for room a want I'), findsOneWidget);
       expect(find.text('Fixed sentence.'), findsOneWidget);
       expect(find.text('Weekend plans'), findsOneWidget);
 
@@ -83,13 +87,23 @@ void main() {
       await tester.tap(find.text('홈으로'));
       await settle(tester);
       expect(find.text('복습할 문장'), findsOneWidget);
-      expect(find.text('1개'), findsOneWidget);
+      expect(find.text('2개'), findsOneWidget, reason: 'say + word order');
       expect(find.text('1회 · 완료율 100%'), findsOneWidget);
       expect(find.text('추천 주제: Weekend plans'), findsOneWidget);
 
       // Review
       await tapText(tester, '복습할 문장');
       expect(find.text('Fixed sentence.'), findsOneWidget);
+      await tapText(tester, '말해봤어요');
+
+      // Word order: tap the shuffled words in the right order.
+      expect(find.text('단어 순서 맞추기'), findsOneWidget);
+      for (final w in 'night two for room a want I'.split(' ')) {
+        await tester.tap(find.widgetWithText(ActionChip, w).last);
+        await tester.pump();
+      }
+      await tapText(tester, '확인');
+      expect(find.text('정답이에요!'), findsOneWidget);
       await tapText(tester, '말해봤어요');
       expect(find.textContaining('지금 복습할 문장이 없어요'), findsOneWidget);
 
@@ -140,8 +154,13 @@ void main() {
 
     await tapText(tester, '성장 기록');
     expect(find.text('12분'), findsOneWidget);
-    expect(find.text('1회'), findsNWidgets(2), reason: 'sessions, grammar');
+    expect(
+      find.text('1회'),
+      findsNWidgets(3),
+      reason: 'sessions, grammar, order',
+    );
     expect(find.text('문법 (시제·관사·전치사)'), findsOneWidget);
+    expect(find.text('문장 구조·어순'), findsOneWidget);
     expect(find.text('레벨 진단 기록이 없어요.'), findsOneWidget);
     await tapText(tester, '30일');
     expect(find.text('12분'), findsOneWidget);
