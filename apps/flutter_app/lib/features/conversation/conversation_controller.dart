@@ -6,6 +6,7 @@ import '../../app/providers.dart';
 import '../../core/logging/app_logger.dart';
 import '../../domain/audio/recognition_hints.dart';
 import '../../domain/audio/speech_io.dart';
+import '../../domain/audio/voiced_time.dart';
 import '../../domain/conversation/conversation_policy.dart';
 import '../../domain/conversation/conversation_session_controller.dart';
 import '../../domain/conversation/prompt_composer.dart';
@@ -367,6 +368,7 @@ class ConversationController extends Notifier<ConversationState> {
     );
     DateTime? first;
     DateTime? last;
+    final meter = VoicedTimeMeter();
     final listened = Completer<void>();
     _listening = listened.future;
     final String heard;
@@ -378,6 +380,7 @@ class ConversationController extends Notifier<ConversationState> {
           last = _now();
           if (ref.mounted) state = state.copyWith(partial: p);
         },
+        onLevel: (level) => meter.add(_now(), level),
       );
     } finally {
       listened.complete();
@@ -394,10 +397,15 @@ class ConversationController extends Notifier<ConversationState> {
       return false;
     }
     _misses = 0;
-    // Recognizer timing approximates speaking time (an estimate, B2).
-    final speechMs = first != null && last != null && last!.isAfter(first!)
+    // Input level above the noise floor (P2-3) when the levels allow it;
+    // otherwise recognizer timing (an estimate, B2).
+    final voiced = meter.voiced;
+    final speechMs = voiced != null
+        ? voiced.inMilliseconds
+        : first != null && last != null && last!.isAfter(first!)
         ? last!.difference(first!).inMilliseconds
         : null;
+    _levelMeasured = voiced != null;
     if (_confirmSpeech) {
       // To the input box; sent when the learner taps send.
       _dispatch(const SpeechDiscarded());
@@ -560,6 +568,13 @@ class ConversationController extends Notifier<ConversationState> {
     }
   }
 
+  /// Every timed learner turn was measured from input levels.
+  bool _userFromLevels() => [
+    for (final e in _speechMs.entries)
+      if (state.turns.any((t) => t.id == e.key && t.speaker == Speaker.user))
+        e.key,
+  ].every(_fromLevels.contains);
+
   SpeechStats _stats() {
     var userMs = 0;
     var assistantMs = 0;
@@ -580,12 +595,22 @@ class ConversationController extends Notifier<ConversationState> {
       userMs: userMs,
       assistantMs: assistantMs,
       turnCount: state.learnerAnswers,
-      // The ratio needs both sides; user time is a recognizer-timing estimate.
-      confidence: userMeasured && assistantMeasured ? 0.5 : null,
+      // The ratio needs both sides. Input levels measure speech more
+      // directly than recognizer timing (P2-3), so they rate higher.
+      confidence: !userMeasured || !assistantMeasured
+          ? null
+          : _userFromLevels()
+          ? 0.7
+          : 0.5,
     );
   }
 
   final _speechMs = <int, int>{};
+
+  /// Learner turns whose time came from input levels rather than
+  /// recognizer timing.
+  final _fromLevels = <int>{};
+  bool _levelMeasured = false;
 
   Duration _activeElapsed(DateTime now) {
     final since = _activeSince;
@@ -644,6 +669,10 @@ class ConversationController extends Notifier<ConversationState> {
       ),
     );
     if (speechMs != null) _speechMs[saved] = speechMs;
+    if (speechMs != null && turn.speaker == Speaker.user && _levelMeasured) {
+      _fromLevels.add(saved);
+    }
+    _levelMeasured = false;
     if (!ref.mounted) return saved;
     state = state.copyWith(
       turns: [

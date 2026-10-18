@@ -20,8 +20,12 @@ abstract interface class SpeechInput {
   /// Listens until the learner pauses and returns the final transcript, or
   /// an empty string when nothing was recognized. [hints] are words the
   /// learner is likely to say, used to bias recognition where supported.
+  ///
+  /// [onLevel] gets the input level as the platform reports it (scale
+  /// differs by platform; see VoicedTimeMeter).
   Future<String> listenOnce({
     void Function(String partial)? onPartial,
+    void Function(double level)? onLevel,
     List<String> hints = const [],
   });
 

@@ -179,6 +179,12 @@ class FakeSpeechInput implements SpeechInput {
   /// Reported after an empty listen, as the platform would.
   SpeechIssue? issue;
 
+  /// Input levels reported during the next listen, one per entry, with
+  /// [levelStep] between them (on the injected [clock]).
+  List<double> levels = const [];
+  Duration levelStep = const Duration(milliseconds: 100);
+  void Function(Duration)? advanceClock;
+
   @override
   SpeechIssue? lastIssue;
 
@@ -188,8 +194,14 @@ class FakeSpeechInput implements SpeechInput {
   @override
   Future<String> listenOnce({
     void Function(String partial)? onPartial,
+    void Function(double level)? onLevel,
     List<String> hints = const [],
   }) async {
+    for (final level in levels) {
+      advanceClock?.call(levelStep);
+      onLevel?.call(level);
+    }
+    levels = const [];
     this.hints.add(hints);
     if (hold case final h? when !h.isCompleted) await h.future;
     final text = queue.isEmpty ? '' : queue.removeAt(0);

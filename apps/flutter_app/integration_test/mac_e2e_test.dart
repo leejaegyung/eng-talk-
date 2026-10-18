@@ -92,6 +92,7 @@ class ScriptedMic implements SpeechInput {
   @override
   Future<String> listenOnce({
     void Function(String partial)? onPartial,
+    void Function(double level)? onLevel,
     List<String> hints = const [],
   }) async {
     this.hints.add(hints);

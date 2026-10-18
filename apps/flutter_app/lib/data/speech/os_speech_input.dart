@@ -36,6 +36,7 @@ class OsSpeechInput implements SpeechInput {
   @override
   Future<String> listenOnce({
     void Function(String partial)? onPartial,
+    void Function(double level)? onLevel,
     List<String> hints = const [],
   }) async {
     if (!await ensureAvailable()) return '';
@@ -48,6 +49,7 @@ class OsSpeechInput implements SpeechInput {
         onPartial?.call(_last);
         if (r.finalResult) _finish();
       },
+      onSoundLevelChange: onLevel,
       listenOptions: SpeechListenOptions(
         localeId: 'en_US',
         listenMode: ListenMode.dictation,

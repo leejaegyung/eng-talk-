@@ -486,6 +486,42 @@ void main() {
     expect(ai.chats, hasLength(2));
   });
 
+  group('speaking time from input level (P2-3)', () {
+    setUp(() => mic.advanceClock = (d) => now = now.add(d));
+
+    test(
+      'voiced stretch is the turn time; session rated as measured',
+      () async {
+        mic
+          ..queue.add('I like hiking.')
+          ..levels = [
+            ...List.filled(5, -55.0),
+            ...List.filled(12, -20.0),
+            ...List.filled(5, -55.0),
+          ];
+        await ctrl().talk();
+        await ctrl().end();
+        final saved = (await repo.load(state().sessionId!))!;
+        final turn = saved.turns.firstWhere((t) => t.speaker == Speaker.user);
+        expect(turn.speechMs, 1200);
+        expect(saved.summary.stats!.userMs, 1200);
+        expect(saved.summary.stats!.confidence, 0.7);
+      },
+    );
+
+    test('flat levels: no level measurement, no made-up time', () async {
+      mic
+        ..queue.add('I like hiking.')
+        ..levels = List.filled(20, -40.0);
+      await ctrl().talk();
+      await ctrl().end();
+      final saved = (await repo.load(state().sessionId!))!;
+      final turn = saved.turns.firstWhere((t) => t.speaker == Speaker.user);
+      expect(turn.speechMs, isNull, reason: 'one partial → no timing either');
+      expect(saved.summary.stats!.confidence, isNull);
+    });
+  });
+
   test('ending without answers is saved as abandoned', () async {
     await ctrl().end();
     final saved = (await repo.load(state().sessionId!))!;
