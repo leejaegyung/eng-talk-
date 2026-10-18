@@ -19,14 +19,24 @@ enum ProviderFailure {
 
 /// Never carries the response body or request headers, so it is safe to log.
 final class ProviderException implements Exception {
-  const ProviderException(this.failure, {this.statusCode, this.retryAfter});
+  const ProviderException(
+    this.failure, {
+    this.statusCode,
+    this.retryAfter,
+    this.reason,
+  });
 
   final ProviderFailure failure;
   final int? statusCode;
   final Duration? retryAfter;
 
+  /// A fixed internal reason such as "state mismatch", for diagnostics.
+  /// Never built from a response body or a credential.
+  final String? reason;
+
   @override
   String toString() =>
       'ProviderException($failure'
-      '${statusCode == null ? '' : ', status: $statusCode'})';
+      '${statusCode == null ? '' : ', status: $statusCode'}'
+      '${reason == null ? '' : ', $reason'})';
 }

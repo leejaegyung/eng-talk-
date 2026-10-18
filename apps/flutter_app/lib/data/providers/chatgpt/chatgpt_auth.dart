@@ -383,7 +383,7 @@ class ChatGptAuth implements ProviderAccount {
 
   static Never _fail(String reason) {
     _log.warning('sign-in failed: $reason');
-    throw const ProviderException(ProviderFailure.signInRequired);
+    throw ProviderException(ProviderFailure.signInRequired, reason: reason);
   }
 
   static Future<void> _immediately() async {}

@@ -14,6 +14,8 @@ import 'file_vault.dart';
 /// browser consent once, tokens in [FileVault].
 ChatGptAuth evalAuth() => ChatGptAuth(
   vault: FileVault(),
+  // Time to finish signing in in the browser.
+  callbackTimeout: const Duration(minutes: 15),
   openBrowser: (url) async {
     final opener = Platform.isMacOS
         ? 'open'
