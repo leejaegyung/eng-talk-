@@ -53,6 +53,9 @@ jobs:
     env:
       BUILD_NAME: ${{ inputs.build-name }}
       BUILD_NUMBER: ${{ inputs.build-number }}
+      ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+      ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+      ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
     steps:
       - uses: actions/checkout@v5
       - uses: actions/setup-java@v4
@@ -66,7 +69,20 @@ jobs:
           channel: stable
           cache: true
       - run: flutter pub get
-      # Unsigned builds until the distribution decision (ADR-006, ADR-010).
+      # Android: the fixed release key (ADR-006) from repository secrets, if
+      # set; without it the APK falls back to a per-run debug key.
+      - name: android release key
+        if: matrix.target == 'apk'
+        env:
+          KEYSTORE_B64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+        run: |
+          if [[ -n "$KEYSTORE_B64" ]]; then
+            echo "$KEYSTORE_B64" | base64 --decode > "$RUNNER_TEMP/release.jks"
+            echo "ANDROID_KEYSTORE_PATH=$RUNNER_TEMP/release.jks" >> "$GITHUB_ENV"
+          else
+            echo "::warning::ANDROID_KEYSTORE_BASE64 not set - APK signed with a debug key"
+          fi
+      # macOS/Windows/iOS stay unsigned for personal installs (ADR-006).
       - name: flutter build
         run: |
           args=()
