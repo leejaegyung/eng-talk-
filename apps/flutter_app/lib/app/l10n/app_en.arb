@@ -71,7 +71,7 @@
   "onboardingBack": "Back",
   "onboardingPrivacyTitle": "How your data is handled",
   "onboardingPrivacyText": "What you say (as text) is sent to the AI you choose to generate replies. The ChatGPT plan follows OpenAI's policies; with a free Gemini key, Google may use conversations to improve its products.",
-  "onboardingPrivacyVoice": "Speech recognition uses your device's built-in feature. Depending on device settings, Apple, Google or Microsoft may process it on their servers.",
+  "onboardingPrivacyVoice": "Speech is recognized by your device by default (it may be processed on Apple, Google or Microsoft servers). If you pick 'Gemini' in settings, your recording is sent to Google Gemini for transcription. Recordings are never kept.",
   "onboardingPrivacyNoRecording": "Raw recordings are never saved.",
   "onboardingPrivacyLocal": "Conversation history stays on this device.",
   "onboardingPrivacyCredentials": "Sign-in tokens and API keys are kept only in your device's secure storage.",
@@ -348,5 +348,10 @@
   "settingsRepeatTimes": "{count}×",
   "reviewRepeatProgress": "Repeated {done}/{total}",
   "reviewRepeatDone": "All repetitions done!",
-  "reviewRepeatBox": "Repetition {n}"
+  "reviewRepeatBox": "Repetition {n}",
+  "speechEngineLabel": "Speech recognition",
+  "speechEngineDevice": "On device",
+  "speechEngineGemini": "Gemini (accurate)",
+  "speechEngineGeminiNote": "When you finish, Gemini transcribes the recording. Much better with names and accents, but takes 1–2 seconds. The recording isn't kept; on a free key Google may use it to improve its products.",
+  "speechEngineNeedsKey": "Gemini recognition needs the free key. Without it, the device recognizer is used."
 }

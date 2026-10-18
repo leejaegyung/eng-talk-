@@ -23,6 +23,7 @@ import '../data/providers/openai/openai_client.dart';
 import '../data/providers/openai/provider_catalog.dart';
 import '../data/sessions/drift_session_repository.dart';
 import '../data/settings/drift_settings_store.dart';
+import '../data/speech/gemini_speech_input.dart';
 import '../data/speech/os_speech_input.dart';
 import '../data/speech/os_speech_output.dart';
 import '../data/vault/secure_storage_vault.dart';
@@ -38,6 +39,7 @@ import '../domain/sessions/export.dart';
 import '../domain/sessions/session_repository.dart';
 import '../domain/settings/settings_store.dart';
 import 'active_ai.dart';
+import 'active_speech.dart';
 import 'notifying_session_repository.dart';
 import 'pasted_callback.dart';
 
@@ -101,7 +103,29 @@ final audioOutputProvider = Provider<AudioOutput>((ref) {
 
 // On-device voice (ADR-011): free STT/TTS for the ChatGPT plan path.
 
-final speechInputProvider = Provider<SpeechInput>((ref) => OsSpeechInput());
+/// Device recognizer, or the recording sent to Gemini when the learner
+/// picked it in settings and a Gemini key is stored.
+final speechInputProvider = Provider<SpeechInput>((ref) {
+  final settings = ref.watch(settingsStoreProvider);
+  final gemini = ref.watch(_geminiClientProvider);
+  final account = ref.watch(geminiAccountProvider);
+  final selectModel = ref.watch(geminiModelSelectorProvider);
+  String? model;
+  return SwitchingSpeechInput(
+    device: OsSpeechInput(),
+    recorded: RecordedSpeechInput(
+      audio: ref.watch(audioInputProvider),
+      transcribe: (wav, {context = const []}) async => gemini.transcribe(
+        model: model ??= await selectModel(),
+        wav: wav,
+        context: context,
+      ),
+    ),
+    useRecorded: () async =>
+        await settings.read(SettingKeys.speechEngine) == 'gemini' &&
+        await account.isSignedIn(),
+  );
+});
 
 final speechOutputProvider = Provider<SpeechOutput>((ref) {
   final output = OsSpeechOutput();

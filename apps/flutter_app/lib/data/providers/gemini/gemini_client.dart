@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:http/http.dart' as http;
 
@@ -124,6 +125,60 @@ class GeminiClient implements LlmProvider {
             count('candidatesTokenCount') + count('thoughtsTokenCount'),
       );
     }
+  }
+
+  /// Transcribes [wav] (16 kHz mono speech) exactly as spoken. [context]
+  /// (the coach's question, the topic) helps with names and rare words; the
+  /// learner's mistakes are kept, not corrected. Empty when nothing was said.
+  Future<String> transcribe({
+    required String model,
+    required Uint8List wav,
+    List<String> context = const [],
+  }) async {
+    final hint = context.where((c) => c.trim().isNotEmpty).join(' / ');
+    final req =
+        http.Request('POST', _base.resolve('models/$model:generateContent'))
+          ..headers['content-type'] = 'application/json'
+          ..body = jsonEncode({
+            'systemInstruction': {
+              'parts': [
+                {
+                  'text':
+                      'You transcribe speech by a Korean learner of English. '
+                      'Write exactly the English words spoken, keeping their '
+                      'grammar mistakes; never correct, translate or add words. '
+                      'Use normal punctuation. Reply with the transcript only, '
+                      'or with nothing if there is no speech.'
+                      '${hint.isEmpty ? '' : ' Context the learner may refer to (for spelling names and rare words only): $hint'}',
+                },
+              ],
+            },
+            'contents': [
+              {
+                'role': 'user',
+                'parts': [
+                  {
+                    'inlineData': {
+                      'mimeType': 'audio/wav',
+                      'data': base64Encode(wav),
+                    },
+                  },
+                ],
+              },
+            ],
+            'generationConfig': {'maxOutputTokens': 400, 'temperature': 0},
+          });
+    final res = await _send(req);
+    final json = jsonDecode(await res.stream.bytesToString());
+    final candidates = json is Map ? json['candidates'] : null;
+    if (candidates is! List || candidates.isEmpty) return '';
+    final parts = ((candidates.first as Map)['content'] as Map?)?['parts'];
+    return [
+      if (parts is List)
+        for (final p in parts)
+          if (p is Map && p['thought'] != true && p['text'] is String)
+            p['text'] as String,
+    ].join().trim();
   }
 
   /// User/model turns as the API wants them: system messages left out,

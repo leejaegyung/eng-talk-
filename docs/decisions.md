@@ -86,3 +86,9 @@ Galaxy(Android)는 배포 빌드(APK)를 설치해 최종 확인만 한다(USB �
 - 키·토큰 보관: 웹은 OS 보안 저장소가 없어 flutter_secure_storage 웹(브라우저 저장소 + WebCrypto) — 네이티브보다 약함, 개인정보 검수에 기록.
 - 내보내기: 공유 시트(아이폰 '파일에 저장') 또는 다운로드. 오류 기록은 웹에서 세션 동안만.
 - 남은 위험: iOS 홈 화면 앱에서 Web Speech 음성 인식 지원 여부는 기기 확인 필요(안 되면 입력 안내). 한글 글꼴은 처음 한 번 Google Fonts에서 받음.
+
+## ADR-017 음성 인식 선택: 기기 내장 / Gemini 받아쓰기 — 확정 (2026-10-18)
+사용자 보고: 'Oasis music' → 'watch this music'(기기 인식 한계), "GPT에서 오디오 말하는 거마냥 인식되게". 확인(`tool/eval/audio_probe.dart`): ChatGPT 구독 토큰은 `/v1/audio/transcriptions` 401, `/v1/responses` 오디오 입력은 구독 모델 9개 모두 'Audio input is not available' → 구독으로는 불가. 사용자 결정: Gemini 무료 키로 받아쓰기.
+- 설정 → 음성 인식: 기기 내장(기본) / Gemini. Gemini는 녹음(PCM, 메모리만) → 레벨 기반 VAD로 끝 판단(말한 뒤 2.5초 무음, 첫 단어 대기는 화면별) → WAV를 generateContent(inlineData)로 받아쓰기. 실수는 고치지 말고 그대로, 맥락(질문·주제)은 철자 참고용.
+- 키가 없으면 기기 인식으로 자동 대체. 대화 AI는 별개(ChatGPT 유지 가능).
+- 무료 등급은 녹음이 Google 개선에 쓰일 수 있음 → 설정·온보딩 안내. ADR-013(유료 OpenAI 음성 미도입)은 유지.

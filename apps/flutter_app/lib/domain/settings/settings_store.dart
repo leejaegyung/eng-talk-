@@ -22,6 +22,10 @@ abstract final class SettingKeys {
   /// ('true'/'false'; unset = false).
   static const confirmSpeech = 'voice.confirm_speech';
 
+  /// Speech recognizer: 'device' (default) or 'gemini' (recording sent to
+  /// Gemini with the free key).
+  static const speechEngine = 'voice.engine';
+
   /// Listen while the AI speaks and cut it off when the learner talks
   /// (earphones only; 'true'/'false'; unset = false).
   static const autoBargeIn = 'voice.auto_barge_in';

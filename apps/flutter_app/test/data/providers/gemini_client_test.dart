@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:typed_data';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
@@ -249,4 +250,43 @@ void main() {
       );
     });
   });
+
+  test(
+    'transcribe: audio inline, context as spelling help, transcript out',
+    () async {
+      final text =
+          await client(
+            (_) => respond(200, {
+              'candidates': [
+                {
+                  'content': {
+                    'parts': [
+                      {'text': 'I really like Oasis music.'},
+                    ],
+                  },
+                },
+              ],
+            }),
+          ).transcribe(
+            model: 'gemini-3.5-flash-lite',
+            wav: Uint8List.fromList([1, 2, 3]),
+            context: ['Who is your favourite band?'],
+          );
+      expect(text, 'I really like Oasis music.');
+      final req = requests.single.$1;
+      expect(req.url.path, endsWith('gemini-3.5-flash-lite:generateContent'));
+      final body = jsonDecode(utf8.decode(requests.single.$2)) as Map;
+      final part =
+          (((body['contents'] as List).single as Map)['parts'] as List).single
+              as Map;
+      expect((part['inlineData'] as Map)['mimeType'], 'audio/wav');
+      expect(
+        jsonEncode(body['systemInstruction']),
+        allOf(
+          contains('keeping their grammar mistakes'),
+          contains('favourite band'),
+        ),
+      );
+    },
+  );
 }

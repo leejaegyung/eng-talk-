@@ -64,7 +64,23 @@ class _AiChoiceState extends ConsumerState<AiChoiceSettings> {
             Text(l10n.geminiFreeTier, style: small),
             if (s.hasKey == false) Text(l10n.geminiChosenNoKey, style: small),
           ],
-          if (s.choice == AiChoice.gemini || s.hasKey == true) ...[
+          const SizedBox(height: 4),
+          Text(l10n.speechEngineLabel, style: theme.textTheme.titleSmall),
+          SegmentedButton<bool>(
+            segments: [
+              ButtonSegment(value: false, label: Text(l10n.speechEngineDevice)),
+              ButtonSegment(value: true, label: Text(l10n.speechEngineGemini)),
+            ],
+            selected: {s.geminiSpeech},
+            showSelectedIcon: false,
+            onSelectionChanged: (v) => ctrl.setGeminiSpeech(v.single),
+          ),
+          if (s.geminiSpeech) ...[
+            Text(l10n.speechEngineGeminiNote, style: small),
+            if (s.hasKey == false)
+              Text(l10n.speechEngineNeedsKey, style: small),
+          ],
+          if (s.needsKey || s.hasKey == true) ...[
             switch (s) {
               AiChoiceState(busy: true) => Text(l10n.settingsChecking),
               AiChoiceState(model: final m?) => Text(

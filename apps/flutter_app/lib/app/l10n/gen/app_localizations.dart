@@ -527,7 +527,7 @@ abstract class AppLocalizations {
   /// No description provided for @onboardingPrivacyVoice.
   ///
   /// In ko, this message translates to:
-  /// **'음성 인식은 기기에 내장된 기능을 써요. 기기 설정에 따라 Apple·Google·Microsoft 서버에서 처리될 수 있어요.'**
+  /// **'음성 인식은 기본으로 기기에 내장된 기능을 써요(기기 설정에 따라 Apple·Google·Microsoft 서버에서 처리될 수 있어요). 설정에서 \'Gemini\'를 고르면 말한 녹음이 Google Gemini로 보내져 받아써져요. 녹음은 저장하지 않아요.'**
   String get onboardingPrivacyVoice;
 
   /// No description provided for @onboardingPrivacyNoRecording.
@@ -2191,6 +2191,36 @@ abstract class AppLocalizations {
   /// In ko, this message translates to:
   /// **'{n}번째 반복'**
   String reviewRepeatBox(int n);
+
+  /// No description provided for @speechEngineLabel.
+  ///
+  /// In ko, this message translates to:
+  /// **'음성 인식'**
+  String get speechEngineLabel;
+
+  /// No description provided for @speechEngineDevice.
+  ///
+  /// In ko, this message translates to:
+  /// **'기기 내장'**
+  String get speechEngineDevice;
+
+  /// No description provided for @speechEngineGemini.
+  ///
+  /// In ko, this message translates to:
+  /// **'Gemini (정확)'**
+  String get speechEngineGemini;
+
+  /// No description provided for @speechEngineGeminiNote.
+  ///
+  /// In ko, this message translates to:
+  /// **'말을 마치면 녹음을 Gemini가 받아써요. 이름·억양을 훨씬 잘 알아듣지만 받아쓰는 데 1~2초 걸려요. 녹음은 저장하지 않고, 무료 키에서는 Google이 서비스 개선에 쓸 수 있어요.'**
+  String get speechEngineGeminiNote;
+
+  /// No description provided for @speechEngineNeedsKey.
+  ///
+  /// In ko, this message translates to:
+  /// **'Gemini 인식에는 무료 키가 필요해요. 키가 없으면 기기 내장 인식으로 들어요.'**
+  String get speechEngineNeedsKey;
 }
 
 class _AppLocalizationsDelegate

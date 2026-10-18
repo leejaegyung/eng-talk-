@@ -268,7 +268,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get onboardingPrivacyVoice =>
-      'Speech recognition uses your device\'s built-in feature. Depending on device settings, Apple, Google or Microsoft may process it on their servers.';
+      'Speech is recognized by your device by default (it may be processed on Apple, Google or Microsoft servers). If you pick \'Gemini\' in settings, your recording is sent to Google Gemini for transcription. Recordings are never kept.';
 
   @override
   String get onboardingPrivacyNoRecording => 'Raw recordings are never saved.';
@@ -1219,4 +1219,21 @@ class AppLocalizationsEn extends AppLocalizations {
   String reviewRepeatBox(int n) {
     return 'Repetition $n';
   }
+
+  @override
+  String get speechEngineLabel => 'Speech recognition';
+
+  @override
+  String get speechEngineDevice => 'On device';
+
+  @override
+  String get speechEngineGemini => 'Gemini (accurate)';
+
+  @override
+  String get speechEngineGeminiNote =>
+      'When you finish, Gemini transcribes the recording. Much better with names and accents, but takes 1–2 seconds. The recording isn\'t kept; on a free key Google may use it to improve its products.';
+
+  @override
+  String get speechEngineNeedsKey =>
+      'Gemini recognition needs the free key. Without it, the device recognizer is used.';
 }

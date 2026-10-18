@@ -15,9 +15,16 @@ final class AiChoiceState {
     this.model,
     this.busy = false,
     this.failure,
+    this.geminiSpeech = false,
   });
 
   final AiChoice choice;
+
+  /// Speech recognized by Gemini from the recording instead of the device.
+  final bool geminiSpeech;
+
+  /// The key is needed for chatting with Gemini or for its recognition.
+  bool get needsKey => choice == AiChoice.gemini || geminiSpeech;
 
   /// Null until the vault has been checked.
   final bool? hasKey;
@@ -49,10 +56,14 @@ class AiChoiceController extends Notifier<AiChoiceState> {
         .read(settingsStoreProvider)
         .read(SettingKeys.aiProvider);
     final hasKey = await ref.read(geminiAccountProvider).isSignedIn();
+    final engine = await ref
+        .read(settingsStoreProvider)
+        .read(SettingKeys.speechEngine);
     if (!ref.mounted) return;
     state = AiChoiceState(
       choice: AiChoice.values.asNameMap()[saved] ?? AiChoice.chatGpt,
       hasKey: hasKey,
+      geminiSpeech: engine == 'gemini',
     );
     if (hasKey) await check();
   }
@@ -62,6 +73,13 @@ class AiChoiceController extends Notifier<AiChoiceState> {
     await ref
         .read(settingsStoreProvider)
         .write(SettingKeys.aiProvider, choice.name);
+  }
+
+  Future<void> setGeminiSpeech(bool on) async {
+    state = _copy(geminiSpeech: on);
+    await ref
+        .read(settingsStoreProvider)
+        .write(SettingKeys.speechEngine, on ? 'gemini' : 'device');
   }
 
   Future<void> saveKey(String key) async {
@@ -100,9 +118,11 @@ class AiChoiceController extends Notifier<AiChoiceState> {
     String? model,
     bool? busy,
     ProviderFailure? failure,
+    bool? geminiSpeech,
     bool clearModel = false,
     bool clearFailure = false,
   }) => AiChoiceState(
+    geminiSpeech: geminiSpeech ?? state.geminiSpeech,
     choice: choice ?? state.choice,
     hasKey: hasKey ?? state.hasKey,
     model: clearModel ? null : model ?? state.model,

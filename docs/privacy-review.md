@@ -10,7 +10,7 @@ spec §13, §16.2. 출시 전 이 표가 실제 코드와 맞는지 다시 확�
 | 대화 글자(내 말·AI 답) | 로컬 SQLite (`sessions`, `turns`) | 고른 AI로 전송: ChatGPT 구독(OpenAI), Gemini 무료 키(Google) | 설정 → 전체 삭제, 기록 화면에서 개별 삭제 |
 | 피드백·교정·표현·복습 | 로컬 SQLite | 피드백 생성 시 대화 글자를 고른 AI로 전송 | 대화와 함께 삭제(cascade) |
 | 레벨 진단 답변·결과 | 로컬 SQLite (`assessments`) | 채점 시 답변 글자를 고른 AI로 전송 | 전체 삭제에 포함 |
-| 음성(마이크 소리) | 저장 안 함 | OS 음성 인식(Apple·Google·Microsoft 서버에서 처리될 수 있음) | 원본 없음 |
+| 음성(마이크 소리) | 저장 안 함(Gemini 인식 시 받아쓰기 요청 동안만 메모리) | OS 음성 인식(Apple·Google·Microsoft 서버에서 처리될 수 있음), 설정에서 Gemini 선택 시 녹음(WAV)을 Google Gemini로 전송 | 원본 없음 |
 | 말한 시간·소리 크기 | 턴별 ms만 저장(레벨 원값은 저장 안 함) | 없음 | 대화와 함께 삭제 |
 | ChatGPT 로그인 토큰, Gemini 키 | OS 보안 저장소(CredentialVault)만 | 해당 공급자에게만, 요청 헤더로 | 로그아웃/키 삭제 시 제거. 전체 삭제는 유지(로그인 유지가 의도) |
 | 설정(목표·레벨·음성 옵션) | 로컬 SQLite (`app_settings`) | 없음 | 앱 삭제 시 |

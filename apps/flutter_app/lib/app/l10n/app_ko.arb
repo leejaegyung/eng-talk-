@@ -203,7 +203,7 @@
   "onboardingBack": "이전",
   "onboardingPrivacyTitle": "데이터는 이렇게 다뤄요",
   "onboardingPrivacyText": "대화 내용(글자)은 고른 AI로 보내져 답변을 만들어요. ChatGPT 구독은 OpenAI 정책을 따르고, Gemini 무료 키는 Google이 대화 내용을 서비스 개선에 쓸 수 있어요.",
-  "onboardingPrivacyVoice": "음성 인식은 기기에 내장된 기능을 써요. 기기 설정에 따라 Apple·Google·Microsoft 서버에서 처리될 수 있어요.",
+  "onboardingPrivacyVoice": "음성 인식은 기본으로 기기에 내장된 기능을 써요(기기 설정에 따라 Apple·Google·Microsoft 서버에서 처리될 수 있어요). 설정에서 'Gemini'를 고르면 말한 녹음이 Google Gemini로 보내져 받아써져요. 녹음은 저장하지 않아요.",
   "onboardingPrivacyNoRecording": "녹음 원본은 저장하지 않아요.",
   "onboardingPrivacyLocal": "대화 기록은 이 기기에만 저장돼요.",
   "onboardingPrivacyCredentials": "로그인 정보와 API 키는 기기의 보안 저장소에만 보관해요.",
@@ -727,5 +727,10 @@
         "type": "int"
       }
     }
-  }
+  },
+  "speechEngineLabel": "음성 인식",
+  "speechEngineDevice": "기기 내장",
+  "speechEngineGemini": "Gemini (정확)",
+  "speechEngineGeminiNote": "말을 마치면 녹음을 Gemini가 받아써요. 이름·억양을 훨씬 잘 알아듣지만 받아쓰는 데 1~2초 걸려요. 녹음은 저장하지 않고, 무료 키에서는 Google이 서비스 개선에 쓸 수 있어요.",
+  "speechEngineNeedsKey": "Gemini 인식에는 무료 키가 필요해요. 키가 없으면 기기 내장 인식으로 들어요."
 }

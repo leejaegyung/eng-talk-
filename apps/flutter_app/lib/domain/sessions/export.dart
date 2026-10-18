@@ -21,6 +21,7 @@ const backupSettingKeys = [
   'voice.hands_free',
   'voice.confirm_speech',
   'voice.auto_barge_in',
+  'voice.engine',
   'app.language',
 ];
 

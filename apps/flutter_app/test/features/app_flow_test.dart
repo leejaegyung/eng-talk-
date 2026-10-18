@@ -309,6 +309,22 @@ void main() {
     expect(h.ai.chats, isEmpty, reason: 'ChatGPT not used');
   });
 
+  testWidgets('speech recognition engine: Gemini option saved with a note', (
+    tester,
+  ) async {
+    final h = Harness();
+    await h.boot(tester);
+    await tester.tap(find.byIcon(Icons.settings_outlined));
+    await settle(tester);
+    await tapText(tester, 'Gemini (정확)');
+    expect(h.settings.values[SettingKeys.speechEngine], 'gemini');
+    expect(find.textContaining('녹음을 Gemini가 받아써요'), findsOneWidget);
+    expect(find.textContaining('무료 키가 필요해요'), findsOneWidget);
+    expect(find.widgetWithText(TextField, 'Gemini API 키'), findsOneWidget);
+    await tapText(tester, '기기 내장');
+    expect(h.settings.values[SettingKeys.speechEngine], 'device');
+  });
+
   testWidgets('Gemini chosen without a key: conversation asks to connect', (
     tester,
   ) async {
