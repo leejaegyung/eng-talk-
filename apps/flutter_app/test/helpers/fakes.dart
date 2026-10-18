@@ -294,6 +294,17 @@ List<ChatChunk>? smartReplies(List<ChatMessage> messages) {
       ),
     ];
   }
+  if (system.contains('You write a mini lesson')) {
+    return const [
+      TextDelta(
+        '{"title_ko": "과거의 일은 과거형으로", '
+        '"explanation_ko": "끝난 일은 동사를 과거형으로 바꿔요.", '
+        '"examples": [{"en": "I walked to work.", "ko": "걸어서 출근했어요."}, '
+        '{"en": "We ate pizza.", "ko": "피자를 먹었어요."}, '
+        '{"en": "She called me.", "ko": "그녀가 전화했어요."}]}',
+      ),
+    ];
+  }
   if (system.contains('placement conversation')) {
     return const [
       TextDelta(

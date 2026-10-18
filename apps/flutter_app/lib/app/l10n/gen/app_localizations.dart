@@ -2251,6 +2251,54 @@ abstract class AppLocalizations {
   /// In ko, this message translates to:
   /// **'따라 말하기'**
   String get shadowingRepeat;
+
+  /// No description provided for @lessonWriting.
+  ///
+  /// In ko, this message translates to:
+  /// **'내 실수를 보고 설명을 만드는 중…'**
+  String get lessonWriting;
+
+  /// No description provided for @lessonExamples.
+  ///
+  /// In ko, this message translates to:
+  /// **'예문'**
+  String get lessonExamples;
+
+  /// No description provided for @lessonPractice.
+  ///
+  /// In ko, this message translates to:
+  /// **'내 문장으로 연습'**
+  String get lessonPractice;
+
+  /// No description provided for @lessonPracticeNote.
+  ///
+  /// In ko, this message translates to:
+  /// **'실제로 말했던 문장의 교정본이에요. 그대로 말하면 칸이 채워져요.'**
+  String get lessonPracticeNote;
+
+  /// No description provided for @lessonRewrite.
+  ///
+  /// In ko, this message translates to:
+  /// **'다시 만들기'**
+  String get lessonRewrite;
+
+  /// No description provided for @lessonNoMistakes.
+  ///
+  /// In ko, this message translates to:
+  /// **'이 유형의 교정이 아직 없어요.'**
+  String get lessonNoMistakes;
+
+  /// No description provided for @lessonOpen.
+  ///
+  /// In ko, this message translates to:
+  /// **'미니 설명 보기'**
+  String get lessonOpen;
+
+  /// No description provided for @lessonAiNote.
+  ///
+  /// In ko, this message translates to:
+  /// **'AI가 내 실수를 바탕으로 만든 설명이에요.'**
+  String get lessonAiNote;
 }
 
 class _AppLocalizationsDelegate

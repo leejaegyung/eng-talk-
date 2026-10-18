@@ -1213,4 +1213,28 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get shadowingRepeat => '따라 말하기';
+
+  @override
+  String get lessonWriting => '내 실수를 보고 설명을 만드는 중…';
+
+  @override
+  String get lessonExamples => '예문';
+
+  @override
+  String get lessonPractice => '내 문장으로 연습';
+
+  @override
+  String get lessonPracticeNote => '실제로 말했던 문장의 교정본이에요. 그대로 말하면 칸이 채워져요.';
+
+  @override
+  String get lessonRewrite => '다시 만들기';
+
+  @override
+  String get lessonNoMistakes => '이 유형의 교정이 아직 없어요.';
+
+  @override
+  String get lessonOpen => '미니 설명 보기';
+
+  @override
+  String get lessonAiNote => 'AI가 내 실수를 바탕으로 만든 설명이에요.';
 }

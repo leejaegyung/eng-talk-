@@ -5,6 +5,7 @@ import 'package:drift/drift.dart';
 import '../../domain/conversation/session_enums.dart';
 import '../../domain/feedback/feedback.dart' as fb;
 import '../../domain/learning/learner_level.dart';
+import '../../domain/learning/mini_lesson.dart';
 import '../../domain/sessions/growth_stats.dart';
 import '../../domain/sessions/session_records.dart';
 import '../../domain/sessions/session_repository.dart';
@@ -358,6 +359,29 @@ class DriftSessionRepository implements SessionRepository {
       for (final r in rows)
         if (seen.add(r.phrase.trim().toLowerCase()))
           fb.Expression(r.phrase, meaningKo: r.meaningKo),
+    ].take(limit).toList();
+  }
+
+  @override
+  Future<List<CorrectionExample>> recentCorrections(
+    fb.ErrorCategory category, {
+    int limit = 6,
+  }) async {
+    final rows =
+        await (_db.select(_db.corrections)
+              ..where((c) => c.category.equals(category.wire))
+              ..orderBy([(c) => OrderingTerm.desc(c.id)])
+              ..limit(limit * 2))
+            .get();
+    final seen = <String>{};
+    return [
+      for (final r in rows)
+        if (seen.add(r.suggested.toLowerCase()))
+          CorrectionExample(
+            original: r.original,
+            suggested: r.suggested,
+            explanationKo: r.explanation,
+          ),
     ].take(limit).toList();
   }
 

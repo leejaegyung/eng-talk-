@@ -1,6 +1,7 @@
 import '../conversation/session_enums.dart';
 import '../feedback/feedback.dart';
 import '../learning/learner_level.dart';
+import '../learning/mini_lesson.dart';
 import 'growth_stats.dart';
 import 'session_records.dart';
 
@@ -52,6 +53,12 @@ abstract interface class SessionRepository {
 
   /// Suggested expressions from feedback, newest first, one per phrase.
   Future<List<Expression>> recentExpressions({int limit = 10});
+
+  /// The learner's latest corrections of one kind, newest first.
+  Future<List<CorrectionExample>> recentCorrections(
+    ErrorCategory category, {
+    int limit = 6,
+  });
 
   /// Assessed levels, oldest first (S10).
   Future<List<LevelPoint>> levelHistory();

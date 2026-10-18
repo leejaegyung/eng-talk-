@@ -1252,4 +1252,29 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get shadowingRepeat => 'Say it';
+
+  @override
+  String get lessonWriting => 'Writing a lesson from your mistakes…';
+
+  @override
+  String get lessonExamples => 'Examples';
+
+  @override
+  String get lessonPractice => 'Practice with your sentences';
+
+  @override
+  String get lessonPracticeNote =>
+      'These are corrections of what you actually said. A box fills when you say one word for word.';
+
+  @override
+  String get lessonRewrite => 'Rewrite';
+
+  @override
+  String get lessonNoMistakes => 'No corrections of this kind yet.';
+
+  @override
+  String get lessonOpen => 'Mini lesson';
+
+  @override
+  String get lessonAiNote => 'Written by the AI from your mistakes.';
 }

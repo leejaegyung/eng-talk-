@@ -358,5 +358,13 @@
   "shadowingNote": "Listen to the coach's sentences and say them back. A box fills each time you say it word for word.",
   "shadowingListen": "Listen",
   "shadowingSlow": "Slowly",
-  "shadowingRepeat": "Say it"
+  "shadowingRepeat": "Say it",
+  "lessonWriting": "Writing a lesson from your mistakes…",
+  "lessonExamples": "Examples",
+  "lessonPractice": "Practice with your sentences",
+  "lessonPracticeNote": "These are corrections of what you actually said. A box fills when you say one word for word.",
+  "lessonRewrite": "Rewrite",
+  "lessonNoMistakes": "No corrections of this kind yet.",
+  "lessonOpen": "Mini lesson",
+  "lessonAiNote": "Written by the AI from your mistakes."
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../domain/feedback/feedback.dart';
 import '../features/assessment/assessment_screen.dart';
 import '../features/audio_lab/audio_lab_screen.dart';
 import '../features/chatgpt_lab/chatgpt_lab_screen.dart';
@@ -9,6 +10,7 @@ import '../features/conversation/conversation_screen.dart';
 import '../features/growth/growth_screen.dart';
 import '../features/history/history_screen.dart';
 import '../features/home/home_screen.dart';
+import '../features/lesson/lesson_screen.dart';
 import '../features/onboarding/onboarding_screen.dart';
 import '../features/result/result_screen.dart';
 import '../features/review/review_screen.dart';
@@ -26,6 +28,7 @@ abstract final class AppRoutes {
   static const history = '/history';
   static const review = '/review';
   static const growth = '/growth';
+  static String lesson(String category) => '/lesson/$category';
   static const assessment = '/assessment';
   static const conversation = '/conversation';
   static String result(int sessionId) => '/result/$sessionId';
@@ -83,6 +86,14 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: AppRoutes.growth,
         builder: (context, state) => const GrowthScreen(),
+      ),
+      GoRoute(
+        path: '/lesson/:category',
+        builder: (context, state) => LessonScreen(
+          category:
+              ErrorCategory.fromWire(state.pathParameters['category']) ??
+              ErrorCategory.grammar,
+        ),
       ),
       GoRoute(
         path: AppRoutes.assessment,

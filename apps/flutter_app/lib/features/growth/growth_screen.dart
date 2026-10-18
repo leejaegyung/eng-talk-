@@ -3,7 +3,10 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'package:go_router/go_router.dart';
+
 import '../../app/l10n/gen/app_localizations.dart';
+import '../../app/router.dart';
 import '../../app/theme.dart';
 import '../../domain/feedback/feedback.dart';
 import '../../domain/sessions/growth_stats.dart';
@@ -103,10 +106,15 @@ class GrowthScreen extends ConsumerWidget {
                   Text(l10n.growthNoWeak, style: muted)
                 else
                   for (final (category, count) in g.weakAreas)
-                    _WeakArea(
-                      label: categoryName(l10n, category),
-                      count: count,
-                      share: count / g.weakAreas.first.$2,
+                    InkWell(
+                      onTap: () =>
+                          context.push(AppRoutes.lesson(category.wire)),
+                      child: _WeakArea(
+                        label: categoryName(l10n, category),
+                        count: count,
+                        share: count / g.weakAreas.first.$2,
+                        action: l10n.lessonOpen,
+                      ),
                     ),
                 Padding(
                   padding: const EdgeInsets.only(top: 8),
@@ -263,10 +271,14 @@ class _WeakArea extends StatelessWidget {
     required this.label,
     required this.count,
     required this.share,
+    required this.action,
   });
 
   final String label;
   final int count;
+
+  /// What tapping does ("mini lesson").
+  final String action;
 
   /// Relative to the most frequent category (0..1).
   final double share;
@@ -281,9 +293,20 @@ class _WeakArea extends StatelessWidget {
         spacing: 4,
         children: [
           Row(
+            spacing: 8,
             children: [
               Expanded(child: Text(label)),
               Text(l10n.growthSessionCount(count)),
+              Text(
+                action,
+                style: Theme.of(context).textTheme.bodySmall
+                    ?.copyWith(color: Theme.of(context).colorScheme.primary),
+              ),
+              Icon(
+                Icons.chevron_right,
+                size: 18,
+                color: Theme.of(context).colorScheme.primary,
+              ),
             ],
           ),
           LinearProgressIndicator(

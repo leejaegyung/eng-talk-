@@ -12,6 +12,7 @@ import 'package:speaking_coach/domain/conversation/session_enums.dart';
 import 'package:speaking_coach/domain/feedback/feedback.dart';
 import 'package:speaking_coach/domain/feedback/feedback_service.dart';
 import 'package:speaking_coach/domain/learning/learner_level.dart';
+import 'package:speaking_coach/domain/learning/mini_lesson.dart';
 import 'package:speaking_coach/domain/learning/placement.dart';
 import 'package:speaking_coach/domain/providers/ai_provider.dart';
 import 'package:speaking_coach/domain/sessions/session_records.dart';
@@ -185,6 +186,39 @@ void main() {
     }
     expect(openings.toSet(), hasLength(3));
   }, timeout: const Timeout(Duration(minutes: 3)));
+
+  test('mini lesson: one rule in Korean, three short examples', () async {
+    final lesson = await MiniLessonService(llm).write(
+      model: model,
+      category: ErrorCategory.grammar,
+      mistakes: const [
+        CorrectionExample(
+          original: 'Yesterday I go to the park',
+          suggested: 'Yesterday I went to the park.',
+        ),
+        CorrectionExample(
+          original: 'Last week we eat pizza',
+          suggested: 'Last week we ate pizza.',
+        ),
+        CorrectionExample(
+          original: 'She call me two days ago',
+          suggested: 'She called me two days ago.',
+        ),
+      ],
+    );
+    // ignore: avoid_print
+    print(
+      'LESSON: ${lesson?.titleKo} | ${lesson?.explanationKo} | '
+      '${[for (final e in lesson?.examples ?? const <LessonExample>[]) e.en]}',
+    );
+    expect(lesson, isNotNull);
+    expect(lesson!.examples, hasLength(3));
+    expect(RegExp('[가-힣]').hasMatch(lesson.explanationKo), isTrue);
+    for (final e in lesson.examples) {
+      expect(e.en.split(' ').length, lessThanOrEqualTo(12), reason: e.en);
+      expect(e.en, isNot(contains('*')));
+    }
+  }, timeout: const Timeout(Duration(minutes: 2)));
 
   test('feedback: valid JSON, corrections quote the learner', () async {
     final t0 = DateTime.now();

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../domain/conversation/session_enums.dart';
 import '../domain/feedback/feedback.dart';
 import '../domain/learning/learner_level.dart';
+import '../domain/learning/mini_lesson.dart';
 import '../domain/sessions/growth_stats.dart';
 import '../domain/sessions/session_records.dart';
 import '../domain/sessions/session_repository.dart';
@@ -80,6 +81,12 @@ class NotifyingSessionRepository implements SessionRepository {
 
   @override
   Future<List<LevelPoint>> levelHistory() => _inner.levelHistory();
+
+  @override
+  Future<List<CorrectionExample>> recentCorrections(
+    ErrorCategory category, {
+    int limit = 6,
+  }) => _inner.recentCorrections(category, limit: limit);
 
   @override
   Future<ImportResult> importAll(Map<String, Object?> data, DateTime now) =>

@@ -179,6 +179,18 @@ void main() {
     expect(find.text('문법 (시제·관사·전치사)'), findsOneWidget);
     expect(find.text('문장 구조·어순'), findsOneWidget);
     expect(find.text('레벨 진단 기록이 없어요.'), findsOneWidget);
+
+    // Mini lesson for the weak area, then practice with own sentences.
+    await tapText(tester, '문법 (시제·관사·전치사)');
+    expect(find.text('과거의 일은 과거형으로'), findsOneWidget);
+    expect(find.text('We ate pizza.'), findsOneWidget);
+    expect(find.text('내 문장으로 연습'), findsOneWidget);
+    expect(find.text('Fixed sentence.'), findsOneWidget);
+    await tester.tap(find.byTooltip('듣기').first);
+    await settle(tester);
+    expect(h.voice.spoken.last, 'I walked to work.');
+    await tester.tap(find.byType(BackButton));
+    await settle(tester);
     await tapText(tester, '30일');
     expect(find.text('12분'), findsOneWidget);
   });
