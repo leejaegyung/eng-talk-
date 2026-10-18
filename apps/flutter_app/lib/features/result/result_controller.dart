@@ -80,13 +80,12 @@ class ResultController extends Notifier<ResultState> {
     if (detail == null || state.generating) return;
     state = state.copyWith(generating: true, clearFailure: true);
     try {
-      final model = await ref.read(chatGptModelSelectorProvider)();
-      final feedback = await FeedbackService(ref.read(chatGptLlmProvider))
-          .evaluate(
-            model: model,
-            setup: detail.summary.setup,
-            turns: detail.turns,
-          );
+      final model = await ref.read(aiModelSelectorProvider)();
+      final feedback = await FeedbackService(ref.read(aiLlmProvider)).evaluate(
+        model: model,
+        setup: detail.summary.setup,
+        turns: detail.turns,
+      );
       final repo = ref.read(sessionRepositoryProvider);
       await repo.saveFeedback(sessionId, feedback, ref.read(clockProvider)());
       final reloaded = await repo.load(sessionId);

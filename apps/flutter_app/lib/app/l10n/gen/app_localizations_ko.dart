@@ -158,7 +158,7 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get failureInsufficientQuota =>
-      'OpenAI 계정에 사용 가능한 크레딧이 없어요. platform.openai.com의 Billing에서 결제 수단이나 크레딧을 확인해 주세요.';
+      'API 계정에 남은 크레딧이 없어요. Claude는 console.anthropic.com의 Billing에서 결제 수단이나 크레딧을 확인해 주세요.';
 
   @override
   String get failureRateLimited => '요청이 너무 많아요. 잠시 후 다시 시도해 주세요.';
@@ -321,7 +321,7 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get settingsApiKeyNote =>
-      'OpenAI API 키(사용량만큼 별도 과금)는 나중에 선택 항목으로 추가돼요.';
+      'ChatGPT 구독은 추가 요금이 없어요. Claude는 본인의 Anthropic API 키로 쓰며, 사용한 만큼 Anthropic에서 요금이 청구돼요.';
 
   @override
   String get settingsVoiceSection => '음성';
@@ -1006,4 +1006,36 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get speechIssueOther => '음성 인식이 중간에 멈췄어요. 🎤를 다시 누르거나 입력해 주세요.';
+
+  @override
+  String get aiChoiceChatGpt => 'ChatGPT';
+
+  @override
+  String get aiChoiceClaude => 'Claude (API 키)';
+
+  @override
+  String get aiChoiceLabel => '대화에 쓸 AI';
+
+  @override
+  String get claudeKeyLabel => 'Anthropic API 키';
+
+  @override
+  String get claudeKeySave => '저장하고 확인';
+
+  @override
+  String get claudeKeyRemove => '키 삭제';
+
+  @override
+  String get claudeNoKey => '키가 없어요. console.anthropic.com에서 만든 키를 넣어 주세요.';
+
+  @override
+  String get claudeKeyStored =>
+      '키는 기기의 보안 저장소에만 보관돼요. 연결 확인은 모델 목록만 조회해서 요금이 나오지 않아요.';
+
+  @override
+  String get claudeBilling => 'Claude로 대화하면 사용한 만큼 Anthropic에 요금이 청구돼요.';
+
+  @override
+  String get claudeChosenNoKey =>
+      'Claude를 고르셨지만 키가 없어요. 키를 넣기 전까지 대화를 시작할 수 없어요.';
 }

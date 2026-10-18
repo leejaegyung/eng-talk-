@@ -347,7 +347,7 @@ abstract class AppLocalizations {
   /// No description provided for @failureInsufficientQuota.
   ///
   /// In ko, this message translates to:
-  /// **'OpenAI 계정에 사용 가능한 크레딧이 없어요. platform.openai.com의 Billing에서 결제 수단이나 크레딧을 확인해 주세요.'**
+  /// **'API 계정에 남은 크레딧이 없어요. Claude는 console.anthropic.com의 Billing에서 결제 수단이나 크레딧을 확인해 주세요.'**
   String get failureInsufficientQuota;
 
   /// No description provided for @failureRateLimited.
@@ -641,7 +641,7 @@ abstract class AppLocalizations {
   /// No description provided for @settingsApiKeyNote.
   ///
   /// In ko, this message translates to:
-  /// **'OpenAI API 키(사용량만큼 별도 과금)는 나중에 선택 항목으로 추가돼요.'**
+  /// **'ChatGPT 구독은 추가 요금이 없어요. Claude는 본인의 Anthropic API 키로 쓰며, 사용한 만큼 Anthropic에서 요금이 청구돼요.'**
   String get settingsApiKeyNote;
 
   /// No description provided for @settingsVoiceSection.
@@ -1891,6 +1891,66 @@ abstract class AppLocalizations {
   /// In ko, this message translates to:
   /// **'음성 인식이 중간에 멈췄어요. 🎤를 다시 누르거나 입력해 주세요.'**
   String get speechIssueOther;
+
+  /// No description provided for @aiChoiceChatGpt.
+  ///
+  /// In ko, this message translates to:
+  /// **'ChatGPT'**
+  String get aiChoiceChatGpt;
+
+  /// No description provided for @aiChoiceClaude.
+  ///
+  /// In ko, this message translates to:
+  /// **'Claude (API 키)'**
+  String get aiChoiceClaude;
+
+  /// No description provided for @aiChoiceLabel.
+  ///
+  /// In ko, this message translates to:
+  /// **'대화에 쓸 AI'**
+  String get aiChoiceLabel;
+
+  /// No description provided for @claudeKeyLabel.
+  ///
+  /// In ko, this message translates to:
+  /// **'Anthropic API 키'**
+  String get claudeKeyLabel;
+
+  /// No description provided for @claudeKeySave.
+  ///
+  /// In ko, this message translates to:
+  /// **'저장하고 확인'**
+  String get claudeKeySave;
+
+  /// No description provided for @claudeKeyRemove.
+  ///
+  /// In ko, this message translates to:
+  /// **'키 삭제'**
+  String get claudeKeyRemove;
+
+  /// No description provided for @claudeNoKey.
+  ///
+  /// In ko, this message translates to:
+  /// **'키가 없어요. console.anthropic.com에서 만든 키를 넣어 주세요.'**
+  String get claudeNoKey;
+
+  /// No description provided for @claudeKeyStored.
+  ///
+  /// In ko, this message translates to:
+  /// **'키는 기기의 보안 저장소에만 보관돼요. 연결 확인은 모델 목록만 조회해서 요금이 나오지 않아요.'**
+  String get claudeKeyStored;
+
+  /// No description provided for @claudeBilling.
+  ///
+  /// In ko, this message translates to:
+  /// **'Claude로 대화하면 사용한 만큼 Anthropic에 요금이 청구돼요.'**
+  String get claudeBilling;
+
+  /// No description provided for @claudeChosenNoKey.
+  ///
+  /// In ko, this message translates to:
+  /// **'Claude를 고르셨지만 키가 없어요. 키를 넣기 전까지 대화를 시작할 수 없어요.'**
+  String get claudeChosenNoKey;
 }
 
 class _AppLocalizationsDelegate

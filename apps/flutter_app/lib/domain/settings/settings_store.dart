@@ -22,6 +22,9 @@ abstract final class SettingKeys {
   /// [LearnerLevel] name; unset until the placement assessment (slice D).
   static const learnerLevel = 'learner.level';
 
+  /// [AiChoice] name; unset = ChatGPT.
+  static const aiProvider = 'ai.provider';
+
   /// [LearningGoal] name; unset until chosen (onboarding or settings).
   static const learningGoal = 'learner.goal';
 

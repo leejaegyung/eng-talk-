@@ -147,7 +147,7 @@
     }
   },
   "failureInvalidKey": "API 키가 올바르지 않아요. 키를 확인하고 다시 입력해 주세요.",
-  "failureInsufficientQuota": "OpenAI 계정에 사용 가능한 크레딧이 없어요. platform.openai.com의 Billing에서 결제 수단이나 크레딧을 확인해 주세요.",
+  "failureInsufficientQuota": "API 계정에 남은 크레딧이 없어요. Claude는 console.anthropic.com의 Billing에서 결제 수단이나 크레딧을 확인해 주세요.",
   "failureRateLimited": "요청이 너무 많아요. 잠시 후 다시 시도해 주세요.",
   "failureModelUnavailable": "이 계정에서 필요한 모델을 사용할 수 없어요.",
   "failureNetwork": "네트워크에 연결할 수 없어요. 인터넷 연결을 확인해 주세요.",
@@ -229,7 +229,7 @@
   "settingsChecking": "연결 확인 중…",
   "settingsRetry": "다시 확인",
   "settingsSignOut": "로그아웃",
-  "settingsApiKeyNote": "OpenAI API 키(사용량만큼 별도 과금)는 나중에 선택 항목으로 추가돼요.",
+  "settingsApiKeyNote": "ChatGPT 구독은 추가 요금이 없어요. Claude는 본인의 Anthropic API 키로 쓰며, 사용한 만큼 Anthropic에서 요금이 청구돼요.",
   "settingsVoiceSection": "음성",
   "settingsInfoSection": "정보",
   "settingsPrivacy": "데이터 처리 안내",
@@ -626,5 +626,15 @@
   "speechIssueNetwork": "음성 인식 서버에 연결할 수 없어요. 인터넷을 확인하거나 입력해서 계속하세요.",
   "speechIssueAudio": "마이크 소리를 받을 수 없어요. 이어폰·마이크 연결을 확인한 뒤 🎤를 눌러 주세요.",
   "speechIssueBusy": "다른 앱이 음성 인식을 쓰고 있어요. 잠시 뒤 🎤를 눌러 주세요.",
-  "speechIssueOther": "음성 인식이 중간에 멈췄어요. 🎤를 다시 누르거나 입력해 주세요."
+  "speechIssueOther": "음성 인식이 중간에 멈췄어요. 🎤를 다시 누르거나 입력해 주세요.",
+  "aiChoiceChatGpt": "ChatGPT",
+  "aiChoiceClaude": "Claude (API 키)",
+  "aiChoiceLabel": "대화에 쓸 AI",
+  "claudeKeyLabel": "Anthropic API 키",
+  "claudeKeySave": "저장하고 확인",
+  "claudeKeyRemove": "키 삭제",
+  "claudeNoKey": "키가 없어요. console.anthropic.com에서 만든 키를 넣어 주세요.",
+  "claudeKeyStored": "키는 기기의 보안 저장소에만 보관돼요. 연결 확인은 모델 목록만 조회해서 요금이 나오지 않아요.",
+  "claudeBilling": "Claude로 대화하면 사용한 만큼 Anthropic에 요금이 청구돼요.",
+  "claudeChosenNoKey": "Claude를 고르셨지만 키가 없어요. 키를 넣기 전까지 대화를 시작할 수 없어요."
 }

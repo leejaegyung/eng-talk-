@@ -161,7 +161,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get failureInsufficientQuota =>
-      'Your OpenAI account has no available credit. Check payment or credits under Billing at platform.openai.com.';
+      'Your API account is out of credit. For Claude, check billing at console.anthropic.com.';
 
   @override
   String get failureRateLimited =>
@@ -333,7 +333,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settingsApiKeyNote =>
-      'An OpenAI API key (billed per use) will be added later as an option.';
+      'The ChatGPT plan has no extra charge. Claude uses your own Anthropic API key and is billed by Anthropic per use.';
 
   @override
   String get settingsVoiceSection => 'Voice';
@@ -1039,4 +1039,38 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get speechIssueOther =>
       'Speech recognition stopped. Tap 🎤 again or type.';
+
+  @override
+  String get aiChoiceChatGpt => 'ChatGPT';
+
+  @override
+  String get aiChoiceClaude => 'Claude (API key)';
+
+  @override
+  String get aiChoiceLabel => 'AI for coaching';
+
+  @override
+  String get claudeKeyLabel => 'Anthropic API key';
+
+  @override
+  String get claudeKeySave => 'Save and check';
+
+  @override
+  String get claudeKeyRemove => 'Remove key';
+
+  @override
+  String get claudeNoKey =>
+      'No key yet. Paste a key from console.anthropic.com.';
+
+  @override
+  String get claudeKeyStored =>
+      'The key stays in this device\'s secure storage. Checking only lists models, so it isn\'t billed.';
+
+  @override
+  String get claudeBilling =>
+      'Conversations with Claude are billed by Anthropic per use.';
+
+  @override
+  String get claudeChosenNoKey =>
+      'Claude is selected but there\'s no key. Add one to start conversations.';
 }

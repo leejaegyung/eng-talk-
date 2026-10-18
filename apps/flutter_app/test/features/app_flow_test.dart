@@ -248,6 +248,63 @@ void main() {
     );
   });
 
+  testWidgets('Claude: key in settings, then conversations use it', (
+    tester,
+  ) async {
+    final h = Harness();
+    await h.boot(tester);
+    await tester.tap(find.byIcon(Icons.settings_outlined));
+    await settle(tester);
+
+    await tapText(tester, 'Claude (API 키)');
+    expect(find.textContaining('Anthropic에 요금이 청구돼요'), findsWidgets);
+    expect(find.textContaining('키가 없어요'), findsWidgets);
+    final keyField = find.widgetWithText(TextField, 'Anthropic API 키');
+    await tester.ensureVisible(keyField);
+    await tester.enterText(keyField, 'sk-FAKE-anthropic-test-key');
+    await tapText(tester, '저장하고 확인');
+    expect(h.vault.values['provider.anthropic'], 'sk-FAKE-anthropic-test-key');
+    expect(h.settings.values[SettingKeys.aiProvider], 'claude');
+    expect(find.text('연결됨 · 모델 claude-test (자동 선택)'), findsOneWidget);
+    expect(
+      tester.widget<TextField>(keyField).controller!.text,
+      isEmpty,
+      reason: 'the key is not left on screen',
+    );
+    expect(find.textContaining('sk-FAKE'), findsNothing);
+
+    await tester.tap(find.byType(BackButton));
+    await settle(tester);
+    await tapText(tester, '대화 시작');
+    final start = find.widgetWithText(FilledButton, '대화 시작');
+    await tester.ensureVisible(start);
+    await tester.tap(start);
+    await settle(tester);
+    expect(find.text('Hello from Claude. How are you?'), findsOneWidget);
+    expect(h.claudeAi.chats, isNotEmpty);
+    expect(h.ai.chats, isEmpty, reason: 'ChatGPT not used');
+  });
+
+  testWidgets('Claude chosen without a key: conversation asks to connect', (
+    tester,
+  ) async {
+    final h = Harness(
+      settings: MemorySettings({
+        SettingKeys.onboardingDone: 'true',
+        SettingKeys.handsFree: 'false',
+        SettingKeys.aiProvider: 'claude',
+      }),
+    );
+    await h.boot(tester);
+    await tapText(tester, '대화 시작');
+    final start = find.widgetWithText(FilledButton, '대화 시작');
+    await tester.ensureVisible(start);
+    await tester.tap(start);
+    await settle(tester);
+    expect(find.text('설정에서 연결하기'), findsOneWidget);
+    expect(h.claudeAi.chats, isEmpty);
+  });
+
   testWidgets('app to the background pauses the conversation', (tester) async {
     tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.resumed);
     final h = Harness();

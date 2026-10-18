@@ -168,8 +168,8 @@ class AssessmentController extends Notifier<AssessmentState> {
       clearFailure: true,
     );
     try {
-      final model = await ref.read(chatGptModelSelectorProvider)();
-      final rubric = await PlacementService(ref.read(chatGptLlmProvider))
+      final model = await ref.read(aiModelSelectorProvider)();
+      final rubric = await PlacementService(ref.read(aiLlmProvider))
           .evaluate(model: model, answers: _pairs());
       if (!ref.mounted) return;
       if (rubric == null) {

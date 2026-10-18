@@ -6,6 +6,7 @@ import 'package:speaking_coach/app/app.dart';
 import 'package:speaking_coach/app/notifying_session_repository.dart';
 import 'package:speaking_coach/app/providers.dart';
 import 'package:speaking_coach/data/sessions/drift_session_repository.dart';
+import 'package:speaking_coach/domain/providers/ai_provider.dart';
 import 'package:speaking_coach/domain/settings/settings_store.dart';
 
 import 'fakes.dart';
@@ -21,6 +22,9 @@ class Harness {
           }),
       account = account ?? (FakeAccount()..signedIn = true) {
     ai.responder = smartReplies;
+    claudeAi
+      ..responder = smartReplies
+      ..reply = const [TextDelta('Hello from Claude. How are you?')];
     final (db, repo) = memoryRepository();
     this.repo = repo;
     addTearDown(db.close);
@@ -29,6 +33,9 @@ class Harness {
   final MemorySettings settings;
   final FakeAccount account;
   final ai = FakeAi();
+
+  /// Claude, when the learner picks it in settings (ADR-014).
+  final claudeAi = FakeAi();
   final mic = FakeSpeechInput();
   final voice = FakeSpeechOutput();
   final vault = MemoryVault();
@@ -41,6 +48,8 @@ class Harness {
     settingsStoreProvider.overrideWithValue(settings),
     chatGptAccountProvider.overrideWithValue(account),
     chatGptLlmProvider.overrideWithValue(ai),
+    claudeLlmProvider.overrideWithValue(claudeAi),
+    claudeModelSelectorProvider.overrideWithValue(() async => 'claude-test'),
     chatGptModelSelectorProvider.overrideWith(
       (ref) =>
           () => selectModel(),

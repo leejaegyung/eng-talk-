@@ -43,7 +43,7 @@ void main() {
 
   final messages = {
     ProviderFailure.invalidKey: 'API 키가 올바르지 않아요',
-    ProviderFailure.insufficientQuota: '사용 가능한 크레딧이 없어요',
+    ProviderFailure.insufficientQuota: '남은 크레딧이 없어요',
     ProviderFailure.rateLimited: '요청이 너무 많아요',
     ProviderFailure.network: '네트워크에 연결할 수 없어요',
   };

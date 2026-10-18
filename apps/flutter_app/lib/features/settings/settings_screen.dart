@@ -5,6 +5,7 @@ import '../../app/l10n/gen/app_localizations.dart';
 import '../common/failure_text.dart';
 import '../common/goal_picker.dart';
 import '../common/privacy_notice.dart';
+import 'claude_settings.dart';
 import 'settings_controller.dart';
 
 class SettingsScreen extends ConsumerWidget {
@@ -93,6 +94,7 @@ class SettingsScreen extends ConsumerWidget {
                   style: theme.textTheme.bodySmall,
                 ),
               ),
+              const ClaudeSettings(),
               section(l10n.goalsTitle),
               const Padding(
                 padding: EdgeInsets.fromLTRB(16, 4, 16, 8),

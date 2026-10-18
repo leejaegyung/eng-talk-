@@ -222,9 +222,9 @@ class ConversationController extends Notifier<ConversationState> {
 
   @override
   ConversationState build() {
-    _account = ref.watch(chatGptAccountProvider);
-    _llm = ref.watch(chatGptLlmProvider);
-    _selectModel = ref.watch(chatGptModelSelectorProvider);
+    _account = ref.watch(aiAccountProvider);
+    _llm = ref.watch(aiLlmProvider);
+    _selectModel = ref.watch(aiModelSelectorProvider);
     _mic = ref.watch(speechInputProvider);
     _voice = ref.watch(speechOutputProvider);
     _settings = ref.watch(settingsStoreProvider);
