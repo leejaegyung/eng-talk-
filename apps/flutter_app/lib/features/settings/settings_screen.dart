@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../app/l10n/gen/app_localizations.dart';
 import '../common/failure_text.dart';
 import '../common/goal_picker.dart';
+import '../common/language_picker.dart';
 import '../common/privacy_notice.dart';
 import 'ai_choice_settings.dart';
 import 'settings_controller.dart';
@@ -95,6 +96,11 @@ class SettingsScreen extends ConsumerWidget {
                 ),
               ),
               const AiChoiceSettings(),
+              section(l10n.languageLabel),
+              const Padding(
+                padding: EdgeInsets.fromLTRB(16, 4, 16, 8),
+                child: LanguagePicker(),
+              ),
               section(l10n.goalsTitle),
               const Padding(
                 padding: EdgeInsets.fromLTRB(16, 4, 16, 8),

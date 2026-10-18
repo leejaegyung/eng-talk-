@@ -313,5 +313,9 @@
   "settingsAutoBargeInNote": "With auto-listen on, it also listens while the AI speaks. On speakers the AI's own voice can be heard as yours, so turn this on only with earphones.",
   "settingsDiagnostics": "Export diagnostics",
   "settingsDiagnosticsNote": "Saves the app's error log ({count} recent) to a file, without conversations or keys. Attach it when reporting a problem.",
-  "settingsDiagnosticsClear": "Clear error log"
+  "settingsDiagnosticsClear": "Clear error log",
+  "languageLabel": "Language",
+  "languageSystem": "Device",
+  "languageKo": "한국어",
+  "languageEn": "English"
 }

@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../app/l10n/gen/app_localizations.dart';
 import '../common/failure_text.dart';
 import '../common/goal_picker.dart';
+import '../common/language_picker.dart';
 import '../common/privacy_notice.dart';
 import 'onboarding_controller.dart';
 
@@ -21,7 +22,13 @@ class OnboardingScreen extends ConsumerWidget {
     final (title, body, actions) = switch (s.step) {
       OnboardingStep.welcome => (
         l10n.onboardingWelcomeTitle,
-        <Widget>[Text(l10n.onboardingWelcomeBody)],
+        <Widget>[
+          Text(l10n.onboardingWelcomeBody),
+          const SizedBox(height: 24),
+          Text(l10n.languageLabel, style: theme.textTheme.titleSmall),
+          const SizedBox(height: 8),
+          const LanguagePicker(),
+        ],
         <Widget>[
           FilledButton(onPressed: ctrl.next, child: Text(l10n.onboardingNext)),
         ],

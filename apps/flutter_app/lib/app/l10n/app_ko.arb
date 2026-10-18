@@ -648,5 +648,9 @@
       }
     }
   },
-  "settingsDiagnosticsClear": "오류 기록 지우기"
+  "settingsDiagnosticsClear": "오류 기록 지우기",
+  "languageLabel": "언어",
+  "languageSystem": "기기 설정",
+  "languageKo": "한국어",
+  "languageEn": "English"
 }

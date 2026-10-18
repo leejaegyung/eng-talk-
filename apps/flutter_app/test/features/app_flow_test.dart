@@ -472,6 +472,20 @@ void main() {
     expect(find.textContaining('최근 0건'), findsOneWidget);
   });
 
+  testWidgets('language: switch to English and back, saved', (tester) async {
+    final h = Harness();
+    await h.boot(tester);
+    await tester.tap(find.byIcon(Icons.settings_outlined));
+    await settle(tester);
+    expect(find.text('설정'), findsOneWidget);
+    await tapText(tester, 'English');
+    expect(find.text('Settings'), findsOneWidget);
+    expect(h.settings.values[SettingKeys.appLanguage], 'en');
+    await tapText(tester, 'Device');
+    expect(find.text('설정'), findsOneWidget);
+    expect(h.settings.values[SettingKeys.appLanguage], 'system');
+  });
+
   testWidgets('settings: export has no credentials; delete all', (
     tester,
   ) async {

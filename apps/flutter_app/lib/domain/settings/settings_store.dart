@@ -8,6 +8,9 @@ abstract interface class SettingsStore {
 abstract final class SettingKeys {
   static const onboardingDone = 'onboarding.done';
 
+  /// 'ko', 'en' or 'system' (unset = system).
+  static const appLanguage = 'app.language';
+
   /// Read AI replies aloud by default ('true'/'false'; unset = true).
   static const speakReplies = 'voice.speak_replies';
 

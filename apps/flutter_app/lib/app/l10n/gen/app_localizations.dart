@@ -1981,6 +1981,30 @@ abstract class AppLocalizations {
   /// In ko, this message translates to:
   /// **'오류 기록 지우기'**
   String get settingsDiagnosticsClear;
+
+  /// No description provided for @languageLabel.
+  ///
+  /// In ko, this message translates to:
+  /// **'언어'**
+  String get languageLabel;
+
+  /// No description provided for @languageSystem.
+  ///
+  /// In ko, this message translates to:
+  /// **'기기 설정'**
+  String get languageSystem;
+
+  /// No description provided for @languageKo.
+  ///
+  /// In ko, this message translates to:
+  /// **'한국어'**
+  String get languageKo;
+
+  /// No description provided for @languageEn.
+  ///
+  /// In ko, this message translates to:
+  /// **'English'**
+  String get languageEn;
 }
 
 class _AppLocalizationsDelegate

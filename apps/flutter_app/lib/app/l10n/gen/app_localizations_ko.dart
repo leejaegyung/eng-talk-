@@ -1057,4 +1057,16 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get settingsDiagnosticsClear => '오류 기록 지우기';
+
+  @override
+  String get languageLabel => '언어';
+
+  @override
+  String get languageSystem => '기기 설정';
+
+  @override
+  String get languageKo => '한국어';
+
+  @override
+  String get languageEn => 'English';
 }

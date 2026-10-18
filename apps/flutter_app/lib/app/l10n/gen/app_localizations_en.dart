@@ -1091,4 +1091,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settingsDiagnosticsClear => 'Clear error log';
+
+  @override
+  String get languageLabel => 'Language';
+
+  @override
+  String get languageSystem => 'Device';
+
+  @override
+  String get languageKo => '한국어';
+
+  @override
+  String get languageEn => 'English';
 }
