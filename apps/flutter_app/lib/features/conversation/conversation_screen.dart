@@ -155,10 +155,30 @@ class _ConversationScreenState extends ConsumerState<ConversationScreen> {
             ),
           Padding(
             padding: const EdgeInsets.fromLTRB(24, 12, 24, 4),
-            child: Text(
-              status,
-              style: theme.textTheme.titleMedium,
-              textAlign: TextAlign.center,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              spacing: 8,
+              children: [
+                Container(
+                  width: 8,
+                  height: 8,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: switch (s.phase) {
+                      SessionPhase.userSpeaking => theme.colorScheme.secondary,
+                      SessionPhase.listening => theme.colorScheme.primary,
+                      _ => theme.colorScheme.outline,
+                    },
+                  ),
+                ),
+                Flexible(
+                  child: Text(
+                    status,
+                    style: theme.textTheme.titleMedium,
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              ],
             ),
           ),
           SingleChildScrollView(
@@ -202,18 +222,28 @@ class _ConversationScreenState extends ConsumerState<ConversationScreen> {
             padding: const EdgeInsets.fromLTRB(24, 4, 24, 24),
             child: Row(
               children: [
-                IconButton.filled(
-                  iconSize: 32,
-                  tooltip: l10n.chatGptLabTalk,
-                  onPressed: s.phase == SessionPhase.userSpeaking
-                      ? ctrl.stopListening
-                      : canAct
-                      ? ctrl.talk
-                      : null,
-                  icon: Icon(
-                    s.phase == SessionPhase.userSpeaking
-                        ? Icons.stop
-                        : Icons.mic,
+                SizedBox.square(
+                  dimension: 64,
+                  child: IconButton.filled(
+                    iconSize: 30,
+                    style: IconButton.styleFrom(
+                      shape: const CircleBorder(),
+                      backgroundColor: s.phase == SessionPhase.userSpeaking
+                          ? theme.colorScheme.secondary
+                          : theme.colorScheme.primary,
+                      foregroundColor: Colors.white,
+                    ),
+                    tooltip: l10n.chatGptLabTalk,
+                    onPressed: s.phase == SessionPhase.userSpeaking
+                        ? ctrl.stopListening
+                        : canAct
+                        ? ctrl.talk
+                        : null,
+                    icon: Icon(
+                      s.phase == SessionPhase.userSpeaking
+                          ? Icons.stop
+                          : Icons.mic,
+                    ),
                   ),
                 ),
                 const SizedBox(width: 12),
@@ -222,7 +252,6 @@ class _ConversationScreenState extends ConsumerState<ConversationScreen> {
                     controller: _input,
                     enabled: canAct,
                     decoration: InputDecoration(
-                      border: const OutlineInputBorder(),
                       hintText: l10n.conversationInput,
                     ),
                     onSubmitted: (_) => _send(),
@@ -349,10 +378,23 @@ class _Line extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         constraints: const BoxConstraints(maxWidth: 560),
         decoration: BoxDecoration(
-          color: mine ? colors.primaryContainer : colors.surfaceContainerHigh,
-          borderRadius: BorderRadius.circular(18),
+          color: mine ? colors.primary : colors.surface,
+          border: mine ? null : Border.all(color: colors.outlineVariant),
+          borderRadius: BorderRadius.only(
+            topLeft: const Radius.circular(20),
+            topRight: const Radius.circular(20),
+            bottomLeft: Radius.circular(mine ? 20 : 4),
+            bottomRight: Radius.circular(mine ? 4 : 20),
+          ),
         ),
-        child: SelectableText(turn.text, style: theme.textTheme.titleMedium),
+        child: SelectableText(
+          turn.text,
+          style: theme.textTheme.titleMedium?.copyWith(
+            color: mine ? colors.onPrimary : colors.onSurface,
+            fontWeight: FontWeight.w500,
+            height: 1.4,
+          ),
+        ),
       ),
     );
   }
