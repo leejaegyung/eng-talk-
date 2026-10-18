@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../app/l10n/gen/app_localizations.dart';
+import '../../app/theme.dart';
 import '../../domain/learning/focus.dart';
 import '../../domain/sessions/session_records.dart';
 import '../common/practice_verdict.dart';
@@ -77,6 +78,10 @@ class ReviewScreen extends ConsumerWidget {
                                   heard: h,
                                   target: item.suggested,
                                 ),
+                              _RepeatBoxes(
+                                checks: s.checksOf(item.id),
+                                onToggle: (i) => ctrl.toggleCheck(item.id, i),
+                              ),
                               Wrap(
                                 spacing: 8,
                                 children: [
@@ -177,6 +182,47 @@ class ReviewScreen extends ConsumerWidget {
                 ),
               ),
             ),
+    );
+  }
+}
+
+/// One box per repetition of the corrected sentence; ticked automatically
+/// when it is said as corrected, or by hand.
+class _RepeatBoxes extends StatelessWidget {
+  const _RepeatBoxes({required this.checks, required this.onToggle});
+
+  final List<bool> checks;
+  final void Function(int index) onToggle;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final theme = Theme.of(context);
+    final done = checks.where((c) => c).length;
+    final complete = done == checks.length;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      spacing: 4,
+      children: [
+        Text(
+          complete
+              ? l10n.reviewRepeatDone
+              : l10n.reviewRepeatProgress(done, checks.length),
+          style: theme.textTheme.titleSmall?.copyWith(
+            color: complete ? AppColors.green : null,
+          ),
+        ),
+        Wrap(
+          children: [
+            for (final (i, checked) in checks.indexed)
+              Checkbox(
+                value: checked,
+                semanticLabel: l10n.reviewRepeatBox(i + 1),
+                onChanged: (_) => onToggle(i),
+              ),
+          ],
+        ),
+      ],
     );
   }
 }

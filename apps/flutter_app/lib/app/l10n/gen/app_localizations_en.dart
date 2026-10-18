@@ -1191,4 +1191,32 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get practiceDiffers =>
       'A little different. Look at the corrected sentence and try again?';
+
+  @override
+  String get settingsReviewSection => 'Review';
+
+  @override
+  String get settingsReviewRepeats => 'Repetitions per sentence';
+
+  @override
+  String get settingsReviewRepeatsNote =>
+      'A box fills each time you say the corrected sentence. You can also tick boxes yourself if recognition gets it wrong.';
+
+  @override
+  String settingsRepeatTimes(int count) {
+    return '$count×';
+  }
+
+  @override
+  String reviewRepeatProgress(int done, int total) {
+    return 'Repeated $done/$total';
+  }
+
+  @override
+  String get reviewRepeatDone => 'All repetitions done!';
+
+  @override
+  String reviewRepeatBox(int n) {
+    return 'Repetition $n';
+  }
 }

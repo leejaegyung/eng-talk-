@@ -341,5 +341,12 @@
   "resultWordOrderNote": "Sentences with the wrong order come back in review to say in the right order. Tense and pronunciation aren't judged here.",
   "reviewKindWordOrder": "Word order",
   "practiceMatched": "You said it as corrected",
-  "practiceDiffers": "A little different. Look at the corrected sentence and try again?"
+  "practiceDiffers": "A little different. Look at the corrected sentence and try again?",
+  "settingsReviewSection": "Review",
+  "settingsReviewRepeats": "Repetitions per sentence",
+  "settingsReviewRepeatsNote": "A box fills each time you say the corrected sentence. You can also tick boxes yourself if recognition gets it wrong.",
+  "settingsRepeatTimes": "{count}×",
+  "reviewRepeatProgress": "Repeated {done}/{total}",
+  "reviewRepeatDone": "All repetitions done!",
+  "reviewRepeatBox": "Repetition {n}"
 }

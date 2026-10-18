@@ -29,6 +29,10 @@ abstract final class SettingKeys {
   /// [LearnerLevel] name; unset until the placement assessment (slice D).
   static const learnerLevel = 'learner.level';
 
+  /// Times each review sentence is repeated: one of [reviewRepeatOptions]
+  /// (unset = the first).
+  static const reviewRepeats = 'review.repeats';
+
   /// [AiChoice] name; unset = ChatGPT.
   static const aiProvider = 'ai.provider';
 
@@ -38,3 +42,5 @@ abstract final class SettingKeys {
   /// Daily practice target in minutes; unset = no target.
   static const dailyGoalMinutes = 'learner.daily_minutes';
 }
+
+const reviewRepeatOptions = [5, 10];

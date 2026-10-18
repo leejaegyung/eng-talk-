@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../app/l10n/gen/app_localizations.dart';
+import '../../domain/settings/settings_store.dart';
 import '../common/failure_text.dart';
 import '../common/goal_picker.dart';
 import '../common/language_picker.dart';
@@ -100,6 +101,30 @@ class SettingsScreen extends ConsumerWidget {
               const Padding(
                 padding: EdgeInsets.fromLTRB(16, 4, 16, 8),
                 child: LanguagePicker(),
+              ),
+              section(l10n.settingsReviewSection),
+              ListTile(
+                leading: const Icon(Icons.repeat),
+                title: Text(l10n.settingsReviewRepeats),
+                subtitle: Text(l10n.settingsReviewRepeatsNote),
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(72, 0, 16, 8),
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: SegmentedButton<int>(
+                    segments: [
+                      for (final n in reviewRepeatOptions)
+                        ButtonSegment(
+                          value: n,
+                          label: Text(l10n.settingsRepeatTimes(n)),
+                        ),
+                    ],
+                    selected: {s.reviewRepeats},
+                    showSelectedIcon: false,
+                    onSelectionChanged: (v) => ctrl.setReviewRepeats(v.single),
+                  ),
+                ),
               ),
               section(l10n.goalsTitle),
               const Padding(

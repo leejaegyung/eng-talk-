@@ -16,6 +16,7 @@ const backupSettingKeys = [
   'learner.level',
   'learner.goal',
   'learner.daily_minutes',
+  'review.repeats',
   'voice.speak_replies',
   'voice.hands_free',
   'voice.confirm_speech',

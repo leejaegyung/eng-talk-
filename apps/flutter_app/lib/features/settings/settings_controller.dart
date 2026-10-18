@@ -25,6 +25,7 @@ final class SettingsState {
     this.handsFree = true,
     this.confirmSpeech = false,
     this.autoBargeIn = false,
+    this.reviewRepeats = 5,
     this.exportedTo,
     this.cleared = false,
     this.errorCount = 0,
@@ -43,6 +44,7 @@ final class SettingsState {
   final bool handsFree;
   final bool confirmSpeech;
   final bool autoBargeIn;
+  final int reviewRepeats;
 
   /// Where the last export was saved.
   final String? exportedTo;
@@ -66,6 +68,7 @@ final class SettingsState {
     bool? handsFree,
     bool? confirmSpeech,
     bool? autoBargeIn,
+    int? reviewRepeats,
     String? exportedTo,
     bool? cleared,
     int? errorCount,
@@ -82,6 +85,7 @@ final class SettingsState {
     handsFree: handsFree ?? this.handsFree,
     confirmSpeech: confirmSpeech ?? this.confirmSpeech,
     autoBargeIn: autoBargeIn ?? this.autoBargeIn,
+    reviewRepeats: reviewRepeats ?? this.reviewRepeats,
     exportedTo: exportedTo ?? this.exportedTo,
     cleared: cleared ?? this.cleared,
     errorCount: errorCount ?? this.errorCount,
@@ -117,6 +121,9 @@ class SettingsController extends Notifier<SettingsState> {
     final handsFree = await _store.read(SettingKeys.handsFree) != 'false';
     final confirm = await _store.read(SettingKeys.confirmSpeech) == 'true';
     final bargeIn = await _store.read(SettingKeys.autoBargeIn) == 'true';
+    final repeats = int.tryParse(
+      await _store.read(SettingKeys.reviewRepeats) ?? '',
+    );
     final signedIn = await _account.isSignedIn();
     final errors = (await ref.read(errorJournalProvider).entries()).length;
     if (!ref.mounted) return;
@@ -126,6 +133,9 @@ class SettingsController extends Notifier<SettingsState> {
       handsFree: handsFree,
       confirmSpeech: confirm,
       autoBargeIn: bargeIn,
+      reviewRepeats: reviewRepeatOptions.contains(repeats)
+          ? repeats
+          : reviewRepeatOptions.first,
       errorCount: errors,
     );
     if (signedIn) await checkConnection();
@@ -248,6 +258,11 @@ class SettingsController extends Notifier<SettingsState> {
   Future<void> setHandsFree(bool on) async {
     state = state.copyWith(handsFree: on);
     await _store.write(SettingKeys.handsFree, '$on');
+  }
+
+  Future<void> setReviewRepeats(int n) async {
+    state = state.copyWith(reviewRepeats: n);
+    await _store.write(SettingKeys.reviewRepeats, '$n');
   }
 
   Future<void> setAutoBargeIn(bool on) async {

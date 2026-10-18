@@ -2149,6 +2149,48 @@ abstract class AppLocalizations {
   /// In ko, this message translates to:
   /// **'조금 달라요. 교정된 문장을 보고 다시 말해볼까요?'**
   String get practiceDiffers;
+
+  /// No description provided for @settingsReviewSection.
+  ///
+  /// In ko, this message translates to:
+  /// **'복습'**
+  String get settingsReviewSection;
+
+  /// No description provided for @settingsReviewRepeats.
+  ///
+  /// In ko, this message translates to:
+  /// **'문장마다 반복 횟수'**
+  String get settingsReviewRepeats;
+
+  /// No description provided for @settingsReviewRepeatsNote.
+  ///
+  /// In ko, this message translates to:
+  /// **'교정된 문장을 말한 횟수만큼 체크 박스가 채워져요. 인식이 틀려도 직접 눌러 체크할 수 있어요.'**
+  String get settingsReviewRepeatsNote;
+
+  /// No description provided for @settingsRepeatTimes.
+  ///
+  /// In ko, this message translates to:
+  /// **'{count}회'**
+  String settingsRepeatTimes(int count);
+
+  /// No description provided for @reviewRepeatProgress.
+  ///
+  /// In ko, this message translates to:
+  /// **'반복 {done}/{total}'**
+  String reviewRepeatProgress(int done, int total);
+
+  /// No description provided for @reviewRepeatDone.
+  ///
+  /// In ko, this message translates to:
+  /// **'반복 완료!'**
+  String get reviewRepeatDone;
+
+  /// No description provided for @reviewRepeatBox.
+  ///
+  /// In ko, this message translates to:
+  /// **'{n}번째 반복'**
+  String reviewRepeatBox(int n);
 }
 
 class _AppLocalizationsDelegate

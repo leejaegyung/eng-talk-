@@ -696,5 +696,36 @@
   "resultWordOrderNote": "어순이 틀린 문장은 복습에서 바른 어순으로 다시 말해봐요. 발음·시제는 여기서 보지 않아요.",
   "reviewKindWordOrder": "어순 교정",
   "practiceMatched": "교정된 문장대로 말했어요",
-  "practiceDiffers": "조금 달라요. 교정된 문장을 보고 다시 말해볼까요?"
+  "practiceDiffers": "조금 달라요. 교정된 문장을 보고 다시 말해볼까요?",
+  "settingsReviewSection": "복습",
+  "settingsReviewRepeats": "문장마다 반복 횟수",
+  "settingsReviewRepeatsNote": "교정된 문장을 말한 횟수만큼 체크 박스가 채워져요. 인식이 틀려도 직접 눌러 체크할 수 있어요.",
+  "settingsRepeatTimes": "{count}회",
+  "@settingsRepeatTimes": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "reviewRepeatProgress": "반복 {done}/{total}",
+  "@reviewRepeatProgress": {
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "reviewRepeatDone": "반복 완료!",
+  "reviewRepeatBox": "{n}번째 반복",
+  "@reviewRepeatBox": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  }
 }

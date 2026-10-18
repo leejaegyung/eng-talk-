@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:speaking_coach/domain/audio/speech_io.dart';
 import 'package:speaking_coach/domain/conversation/session_enums.dart';
+import 'package:speaking_coach/domain/feedback/feedback.dart';
 import 'package:speaking_coach/domain/sessions/session_records.dart';
 import 'package:speaking_coach/domain/settings/settings_store.dart';
 import 'package:speaking_coach/features/setup/setup_controller.dart';
@@ -502,6 +503,11 @@ void main() {
     await h.boot(tester);
     await tester.tap(find.byIcon(Icons.settings_outlined));
     await settle(tester);
+    await tester.scrollUntilVisible(
+      find.textContaining('최근 1건'),
+      300,
+      scrollable: find.byType(Scrollable).last,
+    );
     expect(find.textContaining('최근 1건'), findsOneWidget);
 
     await tapText(tester, '진단 정보 내보내기');
@@ -576,6 +582,62 @@ void main() {
     fresh.backupPicker.content = '{"not": "a backup"}';
     await tapText(tester, '백업 파일에서 복원');
     expect(find.textContaining('백업 파일이 아니에요'), findsOneWidget);
+  });
+
+  testWidgets('review: repeat each sentence N times with check boxes', (
+    tester,
+  ) async {
+    final h = Harness();
+    final id = await h.repo.start(const SessionSetup(), h.now);
+    final turn = await h.repo.addTurn(
+      id,
+      TurnRecord(speaker: Speaker.user, text: 'I go park', startedAt: h.now),
+    );
+    await h.repo.saveFeedback(
+      id,
+      FeedbackResult(
+        corrections: [
+          Correction(
+            turnId: turn,
+            original: 'I go park',
+            suggested: 'I went to the park.',
+          ),
+        ],
+      ),
+      h.now,
+    );
+    await h.boot(tester);
+
+    // Settings: 10 times.
+    await tester.tap(find.byIcon(Icons.settings_outlined));
+    await settle(tester);
+    await tapText(tester, '10회');
+    expect(h.settings.values[SettingKeys.reviewRepeats], '10');
+    await tester.tap(find.byType(BackButton));
+    await settle(tester);
+
+    await tapText(tester, '복습할 문장');
+    expect(find.text('반복 0/10'), findsOneWidget);
+    expect(find.byType(Checkbox), findsNWidgets(10));
+
+    // Said as corrected: a box fills by itself.
+    h.mic.queue.add('I went to the park');
+    await tapText(tester, '다시 말하기');
+    expect(find.text('반복 1/10'), findsOneWidget);
+    // Misheard: no box.
+    h.mic.queue.add('I want to the bark');
+    await tapText(tester, '다시 말하기');
+    expect(find.text('반복 1/10'), findsOneWidget);
+    // Ticked by hand.
+    await tester.tap(find.bySemanticsLabel('2번째 반복'));
+    await settle(tester);
+    expect(find.text('반복 2/10'), findsOneWidget);
+    for (var n = 3; n <= 10; n++) {
+      await tester.tap(find.bySemanticsLabel('$n번째 반복'));
+      await tester.pump();
+    }
+    await settle(tester);
+    expect(find.text('반복 완료!'), findsOneWidget);
   });
 
   testWidgets('settings: export has no credentials; delete all', (

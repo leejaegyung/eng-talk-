@@ -4,8 +4,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../app/providers.dart';
 import '../../domain/feedback/feedback.dart';
+import '../../domain/learning/word_order.dart';
 import '../../domain/sessions/review_schedule.dart';
 import '../../domain/sessions/session_records.dart';
+import '../../domain/settings/settings_store.dart';
 
 final class ReviewState {
   const ReviewState({
@@ -15,6 +17,8 @@ final class ReviewState {
     this.expressions = const [],
     this.expressionHeard = const {},
     this.listeningToExpression,
+    this.repeats = 5,
+    this.checks = const {},
   });
 
   /// Null while loading.
@@ -29,6 +33,15 @@ final class ReviewState {
   final Map<int, String> expressionHeard;
   final int? listeningToExpression;
 
+  /// Repetitions per sentence (setting), and the boxes ticked so far by
+  /// review item id — kept while this screen is open.
+  final int repeats;
+  final Map<int, List<bool>> checks;
+
+  List<bool> checksOf(int id) => checks[id] ?? List.filled(repeats, false);
+  int doneCount(int id) => checksOf(id).where((c) => c).length;
+  bool repeatedEnough(int id) => doneCount(id) >= repeats;
+
   bool get busy => listeningTo != null || listeningToExpression != null;
 
   ReviewState copyWith({
@@ -38,6 +51,8 @@ final class ReviewState {
     List<Expression>? expressions,
     Map<int, String>? expressionHeard,
     int? listeningToExpression,
+    int? repeats,
+    Map<int, List<bool>>? checks,
     bool clearListening = false,
   }) => ReviewState(
     items: items ?? this.items,
@@ -48,6 +63,8 @@ final class ReviewState {
     listeningToExpression: clearListening
         ? null
         : listeningToExpression ?? this.listeningToExpression,
+    repeats: repeats ?? this.repeats,
+    checks: checks ?? this.checks,
   );
 }
 
@@ -70,9 +87,35 @@ class ReviewController extends Notifier<ReviewState> {
     final repo = ref.read(sessionRepositoryProvider);
     final items = await repo.dueReviews(ref.read(clockProvider)());
     final expressions = await repo.recentExpressions(limit: 5);
+    final repeats = int.tryParse(
+      await ref.read(settingsStoreProvider).read(SettingKeys.reviewRepeats) ??
+          '',
+    );
     if (ref.mounted) {
-      state = state.copyWith(items: items, expressions: expressions);
+      state = state.copyWith(
+        items: items,
+        expressions: expressions,
+        repeats: reviewRepeatOptions.contains(repeats)
+            ? repeats
+            : reviewRepeatOptions.first,
+      );
     }
+  }
+
+  /// Ticks or unticks box [index] by hand (e.g. when recognition misheard).
+  void toggleCheck(int id, int index) {
+    final boxes = [...state.checksOf(id)];
+    boxes[index] = !boxes[index];
+    state = state.copyWith(checks: {...state.checks, id: boxes});
+  }
+
+  /// One repetition said as corrected: the next empty box is ticked.
+  void _countRepetition(int id) {
+    final boxes = [...state.checksOf(id)];
+    final next = boxes.indexOf(false);
+    if (next < 0) return;
+    boxes[next] = true;
+    state = state.copyWith(checks: {...state.checks, id: boxes});
   }
 
   /// Say a sentence with expression [index]; shows what was heard.
@@ -102,6 +145,10 @@ class ReviewController extends Notifier<ReviewState> {
       heard: {...state.heard, id: heard.trim()},
       clearListening: true,
     );
+    final item = state.items?.where((i) => i.id == id).firstOrNull;
+    if (item != null && saidAsCorrected(heard, item.suggested)) {
+      _countRepetition(id);
+    }
   }
 
   /// Said it again: next review after a longer interval.

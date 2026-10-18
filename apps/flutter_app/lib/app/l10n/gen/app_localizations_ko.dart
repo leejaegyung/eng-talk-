@@ -1153,4 +1153,32 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get practiceDiffers => '조금 달라요. 교정된 문장을 보고 다시 말해볼까요?';
+
+  @override
+  String get settingsReviewSection => '복습';
+
+  @override
+  String get settingsReviewRepeats => '문장마다 반복 횟수';
+
+  @override
+  String get settingsReviewRepeatsNote =>
+      '교정된 문장을 말한 횟수만큼 체크 박스가 채워져요. 인식이 틀려도 직접 눌러 체크할 수 있어요.';
+
+  @override
+  String settingsRepeatTimes(int count) {
+    return '$count회';
+  }
+
+  @override
+  String reviewRepeatProgress(int done, int total) {
+    return '반복 $done/$total';
+  }
+
+  @override
+  String get reviewRepeatDone => '반복 완료!';
+
+  @override
+  String reviewRepeatBox(int n) {
+    return '$n번째 반복';
+  }
 }
